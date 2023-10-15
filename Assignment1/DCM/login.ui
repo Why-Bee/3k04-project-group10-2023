@@ -27,7 +27,7 @@
      <string notr="true">QWidget#bgWidget{
 background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:1, y2:0.00568182, stop:0 rgba(170, 255, 255, 255), stop:1 rgba(255, 255, 255, 255))}</string>
     </property>
-    <widget class="QPushButton" name="loginButton">
+    <widget class="QPushButton" name="loginConfirm">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -50,7 +50,7 @@ background-color: rgb(0, 0, 127);</string>
       <string>Login</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="loginText">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -67,7 +67,7 @@ background-color: rgb(0, 0, 127);</string>
       <string>Login</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="loginSubtext">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -83,7 +83,7 @@ background-color: rgb(0, 0, 127);</string>
       <string>Enter your details to login</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="usernameField">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -92,8 +92,11 @@ background-color: rgb(0, 0, 127);</string>
        <height>41</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="usernameSubtext">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -106,7 +109,7 @@ background-color: rgb(0, 0, 127);</string>
       <string>Username</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEdit_2">
+    <widget class="QLineEdit" name="passwordField">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -115,8 +118,19 @@ background-color: rgb(0, 0, 127);</string>
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>IBeamCursor</cursorShape>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="passwordSubtext">
      <property name="geometry">
       <rect>
        <x>430</x>
@@ -150,6 +164,23 @@ background-color: rgb(0, 0, 127);</string>
      </property>
      <property name="text">
       <string>←</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="errorLabel">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>385</y>
+       <width>291</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 12pt &quot;MS Reference Sans Serif&quot;;
+color: rgb(255, 0, 0);</string>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

@@ -1,6 +1,7 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget
+from sqlite3 import connect
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -26,11 +27,38 @@ class LoginWindow(QMainWindow):
         loadUi('login.ui', self)
         self.setWindowTitle('Login')
         self.backButton.clicked.connect(self.back_clicked)
+        self.loginConfirm.clicked.connect(self.check_login)
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0)
         # clear stacked window
         stacked_window.removeWidget(stacked_window.widget(1))
+
+    def check_login(self):
+        username = self.usernameField.text()
+        password = self.passwordField.text()
+       
+        if (len(username) == 0 or len(password) == 0):
+            self.errorLabel.setText('Please fill in all fields')
+        else:
+            # check if username and password are in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            # check if only username is in database
+            c.execute('SELECT * FROM all_users WHERE username=?', (username,))
+            # if username is not in database, fetchone() will return None
+            if (c.fetchone() == None):
+                self.errorLabel.setText('Username does not exist.')
+            else:
+                # check if username and password are in database
+                c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
+                # if username and password are not in database, fetchone() will return None
+                if (c.fetchone() == None):
+                    self.errorLabel.setText('Incorrect password.')
+                else:
+                    self.errorLabel.setText('Login successful')
+
+
 
 class SignupWindow(QMainWindow):
     def __init__(self):
@@ -38,11 +66,37 @@ class SignupWindow(QMainWindow):
         loadUi('signup.ui', self)
         self.setWindowTitle('Sign Up')
         self.backButton.clicked.connect(self.back_clicked)
+        self.signUpConfirm.clicked.connect(self.check_signup)
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0)
         # clear stacked window
         stacked_window.removeWidget(stacked_window.widget(1))
+
+    def check_signup(self):
+        username = self.usernameField.text()
+        password = self.passwordField.text()
+
+        if (len(username) == 0 or len(password) == 0):
+            self.errorLabel.setText('Please fill in all fields')
+
+        else:
+            # check if username is already in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            c.execute('SELECT * FROM all_users WHERE username=?', (username,))
+            # if username is not in database, fetchone() will return None
+            if (c.fetchone() == None):
+               # check if password and confirm password match
+                if (self.passwordField.text() == self.confirmPasswordField.text()):
+                    # add username and password to database
+                    c.execute('INSERT INTO all_users VALUES (?, ?)', (username, password))
+                    conn.commit()
+                    self.errorLabel.setText('Sign up successful')
+                else:
+                    self.errorLabel.setText('Passwords do not match.')
+            else:
+                self.errorLabel.setText('Username already exists.')
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:1, y2:0.0056818
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>430</y>
+       <y>520</y>
        <width>291</width>
        <height>91</height>
       </rect>
@@ -92,6 +92,12 @@ background-color: rgb(0, 0, 127);</string>
        <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
     </widget>
     <widget class="QLabel" name="usernameSubtext">
      <property name="geometry">
@@ -114,6 +120,15 @@ background-color: rgb(0, 0, 127);</string>
        <width>281</width>
        <height>41</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
     </widget>
     <widget class="QLabel" name="passwordSubtext">
@@ -150,6 +165,55 @@ background-color: rgb(0, 0, 127);</string>
      </property>
      <property name="text">
       <string>←</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="errorLabel">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>480</y>
+       <width>291</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 12pt &quot;MS Reference Sans Serif&quot;;
+color: rgb(255, 0, 0);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="confirmPasswordField">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>400</y>
+       <width>281</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="confirmPasswordSubtext">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>380</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Confirm password</string>
      </property>
     </widget>
    </widget>
