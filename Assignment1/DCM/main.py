@@ -50,6 +50,10 @@ class LoginWindow(QMainWindow):
             if (c.fetchone() == None):
                 self.errorLabel.setText('Username does not exist.')
             else:
+                # database can only hold 10 users
+                if (len(c.execute('SELECT * FROM all_users').fetchall()) == 10):
+                    self.errorLabel.setText('Database is full.')
+                    return
                 # check if username and password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
                 # if username and password are not in database, fetchone() will return None
