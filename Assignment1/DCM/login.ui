@@ -49,6 +49,9 @@ background-color: rgb(0, 0, 127);</string>
      <property name="text">
       <string>Login</string>
      </property>
+     <property name="shortcut">
+      <string>Return</string>
+     </property>
     </widget>
     <widget class="QLabel" name="loginText">
      <property name="geometry">

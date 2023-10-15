@@ -2,6 +2,7 @@ import sys
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget
 from sqlite3 import connect
+from hashlib import sha256
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -34,6 +35,8 @@ class LoginWindow(QMainWindow):
         # clear stacked window
         stacked_window.removeWidget(stacked_window.widget(1))
 
+    from hashlib import sha256
+
     def check_login(self):
         username = self.usernameField.text()
         password = self.passwordField.text()
@@ -50,11 +53,9 @@ class LoginWindow(QMainWindow):
             if (c.fetchone() == None):
                 self.errorLabel.setText('Username does not exist.')
             else:
-                # database can only hold 10 users
-                if (len(c.execute('SELECT * FROM all_users').fetchall()) == 10):
-                    self.errorLabel.setText('Database is full.')
-                    return
-                # check if username and password are in database
+                # hash password
+                password = sha256(password.encode()).hexdigest()
+                # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
                 # if username and password are not in database, fetchone() will return None
                 if (c.fetchone() == None):
@@ -93,7 +94,13 @@ class SignupWindow(QMainWindow):
             if (c.fetchone() == None):
                # check if password and confirm password match
                 if (self.passwordField.text() == self.confirmPasswordField.text()):
-                    # add username and password to database
+                    # database cannot have more than 10 entries
+                    c.execute('SELECT * FROM all_users')
+                    if (len(c.fetchall()) >= 10):
+                        self.errorLabel.setText('Database is full.')
+                        return
+                    # add username and password to database after hashing password
+                    password = sha256(password.encode()).hexdigest()
                     c.execute('INSERT INTO all_users VALUES (?, ?)', (username, password))
                     conn.commit()
                     self.errorLabel.setText('Sign up successful')
