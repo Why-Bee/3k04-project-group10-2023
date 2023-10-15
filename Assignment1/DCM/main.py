@@ -71,8 +71,9 @@ class LoginWindow(QMainWindow):
 
     def show_landing_window(self):
         landing_window = LandingWindow()
+        stacked_window.removeWidget(stacked_window.widget(1))
         stacked_window.addWidget(landing_window)
-        stacked_window.setCurrentIndex(2)
+        stacked_window.setCurrentIndex(1)
 
                     
 
