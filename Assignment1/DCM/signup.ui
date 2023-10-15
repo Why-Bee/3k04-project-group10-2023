@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="bgWidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>-1</y>
+      <width>1201</width>
+      <height>771</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget#bgWidget{
+background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:1, y2:0.00568182, stop:0 rgba(170, 255, 255, 255), stop:1 rgba(255, 255, 255, 255))}</string>
+    </property>
+    <widget class="QPushButton" name="signUpConfirm">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>430</y>
+       <width>291</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 127);</string>
+     </property>
+     <property name="text">
+      <string>Sign Up</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="signupText">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>70</y>
+       <width>161</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 24pt &quot;MS Reference Sans Serif&quot;;
+</string>
+     </property>
+     <property name="text">
+      <string>Sign Up</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="signUpSubtext">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>140</y>
+       <width>291</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 10pt &quot;MS Reference Sans Serif&quot;;</string>
+     </property>
+     <property name="text">
+      <string>Create an account</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="usernameField">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>240</y>
+       <width>281</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="usernameSubtext">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>220</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Username</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="passwordField">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>330</y>
+       <width>281</width>
+       <height>41</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="passwordSubtext">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>310</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Password</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="backButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>61</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 127);</string>
+     </property>
+     <property name="text">
+      <string>←</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
