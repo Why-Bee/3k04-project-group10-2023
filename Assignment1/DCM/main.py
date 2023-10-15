@@ -2,6 +2,7 @@ import sys
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QTimer
 from sqlite3 import connect
 from hashlib import sha256
 
@@ -59,8 +60,6 @@ class LoginWindow(QMainWindow):
                 self.errorLabel.setText('Username does not exist.')
             else:
                 # hash password
-                from PyQt5.QtCore import QTimer
-
                 password = sha256(password.encode()).hexdigest()
                 # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
@@ -74,8 +73,6 @@ class LoginWindow(QMainWindow):
                     QTimer.singleShot(1000, lambda: self.show_landing_window())
 
     def show_landing_window(self):
-
-
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
@@ -123,10 +120,16 @@ class SignupWindow(QMainWindow):
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Sign up successful')
+                    QTimer.singleShot(1000, lambda: self.show_landing_window())
                 else:
                     self.errorLabel.setText('Passwords do not match.')
             else:
                 self.errorLabel.setText('Username already exists.')
+
+    def show_landing_window(self):
+        landing_window = LandingWindow()
+        stacked_window.addWidget(landing_window)
+        stacked_window.setCurrentIndex(2)
 
 class LandingWindow(QMainWindow):
     def __init__(self):
