@@ -1,6 +1,7 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget
+from PyQt5.QtGui import QPixmap
 from sqlite3 import connect
 from hashlib import sha256
 
@@ -54,6 +55,8 @@ class LoginWindow(QMainWindow):
                 self.errorLabel.setText('Username does not exist.')
             else:
                 # hash password
+                from PyQt5.QtCore import QTimer
+
                 password = sha256(password.encode()).hexdigest()
                 # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
@@ -61,9 +64,17 @@ class LoginWindow(QMainWindow):
                 if (c.fetchone() == None):
                     self.errorLabel.setText('Incorrect password.')
                 else:
+                    # change the text to green
+                    self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Login successful')
+                    QTimer.singleShot(1000, lambda: self.show_landing_window())
 
+    def show_landing_window(self):
+        landing_window = LandingWindow()
+        stacked_window.addWidget(landing_window)
+        stacked_window.setCurrentIndex(2)
 
+                    
 
 class SignupWindow(QMainWindow):
     def __init__(self):
@@ -103,12 +114,42 @@ class SignupWindow(QMainWindow):
                     password = sha256(password.encode()).hexdigest()
                     c.execute('INSERT INTO all_users VALUES (?, ?)', (username, password))
                     conn.commit()
+                    # change the text to green
+                    self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Sign up successful')
                 else:
                     self.errorLabel.setText('Passwords do not match.')
             else:
                 self.errorLabel.setText('Username already exists.')
 
+class LandingWindow(QMainWindow):
+    def __init__(self):
+        super(LandingWindow, self).__init__()
+        loadUi('landingpage.ui', self)
+        self.setWindowTitle('Main window')
+        self.backButton.clicked.connect(self.back_clicked)
+
+        if not pConnect:
+            self.connectedStatusText.setText('DISCONNECTED')
+            self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
+            # change pixmap of label to disconnected
+            self.connectedStatusIcon.setPixmap(QPixmap('disconnected.png'))
+
+        else:
+            self.connectedStatusText.setText('CONNECTED')
+            self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
+            # change pixmap of label to connected
+            self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
+        
+
+
+    def back_clicked(self):
+        stacked_window.setCurrentIndex(0)
+        # clear stacked window
+        stacked_window.removeWidget(stacked_window.widget(1))
+    
+
+   
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -118,5 +159,8 @@ if __name__ == '__main__':
     stacked_window.setFixedWidth(1200)
     stacked_window.setFixedHeight(800)
     stacked_window.show()
+
+    pConnect = True # if connected to device, will be True. implement later
+
     sys.exit(app.exec_())
     

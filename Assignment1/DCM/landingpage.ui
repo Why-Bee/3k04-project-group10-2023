@@ -27,70 +27,97 @@
      <string notr="true">QWidget#bgWidget{
 background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:1, y2:0.00568182, stop:0 rgba(170, 255, 255, 255), stop:1 rgba(255, 255, 255, 255))}</string>
     </property>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="mainTitle">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>50</y>
+       <x>230</x>
+       <y>20</y>
        <width>751</width>
        <height>101</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(170, 0, 0);
+      <string notr="true">background-color: rgb(0, 85, 0);
 color: rgb(255, 255, 255);
-font: 27pt &quot;Palatino Linotype&quot;;
+font: 24pt &quot;Palatino Linotype&quot;;
 padding:10px;
+border-radius: 28px;
 </string>
      </property>
      <property name="text">
-      <string>Pacemaker Device Control Module</string>
+      <string>Welcome to the Device Control Module</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="loginButton">
+    <widget class="QPushButton" name="backButton">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>430</y>
-       <width>221</width>
-       <height>71</height>
+       <x>20</x>
+       <y>20</y>
+       <width>81</width>
+       <height>81</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <family>MS Reference Sans Serif</family>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 127);</string>
+      <string notr="true">background-color: rgb(255, 0, 0);
+font: 14pt &quot;MS Sans Serif&quot;;
+color: rgb(255, 255, 255);
+border-radius: 40px;</string>
      </property>
      <property name="text">
-      <string>Login</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>exit.png</normaloff>exit.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>35</width>
+       <height>35</height>
+      </size>
      </property>
     </widget>
-    <widget class="QPushButton" name="signUpButton">
+    <widget class="QLabel" name="connectedStatusIcon">
      <property name="geometry">
       <rect>
-       <x>750</x>
-       <y>430</y>
-       <width>221</width>
-       <height>71</height>
+       <x>1080</x>
+       <y>25</y>
+       <width>101</width>
+       <height>91</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <family>MS Reference Sans Serif</family>
-       <pointsize>18</pointsize>
-      </font>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::AutoText</enum>
+     </property>
+     <property name="pixmap">
+      <pixmap>connected.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="connectedStatusText">
+     <property name="geometry">
+      <rect>
+       <x>1030</x>
+       <y>120</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 127);</string>
+      <string notr="true">color:rgb(0, 170, 0);
+font: 75 12pt &quot;MS Shell Dlg 2&quot;;
+</string>
      </property>
      <property name="text">
-      <string>Sign Up</string>
+      <string>CONNECTED</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
