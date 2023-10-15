@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPixmap
 from sqlite3 import connect
 from hashlib import sha256
 
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super(MyWindow, self).__init__()
@@ -12,13 +13,18 @@ class MyWindow(QMainWindow):
         self.setWindowTitle('Welcome')
         self.loginButton.clicked.connect(self.login_clicked)
         self.signUpButton.clicked.connect(self.signup_clicked)
+        
 
     def login_clicked(self):
+
+
         login_window = LoginWindow()
         stacked_window.addWidget(login_window)
         stacked_window.setCurrentIndex(1)
 
     def signup_clicked(self):
+
+
         signup_window = SignupWindow()
         stacked_window.addWidget(signup_window)
         stacked_window.setCurrentIndex(1)
@@ -33,10 +39,8 @@ class LoginWindow(QMainWindow):
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0)
-        # clear stacked window
+        # clear stack
         stacked_window.removeWidget(stacked_window.widget(1))
-
-    from hashlib import sha256
 
     def check_login(self):
         username = self.usernameField.text()
@@ -70,6 +74,8 @@ class LoginWindow(QMainWindow):
                     QTimer.singleShot(1000, lambda: self.show_landing_window())
 
     def show_landing_window(self):
+
+
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
@@ -86,7 +92,7 @@ class SignupWindow(QMainWindow):
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0)
-        # clear stacked window
+        # clear stack
         stacked_window.removeWidget(stacked_window.widget(1))
 
     def check_signup(self):
@@ -145,11 +151,9 @@ class LandingWindow(QMainWindow):
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0)
-        # clear stacked window
+        # clear stack
         stacked_window.removeWidget(stacked_window.widget(1))
-    
-
-   
+        stacked_window.removeWidget(stacked_window.widget(1))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -163,4 +167,7 @@ if __name__ == '__main__':
     pConnect = True # if connected to device, will be True. implement later
 
     sys.exit(app.exec_())
-    
+
+   
+
+
