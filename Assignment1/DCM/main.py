@@ -7,25 +7,21 @@ from sqlite3 import connect
 from hashlib import sha256
 
 
-class MyWindow(QMainWindow):
+class MyWindow(QMainWindow): # Welcome screen 
     def __init__(self):
         super(MyWindow, self).__init__()
-        loadUi('welcome.ui', self)
+        loadUi('welcome.ui', self) 
         self.setWindowTitle('Welcome')
-        self.loginButton.clicked.connect(self.login_clicked)
+        self.loginButton.clicked.connect(self.login_clicked) 
         self.signUpButton.clicked.connect(self.signup_clicked)
         
 
-    def login_clicked(self):
-
-
+    def login_clicked(self): # if login button is clicked, show login window
         login_window = LoginWindow()
         stacked_window.addWidget(login_window)
         stacked_window.setCurrentIndex(1)
 
-    def signup_clicked(self):
-
-
+    def signup_clicked(self): # if signup button is clicked, show signup window
         signup_window = SignupWindow()
         stacked_window.addWidget(signup_window)
         stacked_window.setCurrentIndex(1)
@@ -38,63 +34,58 @@ class LoginWindow(QMainWindow):
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
-    def back_clicked(self):
+    def back_clicked(self): # if back button is clicked, go back to welcome screen
         stacked_window.setCurrentIndex(0)
         # clear stack
         stacked_window.removeWidget(stacked_window.widget(1))
 
     def check_login(self):
-        username = self.usernameField.text()
+        username = self.usernameField.text() # get username and password from text fields
         password = self.passwordField.text()
        
-        if (len(username) == 0 or len(password) == 0):
+        if (len(username) == 0 or len(password) == 0): # check if fields are empty
             self.errorLabel.setText('Please fill in all fields')
         else:
-            # check if username and password are in database
-            conn = connect('users.db')
+            conn = connect('users.db') # connect to database
             c = conn.cursor()
             # check if only username is in database
             c.execute('SELECT * FROM all_users WHERE username=?', (username,))
-            # if username is not in database, fetchone() will return None
             if (c.fetchone() == None):
                 self.errorLabel.setText('Username does not exist.')
             else:
                 # hash password
-                
-
                 password = sha256(password.encode()).hexdigest()
+
                 # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
-                # if username and password are not in database, fetchone() will return None
+
                 if (c.fetchone() == None):
                     self.errorLabel.setText('Incorrect password.')
                 else:
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Login successful')
-                    QTimer.singleShot(1000, lambda: self.show_landing_window())
+                    QTimer.singleShot(1000, lambda: self.show_landing_window()) # show landing window after 1 second
 
     def show_landing_window(self):
-
-
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
 
                     
 
-class SignupWindow(QMainWindow):
+class SignupWindow(QMainWindow): 
     def __init__(self):
         super(SignupWindow, self).__init__()
         loadUi('signup.ui', self)
         self.setWindowTitle('Sign Up')
-        self.backButton.clicked.connect(self.back_clicked)
-        self.signUpConfirm.clicked.connect(self.check_signup)
+        self.backButton.clicked.connect(self.back_clicked) 
+        self.signUpConfirm.clicked.connect(self.check_signup) 
 
     def back_clicked(self):
-        stacked_window.setCurrentIndex(0)
+        stacked_window.setCurrentIndex(0) 
         # clear stack
-        stacked_window.removeWidget(stacked_window.widget(1))
+        stacked_window.removeWidget(stacked_window.widget(1)) 
 
     def check_signup(self):
         username = self.usernameField.text()
@@ -108,7 +99,7 @@ class SignupWindow(QMainWindow):
             conn = connect('users.db')
             c = conn.cursor()
             c.execute('SELECT * FROM all_users WHERE username=?', (username,))
-            # if username is not in database, fetchone() will return None
+
             if (c.fetchone() == None):
                # check if password and confirm password match
                 if (self.passwordField.text() == self.confirmPasswordField.text()):
@@ -117,6 +108,8 @@ class SignupWindow(QMainWindow):
                     if (len(c.fetchall()) >= 10):
                         self.errorLabel.setText('Database is full.')
                         return
+                    
+
                     # add username and password to database after hashing password
                     password = sha256(password.encode()).hexdigest()
                     # note: table has a primary key, so we need to specify the columns
@@ -124,8 +117,10 @@ class SignupWindow(QMainWindow):
                     c.execute('SELECT COUNT(id) FROM all_users')
                     id = c.fetchone()[0] + 1
                     c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
+
                     # add new programmable parameters to all tables
                     self.create_programmable_parameters(id)
+
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Sign up successful')
@@ -152,33 +147,31 @@ class SignupWindow(QMainWindow):
         conn.commit()
 
     def show_landing_window(self):
-
-
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
 
-class LandingWindow(QMainWindow):
+class LandingWindow(QMainWindow): # landing page
     def __init__(self):
         super(LandingWindow, self).__init__()
         loadUi('landingpage.ui', self)
         self.setWindowTitle('Main window')
         self.backButton.clicked.connect(self.back_clicked)
 
-        if not pConnect:
+        if not pConnect: # if not connected to device, display disconnected message
             self.connectedStatusText.setText('DISCONNECTED')
             self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to disconnected
             self.connectedStatusIcon.setPixmap(QPixmap('disconnected.png'))
 
-        else:
+        else: # if connected to device, display connected message
             self.connectedStatusText.setText('CONNECTED')
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
             self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
             
 
-    def show_popup(self):
+    def show_popup(self): # declare the below popup window
         msg = QMessageBox()
         msg.setWindowTitle('Confirm Logout')
         msg.setText('Are you sure you want to logout?')
@@ -189,7 +182,7 @@ class LandingWindow(QMainWindow):
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
 
-    def popup_button(self, i):
+    def popup_button(self, i): # if yes is clicked, go back to welcome screen
         if i.text() == '&Yes':
             stacked_window.setCurrentIndex(0)
             # clear stack
@@ -198,22 +191,22 @@ class LandingWindow(QMainWindow):
         else:
             pass
         
-    def back_clicked(self):
+    def back_clicked(self): # if back button is clicked, show popup window
         self.show_popup()
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MyWindow()
-    stacked_window = QStackedWidget()
-    stacked_window.addWidget(window)
-    stacked_window.setFixedWidth(1200)
+    app = QApplication(sys.argv) # create application
+    window = MyWindow() # create welcome screen
+    stacked_window = QStackedWidget() # create stacked widget
+    stacked_window.addWidget(window) # add welcome screen to stacked widget
+    stacked_window.setFixedWidth(1200) # set fixed width and height
     stacked_window.setFixedHeight(800)
     stacked_window.show()
 
     pConnect = True # if connected to device, will be True. implement later
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec_()) 
 
    
 
