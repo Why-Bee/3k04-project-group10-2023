@@ -169,7 +169,7 @@ class LandingWindow(QMainWindow): # landing page
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
             self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
-            
+
 
     def show_popup(self): # declare the below popup window
         msg = QMessageBox()
@@ -179,11 +179,13 @@ class LandingWindow(QMainWindow): # landing page
         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msg.setDefaultButton(QMessageBox.No)
 
+        msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
 
-    def popup_button(self, i): # if yes is clicked, go back to welcome screen
-        if i.text() == '&Yes':
+    def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
+        if buttonSelected.text() == '&Yes':
             stacked_window.setCurrentIndex(0)
             # clear stack
             stacked_window.removeWidget(stacked_window.widget(1))
