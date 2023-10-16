@@ -60,6 +60,8 @@ class LoginWindow(QMainWindow):
                 self.errorLabel.setText('Username does not exist.')
             else:
                 # hash password
+                
+
                 password = sha256(password.encode()).hexdigest()
                 # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
@@ -73,6 +75,8 @@ class LoginWindow(QMainWindow):
                     QTimer.singleShot(1000, lambda: self.show_landing_window())
 
     def show_landing_window(self):
+
+
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
@@ -115,8 +119,13 @@ class SignupWindow(QMainWindow):
                         return
                     # add username and password to database after hashing password
                     password = sha256(password.encode()).hexdigest()
-                    c.execute('INSERT INTO all_users VALUES (?, ?)', (username, password))
-                    conn.commit()
+                    # note: table has a primary key, so we need to specify the columns
+                    # fetch number of rows in table
+                    c.execute('SELECT COUNT(id) FROM all_users')
+                    id = c.fetchone()[0] + 1
+                    c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
+                    # add new programmable parameters to all tables
+                    self.create_programmable_parameters(id)
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Sign up successful')
@@ -126,7 +135,25 @@ class SignupWindow(QMainWindow):
             else:
                 self.errorLabel.setText('Username already exists.')
 
+    def create_programmable_parameters(self, id): # create programmable parameters for new user
+        conn = connect('users.db')
+        c = conn.cursor()
+        # go through tables
+        c.execute ("INSERT INTO lower_rate_limit (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO upper_rate_limit (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO atrial_amplitude (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO ventricular_amplitude (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO atrial_pulse_width (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO ventricular_pulse_width (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO ARP (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO VRP (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO PVARP (id, value) VALUES (?, ?)", (id, 0))
+        # commit changes
+        conn.commit()
+
     def show_landing_window(self):
+
+
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
