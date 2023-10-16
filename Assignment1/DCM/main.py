@@ -253,8 +253,8 @@ class LandingWindow(QMainWindow): # landing page
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
-        aa, done3 = QInputDialog.getInt(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
-        apw, done4 = QInputDialog.getInt(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
+        aa, done3 = QInputDialog.getDouble(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
+        apw, done4 = QInputDialog.getDouble(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
 
         if done1 and done2 and done3 and done4: # if all inputs are valid
             # update values in database
@@ -262,23 +262,23 @@ class LandingWindow(QMainWindow): # landing page
             c = conn.cursor()
             c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
             c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (aa, id))
-            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (apw, id))
+            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
+            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
             conn.commit()
             c.close()
 
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.AAmp_Value.setText(str(aa/10))
-            self.APW_Value.setText(str(apw/10))
+            self.AAmp_Value.setText(str(aa))
+            self.APW_Value.setText(str(apw))
 
     def editVOO_clicked(self):
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
-        va, done3 = QInputDialog.getInt(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
-        vpw, done4 = QInputDialog.getInt(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
+        va, done3 = QInputDialog.getDouble(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
+        vpw, done4 = QInputDialog.getDouble(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
 
         if done1 and done2 and done3 and done4:
             # update values in database
@@ -286,23 +286,23 @@ class LandingWindow(QMainWindow): # landing page
             c = conn.cursor()
             c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
             c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (va, id))
-            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (vpw, id))
+            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
+            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
             conn.commit()
             c.close()
 
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.VAmp_Value.setText(str(va/10))
-            self.VPW_Value.setText(str(vpw/10))
+            self.VAmp_Value.setText(str(va))
+            self.VPW_Value.setText(str(vpw))
 
     def editAAI_clicked(self):
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
-        aa, done3 = QInputDialog.getInt(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
-        apw, done4 = QInputDialog.getInt(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
+        aa, done3 = QInputDialog.getDouble(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
+        apw, done4 = QInputDialog.getDouble(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
         arp, done5 = QInputDialog.getInt(self, 'ARP', 'Enter a new value for ARP')
 
         if done1 and done2 and done3 and done4 and done5:
@@ -311,8 +311,8 @@ class LandingWindow(QMainWindow): # landing page
             c = conn.cursor()
             c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
             c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (aa, id))
-            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (apw, id))
+            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
+            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
             c.execute('UPDATE ARP SET value=? WHERE id=?', (arp, id))
             conn.commit()
             c.close()
@@ -320,16 +320,16 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.AAmp_Value.setText(str(aa/10))
-            self.APW_Value.setText(str(apw/10))
+            self.AAmp_Value.setText(str(aa))
+            self.APW_Value.setText(str(apw))
             self.ARP_Value.setText(str(arp))
 
     def editVVI_clicked(self):
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
-        va, done3 = QInputDialog.getInt(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
-        vpw, done4 = QInputDialog.getInt(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
+        va, done3 = QInputDialog.getDouble(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
+        vpw, done4 = QInputDialog.getDouble(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
         vrp, done5 = QInputDialog.getInt(self, 'VRP', 'Enter a new value for VRP')
 
         if done1 and done2 and done3 and done4 and done5:
@@ -338,8 +338,8 @@ class LandingWindow(QMainWindow): # landing page
             c = conn.cursor()
             c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
             c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (va, id))
-            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (vpw, id))
+            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
+            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
             c.execute('UPDATE VRP SET value=? WHERE id=?', (vrp, id))
             conn.commit()
             c.close()
@@ -347,8 +347,8 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.VAmp_Value.setText(str(va/10))
-            self.VPW_Value.setText(str(vpw/10))
+            self.VAmp_Value.setText(str(va))
+            self.VPW_Value.setText(str(vpw))
             self.VRP_Value.setText(str(vrp))
     
             
