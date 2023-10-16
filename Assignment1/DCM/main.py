@@ -26,6 +26,7 @@ class MyWindow(QMainWindow): # Welcome screen
         stacked_window.addWidget(signup_window)
         stacked_window.setCurrentIndex(1)
 
+
 class LoginWindow(QMainWindow):
     def __init__(self):
         super(LoginWindow, self).__init__()
@@ -33,6 +34,7 @@ class LoginWindow(QMainWindow):
         self.setWindowTitle('Login')
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
+
 
     def back_clicked(self): # if back button is clicked, go back to welcome screen
         stacked_window.setCurrentIndex(0)
@@ -71,7 +73,6 @@ class LoginWindow(QMainWindow):
         landing_window = LandingWindow()
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
-
                     
 
 class SignupWindow(QMainWindow): 
@@ -81,6 +82,7 @@ class SignupWindow(QMainWindow):
         self.setWindowTitle('Sign Up')
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
+
 
     def back_clicked(self):
         stacked_window.setCurrentIndex(0) 
@@ -151,11 +153,16 @@ class SignupWindow(QMainWindow):
         stacked_window.addWidget(landing_window)
         stacked_window.setCurrentIndex(2)
 
+
 class LandingWindow(QMainWindow): # landing page
     def __init__(self):
         super(LandingWindow, self).__init__()
         loadUi('landingpage.ui', self)
         self.setWindowTitle('Main window')
+        self.lowerLimit_Value.setText('0')
+        self.upperLimit_Value.setText('0')
+        self.ARP_Value.setText('0')
+        self.VRP_Value.setText('0')
         self.backButton.clicked.connect(self.back_clicked)
 
         if not pConnect: # if not connected to device, display disconnected message
@@ -169,7 +176,9 @@ class LandingWindow(QMainWindow): # landing page
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
             self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
-
+        
+    def back_clicked(self): # if back button is clicked, show popup window
+        self.show_popup()
 
     def show_popup(self): # declare the below popup window
         msg = QMessageBox()
@@ -192,9 +201,7 @@ class LandingWindow(QMainWindow): # landing page
             stacked_window.removeWidget(stacked_window.widget(1))
         else:
             pass
-        
-    def back_clicked(self): # if back button is clicked, show popup window
-        self.show_popup()
+
 
 
 if __name__ == '__main__':
@@ -211,5 +218,3 @@ if __name__ == '__main__':
     sys.exit(app.exec_()) 
 
    
-
-
