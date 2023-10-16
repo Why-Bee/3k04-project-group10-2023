@@ -42,9 +42,19 @@ background-color: qlineargradient(spread:reflect, x1:0, y1:1, x2:1, y2:0.0056818
        <pointsize>18</pointsize>
       </font>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 127);</string>
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 10px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
      </property>
      <property name="text">
       <string>Login</string>
@@ -161,9 +171,18 @@ background-color: rgb(0, 0, 127);</string>
        <pointsize>18</pointsize>
       </font>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 127);</string>
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
      </property>
      <property name="text">
       <string>←</string>

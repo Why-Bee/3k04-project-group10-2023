@@ -57,11 +57,20 @@ border-radius: 28px;
        <height>81</height>
       </rect>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 0, 0);
-font: 14pt &quot;MS Sans Serif&quot;;
-color: rgb(255, 255, 255);
-border-radius: 40px;</string>
+      <string notr="true">QPushButton {
+	background-color: rgb(255, 0, 0);
+	font: 14pt &quot;MS Sans Serif&quot;;
+	color: rgb(255, 255, 255);
+	border-radius: 40px;
+}
+
+QPushButton:hover {
+	background-color: rgb(255, 60, 60);
+}</string>
      </property>
      <property name="text">
       <string/>
