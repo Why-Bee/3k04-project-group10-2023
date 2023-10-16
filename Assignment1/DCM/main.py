@@ -191,8 +191,8 @@ class LandingWindow(QMainWindow):
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
 
-    def popup_button(self, i):
-        if i.text() == '&Yes':
+    def popup_button(self, buttonSelected):
+        if buttonSelected.text() == '&Yes':
             stacked_window.setCurrentIndex(0)
             # clear stack
             stacked_window.removeWidget(stacked_window.widget(1))
