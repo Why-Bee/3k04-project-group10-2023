@@ -138,6 +138,9 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
        <height>90</height>
       </rect>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	color: rgb(255, 255, 255);
@@ -161,6 +164,9 @@ QPushButton:hover {
        <width>150</width>
        <height>90</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
@@ -187,6 +193,9 @@ QPushButton:hover {
        <height>90</height>
       </rect>
      </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	color: rgb(255, 255, 255);
@@ -210,6 +219,9 @@ QPushButton:hover {
        <width>150</width>
        <height>90</height>
       </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
