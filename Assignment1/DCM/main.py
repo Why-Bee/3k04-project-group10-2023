@@ -219,6 +219,10 @@ class LandingWindow(QMainWindow): # landing page
     def updateLabels(self): # update labels with values from database
         conn = connect('users.db')
         c = conn.cursor()
+        # fetch username
+        c.execute('SELECT * FROM all_users WHERE id=?', (id,))
+        username = c.fetchone()[0]
+        self.user_Value.setText(username)
         c.execute('SELECT * FROM lower_rate_limit WHERE id=?', (id,))
         ll = c.fetchone()[1]
         self.lowerLimit_Value.setText(str(ll))
