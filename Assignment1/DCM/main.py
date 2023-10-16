@@ -231,16 +231,16 @@ class LandingWindow(QMainWindow): # landing page
         self.upperLimit_Value.setText(str(ul))
         c.execute('SELECT * FROM atrial_amplitude WHERE id=?', (id,))
         aa = c.fetchone()[1]
-        self.AAmp_Value.setText(str(aa))
+        self.AAmp_Value.setText(str(aa/10))
         c.execute('SELECT * FROM atrial_pulse_width WHERE id=?', (id,))
         apw = c.fetchone()[1]
-        self.APW_Value.setText(str(apw))
+        self.APW_Value.setText(str(apw/10))
         c.execute('SELECT * FROM ventricular_amplitude WHERE id=?', (id,))
         va = c.fetchone()[1]
-        self.VAmp_Value.setText(str(va))
+        self.VAmp_Value.setText(str(va/10))
         c.execute('SELECT * FROM ventricular_pulse_width WHERE id=?', (id,))
         vpw = c.fetchone()[1]
-        self.VPW_Value.setText(str(vpw))
+        self.VPW_Value.setText(str(vpw/10))
         c.execute('SELECT * FROM ARP WHERE id=?', (id,))
         arp = c.fetchone()[1]
         self.ARP_Value.setText(str(arp))
@@ -270,8 +270,8 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.AAmp_Value.setText(str(aa))
-            self.APW_Value.setText(str(apw))
+            self.AAmp_Value.setText(str(aa/10))
+            self.APW_Value.setText(str(apw/10))
 
     def editVOO_clicked(self):
         # use input dialog to get new values
@@ -294,8 +294,8 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.VAmp_Value.setText(str(va))
-            self.VPW_Value.setText(str(vpw))
+            self.VAmp_Value.setText(str(va/10))
+            self.VPW_Value.setText(str(vpw/10))
 
     def editAAI_clicked(self):
         # use input dialog to get new values
@@ -320,8 +320,8 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.AAmp_Value.setText(str(aa))
-            self.APW_Value.setText(str(apw))
+            self.AAmp_Value.setText(str(aa/10))
+            self.APW_Value.setText(str(apw/10))
             self.ARP_Value.setText(str(arp))
 
     def editVVI_clicked(self):
@@ -347,8 +347,8 @@ class LandingWindow(QMainWindow): # landing page
             # update values in landing window
             self.lowerLimit_Value.setText(str(ll))
             self.upperLimit_Value.setText(str(ul))
-            self.VAmp_Value.setText(str(va))
-            self.VPW_Value.setText(str(vpw))
+            self.VAmp_Value.setText(str(va/10))
+            self.VPW_Value.setText(str(vpw/10))
             self.VRP_Value.setText(str(vrp))
     
             
