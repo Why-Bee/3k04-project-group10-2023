@@ -176,7 +176,7 @@ class LandingWindow(QMainWindow):
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
             self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
-            
+
 
     def show_popup(self):
         msg = QMessageBox()
@@ -185,6 +185,8 @@ class LandingWindow(QMainWindow):
         msg.setIcon(QMessageBox.Question)
         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msg.setDefaultButton(QMessageBox.No)
+
+        msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
 
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
