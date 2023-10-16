@@ -1,6 +1,6 @@
 import sys
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget, QMessageBox
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer
 from sqlite3 import connect
@@ -176,14 +176,31 @@ class LandingWindow(QMainWindow):
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
             self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
+            
+
+    def show_popup(self):
+        msg = QMessageBox()
+        msg.setWindowTitle('Confirm Logout')
+        msg.setText('Are you sure you want to logout?')
+        msg.setIcon(QMessageBox.Question)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.setDefaultButton(QMessageBox.No)
+
+        msg.buttonClicked.connect(self.popup_button)
+        x = msg.exec_()
+
+    def popup_button(self, i):
+        if i.text() == '&Yes':
+            stacked_window.setCurrentIndex(0)
+            # clear stack
+            stacked_window.removeWidget(stacked_window.widget(1))
+            stacked_window.removeWidget(stacked_window.widget(1))
+        else:
+            pass
         
-
-
     def back_clicked(self):
-        stacked_window.setCurrentIndex(0)
-        # clear stack
-        stacked_window.removeWidget(stacked_window.widget(1))
-        stacked_window.removeWidget(stacked_window.widget(1))
+        self.show_popup()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
