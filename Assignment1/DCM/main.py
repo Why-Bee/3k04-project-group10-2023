@@ -1,10 +1,12 @@
 import sys
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget, QMessageBox, QInputDialog
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QTimer
 from sqlite3 import connect
 from hashlib import sha256
+
+id = 0 # id of user
 
 
 class MyWindow(QMainWindow): # Welcome screen 
@@ -60,14 +62,19 @@ class LoginWindow(QMainWindow):
 
                 # check if username and hashed password are in database
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
-
-                if (c.fetchone() == None):
+                row = c.fetchone()
+                if (row == None):
                     self.errorLabel.setText('Incorrect password.')
                 else:
+                    # get id of user
+                    global id
+                    id = row[2]
+
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Login successful')
                     QTimer.singleShot(1000, lambda: self.show_landing_window()) # show landing window after 1 second
+            c.close()
 
     def show_landing_window(self):
         landing_window = LandingWindow()
@@ -117,15 +124,18 @@ class SignupWindow(QMainWindow):
                     # note: table has a primary key, so we need to specify the columns
                     # fetch number of rows in table
                     c.execute('SELECT COUNT(id) FROM all_users')
+                    global id
                     id = c.fetchone()[0] + 1
                     c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
-
+                    conn.commit()
+                    c.close()
                     # add new programmable parameters to all tables
                     self.create_programmable_parameters(id)
 
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
                     self.errorLabel.setText('Sign up successful')
+                    
                     QTimer.singleShot(1000, lambda: self.show_landing_window())
                 else:
                     self.errorLabel.setText('Passwords do not match.')
@@ -136,17 +146,18 @@ class SignupWindow(QMainWindow):
         conn = connect('users.db')
         c = conn.cursor()
         # go through tables
-        c.execute ("INSERT INTO lower_rate_limit (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO upper_rate_limit (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO atrial_amplitude (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO atrial_pulse_width (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO ventricular_amplitude (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO ventricular_pulse_width (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO ARP (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO VRP (id, value) VALUES (?, ?)", (id, 0))
-        c.execute ("INSERT INTO PVARP (id, value) VALUES (?, ?)", (id, 0))
+        c.execute ("INSERT INTO lower_rate_limit (id, value) VALUES (?, ?)", (id, 60))
+        c.execute ("INSERT INTO upper_rate_limit (id, value) VALUES (?, ?)", (id, 120))
+        c.execute ("INSERT INTO atrial_amplitude (id, value) VALUES (?, ?)", (id, 35))
+        c.execute ("INSERT INTO atrial_pulse_width (id, value) VALUES (?, ?)", (id, 4))
+        c.execute ("INSERT INTO ventricular_amplitude (id, value) VALUES (?, ?)", (id, 35))
+        c.execute ("INSERT INTO ventricular_pulse_width (id, value) VALUES (?, ?)", (id, 4))
+        c.execute ("INSERT INTO ARP (id, value) VALUES (?, ?)", (id, 250))
+        c.execute ("INSERT INTO VRP (id, value) VALUES (?, ?)", (id, 350))
+        c.execute ("INSERT INTO PVARP (id, value) VALUES (?, ?)", (id, 250))
         # commit changes
         conn.commit()
+        c.close()
 
     def show_landing_window(self):
         landing_window = LandingWindow()
@@ -158,12 +169,15 @@ class LandingWindow(QMainWindow): # landing page
     def __init__(self):
         super(LandingWindow, self).__init__()
         loadUi('landingpage.ui', self)
-        self.setWindowTitle('Main window')
-        self.lowerLimit_Value.setText('0')
-        self.upperLimit_Value.setText('0')
-        self.ARP_Value.setText('0')
-        self.VRP_Value.setText('0')
+        self.setWindowTitle('Landing Page')
+
+        self.updateLabels() # update labels with values from database
+
         self.backButton.clicked.connect(self.back_clicked)
+        self.editAOO_Button.clicked.connect(self.editAOO_clicked)
+        self.editVOO_Button.clicked.connect(self.editVOO_clicked)
+        self.editAAI_Button.clicked.connect(self.editAAI_clicked)
+        self.editVVI_Button.clicked.connect(self.editVVI_clicked)
 
         if not pConnect: # if not connected to device, display disconnected message
             self.connectedStatusText.setText('DISCONNECTED')
@@ -202,6 +216,142 @@ class LandingWindow(QMainWindow): # landing page
         else:
             pass
 
+    def updateLabels(self): # update labels with values from database
+        conn = connect('users.db')
+        c = conn.cursor()
+        # fetch username
+        c.execute('SELECT * FROM all_users WHERE id=?', (id,))
+        username = c.fetchone()[0]
+        self.user_Value.setText(username)
+        c.execute('SELECT * FROM lower_rate_limit WHERE id=?', (id,))
+        ll = c.fetchone()[1]
+        self.lowerLimit_Value.setText(str(ll))
+        c.execute('SELECT * FROM upper_rate_limit WHERE id=?', (id,))
+        ul = c.fetchone()[1]
+        self.upperLimit_Value.setText(str(ul))
+        c.execute('SELECT * FROM atrial_amplitude WHERE id=?', (id,))
+        aa = c.fetchone()[1]
+        self.AAmp_Value.setText(str(aa/10))
+        c.execute('SELECT * FROM atrial_pulse_width WHERE id=?', (id,))
+        apw = c.fetchone()[1]
+        self.APW_Value.setText(str(apw/10))
+        c.execute('SELECT * FROM ventricular_amplitude WHERE id=?', (id,))
+        va = c.fetchone()[1]
+        self.VAmp_Value.setText(str(va/10))
+        c.execute('SELECT * FROM ventricular_pulse_width WHERE id=?', (id,))
+        vpw = c.fetchone()[1]
+        self.VPW_Value.setText(str(vpw/10))
+        c.execute('SELECT * FROM ARP WHERE id=?', (id,))
+        arp = c.fetchone()[1]
+        self.ARP_Value.setText(str(arp))
+        c.execute('SELECT * FROM VRP WHERE id=?', (id,))
+        vrp = c.fetchone()[1]
+        self.VRP_Value.setText(str(vrp))
+        c.close()
+
+    def editAOO_clicked(self):
+        # use input dialog to get new values
+        ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
+        ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
+        aa, done3 = QInputDialog.getDouble(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
+        apw, done4 = QInputDialog.getDouble(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
+
+        if done1 and done2 and done3 and done4: # if all inputs are valid
+            # update values in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
+            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
+            conn.commit()
+            c.close()
+
+            # update values in landing window
+            self.lowerLimit_Value.setText(str(ll))
+            self.upperLimit_Value.setText(str(ul))
+            self.AAmp_Value.setText(str(aa))
+            self.APW_Value.setText(str(apw))
+
+    def editVOO_clicked(self):
+        # use input dialog to get new values
+        ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
+        ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
+        va, done3 = QInputDialog.getDouble(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
+        vpw, done4 = QInputDialog.getDouble(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
+
+        if done1 and done2 and done3 and done4:
+            # update values in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
+            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
+            conn.commit()
+            c.close()
+
+            # update values in landing window
+            self.lowerLimit_Value.setText(str(ll))
+            self.upperLimit_Value.setText(str(ul))
+            self.VAmp_Value.setText(str(va))
+            self.VPW_Value.setText(str(vpw))
+
+    def editAAI_clicked(self):
+        # use input dialog to get new values
+        ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
+        ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
+        aa, done3 = QInputDialog.getDouble(self, 'Atrial Amplitude', 'Enter a new value for atrial amplitude')
+        apw, done4 = QInputDialog.getDouble(self, 'Atrial Pulse Width', 'Enter a new value for atrial pulse width')
+        arp, done5 = QInputDialog.getInt(self, 'ARP', 'Enter a new value for ARP')
+
+        if done1 and done2 and done3 and done4 and done5:
+            # update values in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
+            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
+            c.execute('UPDATE ARP SET value=? WHERE id=?', (arp, id))
+            conn.commit()
+            c.close()
+
+            # update values in landing window
+            self.lowerLimit_Value.setText(str(ll))
+            self.upperLimit_Value.setText(str(ul))
+            self.AAmp_Value.setText(str(aa))
+            self.APW_Value.setText(str(apw))
+            self.ARP_Value.setText(str(arp))
+
+    def editVVI_clicked(self):
+        # use input dialog to get new values
+        ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
+        ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
+        va, done3 = QInputDialog.getDouble(self, 'Ventricular Amplitude', 'Enter a new value for ventricular amplitude')
+        vpw, done4 = QInputDialog.getDouble(self, 'Ventricular Pulse Width', 'Enter a new value for ventricular pulse width')
+        vrp, done5 = QInputDialog.getInt(self, 'VRP', 'Enter a new value for VRP')
+
+        if done1 and done2 and done3 and done4 and done5:
+            # update values in database
+            conn = connect('users.db')
+            c = conn.cursor()
+            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
+            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
+            c.execute('UPDATE VRP SET value=? WHERE id=?', (vrp, id))
+            conn.commit()
+            c.close()
+
+            # update values in landing window
+            self.lowerLimit_Value.setText(str(ll))
+            self.upperLimit_Value.setText(str(ul))
+            self.VAmp_Value.setText(str(va))
+            self.VPW_Value.setText(str(vpw))
+            self.VRP_Value.setText(str(vrp))
+    
+            
 
 
 if __name__ == '__main__':
