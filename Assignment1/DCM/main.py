@@ -55,7 +55,7 @@ class LoginWindow(QMainWindow):
             # check if only username is in database
             c.execute('SELECT * FROM all_users WHERE username=?', (username,))
             if (c.fetchone() == None):
-                self.errorLabel.setText('Incorrect username or password.')
+                self.errorLabel.setText('Incorrect username or password')
             else:
                 # hash password
                 password = sha256(password.encode()).hexdigest()
@@ -64,7 +64,7 @@ class LoginWindow(QMainWindow):
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
                 row = c.fetchone()
                 if (row == None):
-                    self.errorLabel.setText('Incorrect username or password.')
+                    self.errorLabel.setText('Incorrect username or password')
                 else:
                     # get id of user
                     global id
