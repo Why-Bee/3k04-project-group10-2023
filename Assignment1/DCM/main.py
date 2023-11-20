@@ -55,7 +55,7 @@ class LoginWindow(QMainWindow):
             # check if only username is in database
             c.execute('SELECT * FROM all_users WHERE username=?', (username,))
             if (c.fetchone() == None):
-                self.errorLabel.setText('Username does not exist.')
+                self.errorLabel.setText('Incorrect username or password.')
             else:
                 # hash password
                 password = sha256(password.encode()).hexdigest()
@@ -64,7 +64,7 @@ class LoginWindow(QMainWindow):
                 c.execute('SELECT * FROM all_users WHERE username=? AND password=?', (username, password))
                 row = c.fetchone()
                 if (row == None):
-                    self.errorLabel.setText('Incorrect password.')
+                    self.errorLabel.setText('Incorrect username or password.')
                 else:
                     # get id of user
                     global id
@@ -258,20 +258,34 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and done2 and done3 and done4: # if all inputs are valid
             # update values in database
-            conn = connect('users.db')
-            c = conn.cursor()
-            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
-            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
-            conn.commit()
-            c.close()
+            
 
-            # update values in landing window
-            self.lowerLimit_Value.setText(str(ll))
-            self.upperLimit_Value.setText(str(ul))
-            self.AAmp_Value.setText(str(aa))
-            self.APW_Value.setText(str(apw))
+            if validateInputs(ll, ul, aa, apw):
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+                c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+                c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
+                c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
+                conn.commit()
+                c.close()
+                # update values in landing window
+                self.lowerLimit_Value.setText(str(ll))
+                self.upperLimit_Value.setText(str(ul))
+                self.AAmp_Value.setText(str(aa))
+                self.APW_Value.setText(str(apw))
+            else:
+                # if inputs are invalid, show error message
+                msg = QMessageBox()
+                msg.setWindowTitle('Invalid Inputs')
+                msg.setText('Inputs are invalid. Please try again. Your changes have not been saved.')
+                msg.setIcon(QMessageBox.Critical)
+                msg.setStandardButtons(QMessageBox.Ok)
+                msg.setDefaultButton(QMessageBox.Ok)
+                msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+                x = msg.exec_()
+            c.close()
+   
 
     def editVOO_clicked(self):
         # use input dialog to get new values
@@ -282,20 +296,31 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and done2 and done3 and done4:
             # update values in database
-            conn = connect('users.db')
-            c = conn.cursor()
-            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
-            c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
-            conn.commit()
-            c.close()
+            if validateInputs(ll, ul, va, vpw):
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
+                c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
+                c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
+                c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
+                conn.commit()
+                c.close()
 
-            # update values in landing window
-            self.lowerLimit_Value.setText(str(ll))
-            self.upperLimit_Value.setText(str(ul))
-            self.VAmp_Value.setText(str(va))
-            self.VPW_Value.setText(str(vpw))
+                # update values in landing window
+                self.lowerLimit_Value.setText(str(ll))
+                self.upperLimit_Value.setText(str(ul))
+                self.VAmp_Value.setText(str(va))
+                self.VPW_Value.setText(str(vpw))
+            else:
+                # if inputs are invalid, show error message
+                msg = QMessageBox()
+                msg.setWindowTitle('Invalid Inputs')
+                msg.setText('Inputs are invalid. Please try again. Your changes have not been saved.')
+                msg.setIcon(QMessageBox.Critical)
+                msg.setStandardButtons(QMessageBox.Ok)
+                msg.setDefaultButton(QMessageBox.Ok)
+                msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+                x = msg.exec_()
 
     def editAAI_clicked(self):
         # use input dialog to get new values

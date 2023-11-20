@@ -1,0 +1,9 @@
+Database:
+
+- Need to have database with unique values per user
+- Each user needs to have all programmable parameters
+- Each mode needs unique programmable parameters.
+- Need to be able to save and load database to/from file
+
+Modes:
+
