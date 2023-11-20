@@ -6,4 +6,82 @@ Database:
 - Need to be able to save and load database to/from file
 
 Modes:
+AOO
+    - Lower rate limit
+    - Upper rate limit
+    - Atrial amplitude
+    - Atrial pulse width
 
+VOO
+    - Lower rate limit
+    - Upper rate limit
+    - Ventricular amplitude
+    - Ventricular pulse width
+AAI 
+    - Lower rate limit
+    - Upper rate limit
+    - Atrial amplitude
+    - Atrial pulse width
+    - Atrial sensitivity
+    - ARP
+    - PVARP
+    - Hysteresis
+    - Rate smoothing
+VVI 
+    - Lower rate limit
+    - Upper rate limit
+    - Ventricular amplitude
+    - Ventricular pulse width
+    - Ventricular sensitivity
+    - VRP
+    - Hysteresis
+    - Rate smoothing
+AOOR 
+    - Lower rate limit
+    - Upper rate limit
+    - Maximum sensor rate
+    - Atrial amplitude
+    - Atrial pulse width
+    - Activity threshold
+    - Reaction time
+    - Response factor
+    - Recovery time
+VOOR 
+    - Lower rate limit
+    - Upper rate limit
+    - Maximum sensor rate
+    - Ventricular amplitude
+    - Ventricular pulse width
+    - Activity threshold
+    - Reaction time
+    - Response factor
+    - Recovery time
+AAIR 
+    - Lower rate limit
+    - Upper rate limit
+    - Maximum sensor rate
+    - Atrial amplitude
+    - Atrial pulse width
+    - Atrial sensitivity
+    - ARP
+    - PVARP
+    - Hysteresis
+    - Rate smoothing
+    - Activity threshold
+    - Reaction time
+    - Response factor
+    - Recovery time
+VVIR
+    - Lower rate limit
+    - Upper rate limit
+    - Maximum sensor rate
+    - Ventricular amplitude
+    - Ventricular pulse width
+    - Ventricular sensitivity
+    - VRP
+    - Hysteresis
+    - Rate smoothing
+    - Activity threshold
+    - Reaction time
+    - Response factor
+    - Recovery time
