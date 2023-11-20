@@ -7,81 +7,81 @@ Database:
 
 Modes:
 AOO
-    - Lower rate limit
-    - Upper rate limit
-    - Atrial amplitude
-    - Atrial pulse width
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Atrial amplitude: 3.5 V
+    - Atrial pulse width: 0.4 ms
 
 VOO
-    - Lower rate limit
-    - Upper rate limit
-    - Ventricular amplitude
-    - Ventricular pulse width
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Ventricular amplitude: 3.5 V
+    - Ventricular pulse width: 0.4 ms
 AAI 
-    - Lower rate limit
-    - Upper rate limit
-    - Atrial amplitude
-    - Atrial pulse width
-    - Atrial sensitivity
-    - ARP
-    - PVARP
-    - Hysteresis
-    - Rate smoothing
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Atrial amplitude: 3.5 V
+    - Atrial pulse width: 0.4 ms
+    - Atrial sensitivity: 0.75 mV
+    - ARP: 250 ms
+    - PVARP: 250 ms
+    - Hysteresis: OFF
+    - Rate smoothing: OFF
 VVI 
-    - Lower rate limit
-    - Upper rate limit
-    - Ventricular amplitude
-    - Ventricular pulse width
-    - Ventricular sensitivity
-    - VRP
-    - Hysteresis
-    - Rate smoothing
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Ventricular amplitude: 3.5 V
+    - Ventricular pulse width: 0.4 ms
+    - Ventricular sensitivity: 2.5 mV
+    - VRP: 320 ms
+    - Hysteresis: OFF
+    - Rate smoothing: 
 AOOR 
-    - Lower rate limit
-    - Upper rate limit
-    - Maximum sensor rate
-    - Atrial amplitude
-    - Atrial pulse width
-    - Activity threshold
-    - Reaction time
-    - Response factor
-    - Recovery time
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Maximum sensor rate: 120 ppm
+    - Atrial amplitude: 3.5 V
+    - Atrial pulse width: 0.4 ms
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
 VOOR 
-    - Lower rate limit
-    - Upper rate limit
-    - Maximum sensor rate
-    - Ventricular amplitude
-    - Ventricular pulse width
-    - Activity threshold
-    - Reaction time
-    - Response factor
-    - Recovery time
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Maximum sensor rate: 120 ppm
+    - Ventricular amplitude: 3.5 V
+    - Ventricular pulse width: 0.4 ms
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
 AAIR 
-    - Lower rate limit
-    - Upper rate limit
-    - Maximum sensor rate
-    - Atrial amplitude
-    - Atrial pulse width
-    - Atrial sensitivity
-    - ARP
-    - PVARP
-    - Hysteresis
-    - Rate smoothing
-    - Activity threshold
-    - Reaction time
-    - Response factor
-    - Recovery time
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Maximum sensor rate: 120 ppm
+    - Atrial amplitude: 3.5 V
+    - Atrial pulse width: 0.4 ms
+    - Atrial sensitivity: 0.75 mV
+    - ARP: 250 ms
+    - PVARP: 250 ms
+    - Hysteresis: OFF
+    - Rate smoothing: OFF
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
 VVIR
-    - Lower rate limit
-    - Upper rate limit
-    - Maximum sensor rate
-    - Ventricular amplitude
-    - Ventricular pulse width
-    - Ventricular sensitivity
-    - VRP
-    - Hysteresis
-    - Rate smoothing
-    - Activity threshold
-    - Reaction time
-    - Response factor
-    - Recovery time
+    - Lower rate limit: 60 ppm
+    - Upper rate limit: 120 ppm
+    - Maximum sensor rate: 120 ppm
+    - Ventricular amplitude: 3.5 V
+    - Ventricular pulse width: 0.4 ms
+    - Ventricular sensitivity: 2.5 mV
+    - VRP: 320 ms
+    - Hysteresis: OFF
+    - Rate smoothing: OFF
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
