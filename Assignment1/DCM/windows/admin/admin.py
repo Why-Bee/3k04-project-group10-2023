@@ -5,7 +5,7 @@ from PyQt5.uic import loadUi
 class AdminWindow(QMainWindow): # admin page
     def __init__(self):
         super(AdminWindow, self).__init__()
-        loadUi('admin.ui', self)
+        loadUi('./windows/admin/admin.ui', self)
         self.setWindowTitle('Admin')
         self.backButton.clicked.connect(self.back_clicked)
 

@@ -1,12 +1,14 @@
 import sys
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QStackedWidget
+
 from sqlite3 import connect
 from hashlib import sha256
 
-id = 0 # id of user
-    
 from windows.welcome.welcome import MyWindow
+
+
+id = 0 # id of user
 
 
 if __name__ == '__main__':

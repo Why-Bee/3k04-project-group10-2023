@@ -8,7 +8,7 @@ from sqlite3 import connect
 class LandingWindow(QMainWindow): # landing page
     def __init__(self):
         super(LandingWindow, self).__init__()
-        loadUi('landingpage.ui', self)
+        loadUi('./windows/landingpage/landingpage.ui', self)
         self.setWindowTitle('Landing Page')
 
         self.updateLabels() # update labels with values from database

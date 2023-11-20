@@ -12,7 +12,7 @@ from windows.landingpage.landingpage import LandingWindow
 class LoginWindow(QMainWindow):
     def __init__(self):
         super(LoginWindow, self).__init__()
-        loadUi('login.ui', self)
+        loadUi('./windows/login/login.ui', self)
         self.setWindowTitle('Login')
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)

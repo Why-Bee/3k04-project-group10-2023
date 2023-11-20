@@ -8,7 +8,7 @@ from windows.admin.admin import AdminWindow
 class AdminLoginWindow(QMainWindow): # admin login page
     def __init__(self):
         super(AdminLoginWindow, self).__init__()
-        loadUi('adminLogin.ui', self)
+        loadUi('./windows/adminLogin/adminLogin.ui', self)
         self.setWindowTitle('Admin Login')
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)

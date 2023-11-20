@@ -11,7 +11,7 @@ from windows.landingpage.landingpage import LandingWindow
 class SignupWindow(QMainWindow): 
     def __init__(self):
         super(SignupWindow, self).__init__()
-        loadUi('signup.ui', self)
+        loadUi('./windows/signup/signup.ui', self)
         self.setWindowTitle('Sign Up')
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
