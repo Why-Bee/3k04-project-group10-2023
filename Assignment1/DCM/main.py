@@ -1,6 +1,4 @@
 import sys
-import typing
-from PyQt5 import QtCore
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QMainWindow, QStackedWidget, QMessageBox, QInputDialog
 from PyQt5.QtGui import QPixmap
@@ -554,5 +552,3 @@ if __name__ == '__main__':
     pConnect = True # if connected to device, will be True. implement later
 
     sys.exit(app.exec_()) 
-
-   
