@@ -1,9 +1,23 @@
-Database:
+Assignment1:
+- Issues on GitHub.
 
+Assignment2:
+- Expand the DCM to include all required modes and parameters.
+- Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
+- The system will be able to set, store, transmit, programmable parameter data, and verify it is stored correctly on the Pacemaker device.
+        - Complete set of the parameter data specified is in PACEMAKER, Table 7.
+- The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
+        - The DCM must receive the egram data from the Pacemaker over serial communication link in order to display it.
+- Document how programmable parameters stoer in the Pacemaker are what the doctor input on the DCM.
+        - Also justify your choice of the data types used to represent the parameters data.
+
+
+Database:
 - Need to have database with unique values per user
 - Each user needs to have all programmable parameters
 - Each mode needs unique programmable parameters.
 - Need to be able to save and load database to/from file
+
 
 Modes:
 AOO
@@ -17,6 +31,7 @@ VOO
     - Upper rate limit: 120 ppm
     - Ventricular amplitude: 3.5 V
     - Ventricular pulse width: 0.4 ms
+
 AAI 
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
@@ -27,6 +42,7 @@ AAI
     - PVARP: 250 ms
     - Hysteresis: OFF
     - Rate smoothing: OFF
+
 VVI 
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
@@ -36,6 +52,7 @@ VVI
     - VRP: 320 ms
     - Hysteresis: OFF
     - Rate smoothing: 
+
 AOOR 
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
@@ -46,6 +63,7 @@ AOOR
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
+
 VOOR 
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
@@ -56,6 +74,7 @@ VOOR
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
+
 AAIR 
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
@@ -71,6 +90,7 @@ AAIR
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
+
 VVIR
     - Lower rate limit: 60 ppm
     - Upper rate limit: 120 ppm
