@@ -13,8 +13,8 @@ id = 0 # id of user
 
 if __name__ == '__main__':
     app = QApplication(sys.argv) # create application
-    window = MyWindow() # create welcome screen
     stacked_window = QStackedWidget() # create stacked widget
+    window = MyWindow(stacked_window) # create welcome screen
     stacked_window.addWidget(window) # add welcome screen to stacked widget
     stacked_window.setFixedWidth(1200) # set fixed width and height
     stacked_window.setFixedHeight(800)
