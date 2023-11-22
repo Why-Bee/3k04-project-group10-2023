@@ -20,7 +20,5 @@ if __name__ == '__main__':
     stacked_window.setFixedHeight(800)
     stacked_window.show()
 
-    pConnect = True # if connected to device, will be True. implement later
-
     sys.exit(app.exec_()) 
 

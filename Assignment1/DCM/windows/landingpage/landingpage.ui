@@ -77,7 +77,7 @@ QPushButton:hover {
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>exit.png</normaloff>exit.png</iconset>
+       <normaloff>../../assets/exit.png</normaloff>../../assets/exit.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -102,7 +102,7 @@ QPushButton:hover {
       <enum>Qt::AutoText</enum>
      </property>
      <property name="pixmap">
-      <pixmap>connected.png</pixmap>
+      <pixmap>../../assets/connected.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>

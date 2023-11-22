@@ -23,17 +23,18 @@ class LandingWindow(QMainWindow): # landing page
         self.editAAI_Button.clicked.connect(self.editAAI_clicked)
         self.editVVI_Button.clicked.connect(self.editVVI_clicked)
 
+
         if not pConnect: # if not connected to device, display disconnected message
             self.connectedStatusText.setText('DISCONNECTED')
             self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to disconnected
-            self.connectedStatusIcon.setPixmap(QPixmap('disconnected.png'))
+            self.connectedStatusIcon.setPixmap(QPixmap('./assets/disconnected.png'))
 
         else: # if connected to device, display connected message
             self.connectedStatusText.setText('CONNECTED')
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to connected
-            self.connectedStatusIcon.setPixmap(QPixmap('connected.png'))
+            self.connectedStatusIcon.setPixmap(QPixmap('./assets/connected.png'))
         
     def back_clicked(self): # if back button is clicked, show popup window
         self.show_popup()
