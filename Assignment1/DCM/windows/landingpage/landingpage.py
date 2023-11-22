@@ -5,13 +5,17 @@ from PyQt5.QtGui import QPixmap
 from sqlite3 import connect
 
 
+pConnect = False # if connected to device, will be True. implement later
+
+
 class LandingWindow(QMainWindow): # landing page
-    def __init__(self):
+    def __init__(self, stacked_window):
         super(LandingWindow, self).__init__()
         loadUi('./windows/landingpage/landingpage.ui', self)
         self.setWindowTitle('Landing Page')
+        self.stacked_window = stacked_window
 
-        self.updateLabels() # update labels with values from database
+        # self.updateLabels() # update labels with values from database
 
         self.backButton.clicked.connect(self.back_clicked)
         self.editAOO_Button.clicked.connect(self.editAOO_clicked)
@@ -49,10 +53,10 @@ class LandingWindow(QMainWindow): # landing page
 
     def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
         if buttonSelected.text() == '&Yes':
-            stacked_window.setCurrentIndex(0)
+            self.stacked_window.setCurrentIndex(0)
             # clear stack
-            stacked_window.removeWidget(stacked_window.widget(1))
-            stacked_window.removeWidget(stacked_window.widget(1))
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
         else:
             pass
 

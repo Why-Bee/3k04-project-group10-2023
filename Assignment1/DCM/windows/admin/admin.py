@@ -3,10 +3,11 @@ from PyQt5.uic import loadUi
 
 
 class AdminWindow(QMainWindow): # admin page
-    def __init__(self):
+    def __init__(self, stacked_window):
         super(AdminWindow, self).__init__()
         loadUi('./windows/admin/admin.ui', self)
         self.setWindowTitle('Admin')
+        self.stacked_window = stacked_window
         self.backButton.clicked.connect(self.back_clicked)
 
     
@@ -28,9 +29,9 @@ class AdminWindow(QMainWindow): # admin page
 
     def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
         if buttonSelected.text() == '&Yes':
-            stacked_window.setCurrentIndex(0)
+            self.stacked_window.setCurrentIndex(0)
             # clear stack
-            stacked_window.removeWidget(stacked_window.widget(1))
-            stacked_window.removeWidget(stacked_window.widget(1))
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
         else:
             pass

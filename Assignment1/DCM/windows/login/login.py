@@ -10,18 +10,19 @@ from windows.landingpage.landingpage import LandingWindow
 
 
 class LoginWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, stacked_window):
         super(LoginWindow, self).__init__()
         loadUi('./windows/login/login.ui', self)
         self.setWindowTitle('Login')
+        self.stacked_window = stacked_window
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
 
     def back_clicked(self): # if back button is clicked, go back to welcome screen
-        stacked_window.setCurrentIndex(0)
+        self.stacked_window.setCurrentIndex(0)
         # clear stack
-        stacked_window.removeWidget(stacked_window.widget(1))
+        self.stacked_window.removeWidget(self.stacked_window.widget(1))
 
     def check_login(self):
         username = self.usernameField.text() # get username and password from text fields
@@ -57,6 +58,6 @@ class LoginWindow(QMainWindow):
             c.close()
 
     def show_landing_window(self):
-        landing_window = LandingWindow()
-        stacked_window.addWidget(landing_window)
-        stacked_window.setCurrentIndex(2)
+        landing_window = LandingWindow(self.stacked_window)
+        self.stacked_window.addWidget(landing_window)
+        self.stacked_window.setCurrentIndex(2)

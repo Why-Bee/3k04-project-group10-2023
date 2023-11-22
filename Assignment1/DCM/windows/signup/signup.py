@@ -9,18 +9,19 @@ from windows.landingpage.landingpage import LandingWindow
 
 
 class SignupWindow(QMainWindow): 
-    def __init__(self):
+    def __init__(self, stacked_window):
         super(SignupWindow, self).__init__()
         loadUi('./windows/signup/signup.ui', self)
         self.setWindowTitle('Sign Up')
+        self.stacked_window = stacked_window
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
 
 
     def back_clicked(self):
-        stacked_window.setCurrentIndex(0) 
+        self.stacked_window.setCurrentIndex(0) 
         # clear stack
-        stacked_window.removeWidget(stacked_window.widget(1)) 
+        self.stacked_window.removeWidget(self.stacked_window.widget(1)) 
 
     def check_signup(self):
         username = self.usernameField.text()
@@ -172,6 +173,6 @@ class SignupWindow(QMainWindow):
         c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))
 
     def show_landing_window(self):
-        landing_window = LandingWindow()
-        stacked_window.addWidget(landing_window)
-        stacked_window.setCurrentIndex(2)
+        landing_window = LandingWindow(self.stacked_window)
+        self.stacked_window.addWidget(landing_window)
+        self.stacked_window.setCurrentIndex(2)
