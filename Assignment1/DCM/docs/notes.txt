@@ -15,8 +15,11 @@ Assignment2:
 Admin Page:
 - Be a "list" of patients -> Done
 - Grab data from data base loop through it creating an instance of a "row" for each patient -> Done
-- In each patients row display patient id, username, notes about patient, and option to remove from database
+- In each patients row display patient id, username, notes about patient, and option to remove from database -> Done
         - Notes needs work
+        - Need to find a way to make Notes column editable, whilst keeping all other columns unselectable
+        - Need to add Notes column to database
+        - Need to update Notes database when column edited, on enter hit after typing finished
 - Have popup on removal to ensure confirmation -> Done
 
 
