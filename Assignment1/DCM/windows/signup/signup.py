@@ -12,8 +12,8 @@ class SignupWindow(QMainWindow):
     def __init__(self, stacked_window):
         super(SignupWindow, self).__init__()
         loadUi('./windows/signup/signup.ui', self)
-        self.setWindowTitle('Sign Up')
         self.stacked_window = stacked_window
+        self.stacked_window.setWindowTitle("Sign Up")
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
 
@@ -22,6 +22,7 @@ class SignupWindow(QMainWindow):
         self.stacked_window.setCurrentIndex(0) 
         # clear stack
         self.stacked_window.removeWidget(self.stacked_window.widget(1)) 
+        self.stacked_window.setWindowTitle("Welcome")
 
     def check_signup(self):
         username = self.usernameField.text()

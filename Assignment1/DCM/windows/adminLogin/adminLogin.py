@@ -9,8 +9,8 @@ class AdminLoginWindow(QMainWindow): # admin login page
     def __init__(self, stacked_window):
         super(AdminLoginWindow, self).__init__()
         loadUi('./windows/adminLogin/adminLogin.ui', self)
-        self.setWindowTitle('Admin Login')
         self.stacked_window = stacked_window
+        self.stacked_window.setWindowTitle("Admin Login")
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
@@ -18,6 +18,7 @@ class AdminLoginWindow(QMainWindow): # admin login page
         self.stacked_window.setCurrentIndex(0)
         # clear stack
         self.stacked_window.removeWidget(self.stacked_window.widget(1))
+        self.stacked_window.setWindowTitle("Welcome")
 
     def check_login(self):
         username = self.usernameField.text() # get username and password from text fields

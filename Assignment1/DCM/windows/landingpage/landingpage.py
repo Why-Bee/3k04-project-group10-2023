@@ -12,8 +12,8 @@ class LandingWindow(QMainWindow): # landing page
     def __init__(self, stacked_window):
         super(LandingWindow, self).__init__()
         loadUi('./windows/landingpage/landingpage.ui', self)
-        self.setWindowTitle('Landing Page')
         self.stacked_window = stacked_window
+        self.stacked_window.setWindowTitle("Landing Page")
 
         # self.updateLabels() # update labels with values from database
 
@@ -58,6 +58,7 @@ class LandingWindow(QMainWindow): # landing page
             # clear stack
             self.stacked_window.removeWidget(self.stacked_window.widget(1))
             self.stacked_window.removeWidget(self.stacked_window.widget(1))
+            self.stacked_window.setWindowTitle("Welcome")
         else:
             pass
 
