@@ -51,9 +51,13 @@ class SignupWindow(QMainWindow):
                     password = sha256(password.encode()).hexdigest()
                     # note: table has a primary key, so we need to specify the columns
                     # fetch number of rows in table
-                    c.execute('SELECT COUNT(id) FROM all_users')
+                    c.execute('SELECT id FROM all_users')
+                    data = c.fetchall()
                     global id
-                    id = c.fetchone()[0] + 1
+                    for i in range(10):
+                        if data[i][0] != i:
+                            id = i
+                            break
                     c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
                     conn.commit()
                     c.close()

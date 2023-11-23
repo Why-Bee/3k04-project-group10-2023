@@ -20,5 +20,6 @@ if __name__ == '__main__':
     stacked_window.setFixedHeight(800)
     stacked_window.show()
 
+
     sys.exit(app.exec_()) 
 
