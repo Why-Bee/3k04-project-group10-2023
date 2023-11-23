@@ -13,10 +13,11 @@ Assignment2:
 
 
 Admin Page:
-- Be a "list" of patients
-- Grab data from data base loop through it creating an instance of a "row" for each patient
+- Be a "list" of patients -> Done
+- Grab data from data base loop through it creating an instance of a "row" for each patient -> Done
 - In each patients row display patient id, username, notes about patient, and option to remove from database
-- Have popup on removal to ensure confirmation
+        - Notes needs work
+- Have popup on removal to ensure confirmation -> Done
 
 
 Database:

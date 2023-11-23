@@ -76,18 +76,37 @@ color: rgb(255, 0, 0);</string>
       <string/>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="pageLabel">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>210</y>
-       <width>251</width>
-       <height>231</height>
+       <x>580</x>
+       <y>90</y>
+       <width>55</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>ADMIN WINDOW</string>
+      <string>TextLabel</string>
      </property>
+    </widget>
+    <widget class="QTableWidget" name="adminTable">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>340</y>
+       <width>256</width>
+       <height>192</height>
+      </rect>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
     </widget>
    </widget>
   </widget>
