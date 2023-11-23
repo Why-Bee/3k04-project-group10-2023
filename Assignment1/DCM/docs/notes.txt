@@ -12,6 +12,13 @@ Assignment2:
         - Also justify your choice of the data types used to represent the parameters data.
 
 
+Admin Page:
+- Be a "list" of patients
+- Grab data from data base loop through it creating an instance of a "row" for each patient
+- In each patients row display patient id, username, notes about patient, and option to remove from database
+- Have popup on removal to ensure confirmation
+
+
 Database:
 - Need to have database with unique values per user
 - Each user needs to have all programmable parameters
