@@ -40,14 +40,14 @@ class AdminWindow(QMainWindow): # admin page
 
         table.setRowCount(len(data))
         table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(['ID', 'Username', 'Notes', 'Remove'])
+        table.setHorizontalHeaderLabels(['ID', 'Username', 'Notes', 'Remove']) 
         table.setColumnWidth(0, 50)
         table.setColumnWidth(1, 200)
         table.setColumnWidth(2, 750)
         table.setColumnWidth(3, 100)
         table.setFixedWidth(1100)
-        table.setFixedHeight(600)
-        table.move(50, 150)
+        table.setFixedHeight(400)
+        table.move(50, 300)
         table.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
         table.setEditTriggers(QTableWidget.NoEditTriggers)
 

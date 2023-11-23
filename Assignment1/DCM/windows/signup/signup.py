@@ -53,9 +53,10 @@ class SignupWindow(QMainWindow):
                     # fetch number of rows in table
                     c.execute('SELECT id FROM all_users')
                     data = c.fetchall()
+                    # find first available
                     global id
                     for i in range(10):
-                        if data[i][0] != i:
+                        if i >= len(data) or data[i][0] != i:
                             id = i
                             break
                     c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
