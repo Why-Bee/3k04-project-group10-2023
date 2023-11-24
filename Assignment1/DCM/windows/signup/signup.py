@@ -59,7 +59,7 @@ class SignupWindow(QMainWindow):
                         if i >= len(data) or data[i][0] != i:
                             id = i
                             break
-                    c.execute('INSERT INTO all_users (username, password, id) VALUES (?, ?, ?)', (username, password, id))
+                    c.execute('INSERT INTO all_users (username, password, id, notes) VALUES (?, ?, ?, ?)', (username, password, id, ""))
                     conn.commit()
                     c.close()
                     # add new programmable parameters to all tables
