@@ -8,9 +8,6 @@ from hashlib import sha256
 from windows.welcome.welcome import MyWindow
 
 
-id = 0 # id of user
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv) # create application
     stacked_window = QStackedWidget() # create stacked widget
