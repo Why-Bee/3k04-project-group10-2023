@@ -2,14 +2,18 @@ Assignment1:
 - Issues on GitHub.
 
 Assignment2:
-- Expand the DCM to include all required modes and parameters.
+- Expand the DCM to include all required modes and parameters:
+The following bradycardia operating modes shall be programmable: Off, DDDR, VDDR, DDIR, DOOR, VOOR, AOOR, VVIR, AAIR, DDD, VDD, DDI, DOO, VOO, AOO, VVI, AAI, VVT and AAT. OVO, OAO, ODO, and OOO shall be available in temporary operation
+
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
+
 - The system will be able to set, store, transmit, programmable parameter data, and verify it is stored correctly on the Pacemaker device.
         - Complete set of the parameter data specified is in PACEMAKER, Table 7.
+
 - The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
         - The DCM must receive the egram data from the Pacemaker over serial communication link in order to display it.
-- Document how programmable parameters stoer in the Pacemaker are what the doctor input on the DCM.
-        - Also justify your choice of the data types used to represent the parameters data.
+
+- Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
 
 
 Admin Page: -> Done
