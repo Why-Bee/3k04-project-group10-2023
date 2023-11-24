@@ -60,6 +60,8 @@ class AdminWindow(QMainWindow): # admin page
                     continue
                 elif j == 2: # load ID
                     table.setItem(i, 0, QTableWidgetItem(str(data[i][j])))
+                elif j == 3: # load notes
+                    table.setItem(i, 2, QTableWidgetItem(str(data[i][j])))
 
             # create remove button
             removeButton = QPushButton()
