@@ -14,14 +14,14 @@ def fill_database():
         password = sha256('pass'.encode()).hexdigest()
         c.execute('INSERT INTO all_users (username, password, id, notes) VALUES (?, ?, ?, ?)', (username, password, i, ""))
     
-    create_programmable_parameters_AOO(id, c)
-    create_programmable_parameters_VOO(id, c)
-    create_programmable_parameters_AAI(id, c)
-    create_programmable_parameters_VVI(id, c)
-    create_programmable_parameters_AOOR(id, c)
-    create_programmable_parameters_VOOR(id, c)
-    create_programmable_parameters_AAIR(id, c)
-    create_programmable_parameters_VVIR(id, c)
+        create_programmable_parameters_AOO(i, c)
+        create_programmable_parameters_VOO(i, c)
+        create_programmable_parameters_AAI(i, c)
+        create_programmable_parameters_VVI(i, c)
+        create_programmable_parameters_AOOR(i, c)
+        create_programmable_parameters_VOOR(i, c)
+        create_programmable_parameters_AAIR(i, c)
+        create_programmable_parameters_VVIR(i, c)
 
     # commit changes
     conn.commit()
