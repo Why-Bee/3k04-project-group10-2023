@@ -278,21 +278,22 @@ class LandingWindow(QMainWindow): # landing page
         print('edit VVIR clicked')
 
     def updateLabelsAOO(self, c):
-        id = self.id
         # update labels with values from database
-        c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (id,))
-        ll = c.fetchone()[0]
-        c.execute(f'SELECT upper_rate_limit FROM {self.current_mode}_data WHERE id=?', (id,))
-        ul = c.fetchone()[0]
-        c.execute(f'SELECT atrial_amplitude FROM {self.current_mode}_data WHERE id=?', (id,))
-        aa = c.fetchone()[0]/10
-        c.execute(f'SELECT atrial_pulse_width FROM {self.current_mode}_data WHERE id=?', (id,))
-        apw = c.fetchone()[0]/10
+        id = self.id
+        AOO_params = ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width']
+        
+        for i in range(len(AOO_params)):
+            c.execute(f'SELECT {AOO_params[i]} FROM {self.current_mode}_data WHERE id=?', (id,))
+            value = c.fetchone()[0]
 
-        self.lowerLimit_Value.setText(str(ll))
-        self.upperLimit_Value.setText(str(ul))
-        self.AAmp_Value.setText(str(aa))
-        self.APW_Value.setText(str(apw))
+            if i == 0:
+                self.lowerLimit_Value.setText(str(value))
+            elif i == 1:
+                self.upperLimit_Value.setText(str(value))
+            elif i == 2:
+                self.AAmp_Value.setText(str(value/10))
+            elif i == 3:
+                self.APW_Value.setText(str(value/10))
 
     def updateLabelsVOO(self, c):
         id = self.id
