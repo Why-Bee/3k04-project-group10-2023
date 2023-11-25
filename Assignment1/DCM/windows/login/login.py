@@ -18,6 +18,8 @@ class LoginWindow(QMainWindow):
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
+        self.id = None
+
 
     def back_clicked(self): # if back button is clicked, go back to welcome screen
         self.stacked_window.setCurrentIndex(0)
@@ -49,8 +51,7 @@ class LoginWindow(QMainWindow):
                     self.errorLabel.setText('Incorrect username or password')
                 else:
                     # get id of user
-                    global id
-                    id = row[2]
+                    self.id = row[2]
 
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
@@ -59,6 +60,6 @@ class LoginWindow(QMainWindow):
             c.close()
 
     def show_landing_window(self):
-        landing_window = LandingWindow(self.stacked_window)
+        landing_window = LandingWindow(self.stacked_window, self.id)
         self.stacked_window.addWidget(landing_window)
         self.stacked_window.setCurrentIndex(2)
