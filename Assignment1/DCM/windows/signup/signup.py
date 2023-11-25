@@ -17,6 +17,8 @@ class SignupWindow(QMainWindow):
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
 
+        self.id = None
+
 
     def back_clicked(self):
         self.stacked_window.setCurrentIndex(0) 
@@ -56,7 +58,7 @@ class SignupWindow(QMainWindow):
                     # find first available
                     global id
                     for i in range(1, 11):
-                        if i >= len(data) or data[i][0] != i:
+                        if i >= len(data)+1 or data[i-1][0] != i:
                             id = i
                             break
                     c.execute('INSERT INTO all_users (username, password, id, notes) VALUES (?, ?, ?, ?)', (username, password, id, ""))
@@ -64,6 +66,7 @@ class SignupWindow(QMainWindow):
                     c.close()
                     # add new programmable parameters to all tables
                     self.create_programmable_parameters(id)
+                    self.id = id
 
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
@@ -179,6 +182,6 @@ class SignupWindow(QMainWindow):
         c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))
 
     def show_landing_window(self):
-        landing_window = LandingWindow(self.stacked_window)
+        landing_window = LandingWindow(self.stacked_window, self.id)
         self.stacked_window.addWidget(landing_window)
         self.stacked_window.setCurrentIndex(2)
