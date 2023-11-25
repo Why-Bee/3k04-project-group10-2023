@@ -14,6 +14,7 @@ class AdminLoginWindow(QMainWindow): # admin login page
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
+
     def back_clicked(self): # if back button is clicked, go back to welcome screen
         self.stacked_window.setCurrentIndex(0)
         # clear stack
