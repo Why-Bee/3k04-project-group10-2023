@@ -14,4 +14,3 @@ c.execute('CREATE TABLE VVIR_data (id INTEGER PRIMARY KEY AUTOINCREMENT, lower_r
 
 conn.commit()
 c.close()
-conn.close()

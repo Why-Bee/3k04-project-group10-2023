@@ -9,6 +9,7 @@ def fill_database():
     c = conn.cursor()
     c.execute('SELECT * FROM all_users')
     data = c.fetchall()
+
     for i in range(len(data)+1, 11):
         username = 'user' + str(i)
         password = sha256('pass'.encode()).hexdigest()
@@ -28,7 +29,6 @@ def fill_database():
     c.close()
 
 def create_programmable_parameters_AOO(id, c): # create programmable parameters for new user
-    print(id)
     c.execute('INSERT INTO AOO_data (id, lower_rate_limit, upper_rate_limit, atrial_amplitude, atrial_pulse_width) VALUES (?, ?, ?, ?, ?)', (id, 60, 120, 35, 4))
 
 def create_programmable_parameters_VOO(id, c): # create programmable parameters for new user

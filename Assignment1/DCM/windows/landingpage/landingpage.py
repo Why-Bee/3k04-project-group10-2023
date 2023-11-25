@@ -21,7 +21,6 @@ class LandingWindow(QMainWindow): # landing page
 
         # here we would interface with the device to get the current state and which mode is enabled
         # possibly cross reference with database to get the current values of the parameters and make sure they match
-
         self.board_interface()
 
         self.updateLabels(self.current_mode) # update labels with values from database
@@ -139,15 +138,16 @@ class LandingWindow(QMainWindow): # landing page
             # update values in database
             
 
-            if self.validateInputs(ll, ul, aa, apw):
+            if self.validateInputs([ll, ul, aa, apw]):
                 conn = connect('users.db')
                 c = conn.cursor()
-                c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-                c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-                c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
-                c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
+                c.execute('UPDATE AOO_data SET lower_rate_limit=? WHERE id=?', (ll, id))
+                c.execute('UPDATE AOO_data SET upper_rate_limit=? WHERE id=?', (ul, id))
+                c.execute('UPDATE AOO_data SET atrial_amplitude=? WHERE id=?', (int(aa*10), id))
+                c.execute('UPDATE AOO_data SET atrial_pulse_width=? WHERE id=?', (int(apw*10), id))
                 conn.commit()
                 c.close()
+
                 # update values in landing window
                 self.lowerLimit_Value.setText(str(ll))
                 self.upperLimit_Value.setText(str(ul))
@@ -176,13 +176,13 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and done2 and done3 and done4:
             # update values in database
-            if self.validateInputs(ll, ul, va, vpw):
+            if self.validateInputs([ll, ul, va, vpw]):
                 conn = connect('users.db')
                 c = conn.cursor()
-                c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-                c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-                c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
-                c.execute('UPDATE ventricular_pulse_width SET value=? WHERE id=?', (int(vpw*10), id))
+                c.execute('UPDATE VOO_data SET lower_rate_limit=? WHERE id=?', (ll, id))
+                c.execute('UPDATE VOO_data SET upper_rate_limit=? WHERE id=?', (ul, id))
+                c.execute('UPDATE VOO_data SET ventricular_amplitude=? WHERE id=?', (int(va*10), id))
+                c.execute('UPDATE VOO_data SET ventricular_pulse_width=? WHERE id=?', (int(vpw*10), id))
                 conn.commit()
                 c.close()
 
@@ -215,11 +215,11 @@ class LandingWindow(QMainWindow): # landing page
             # update values in database
             conn = connect('users.db')
             c = conn.cursor()
-            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE atrial_amplitude SET value=? WHERE id=?', (int(aa*10), id))
-            c.execute('UPDATE atrial_pulse_width SET value=? WHERE id=?', (int(apw*10), id))
-            c.execute('UPDATE ARP SET value=? WHERE id=?', (arp, id))
+            c.execute('UPDATE AAI_data SET lower_rate_limit=? WHERE id=?', (ll, id))
+            c.execute('UPDATE AAI_data SET upper_rate_limit=? WHERE id=?', (ul, id))
+            c.execute('UPDATE AAI_data SET atrial_amplitude=? WHERE id=?', (int(aa*10), id))
+            c.execute('UPDATE AAI_data SET atrial_pulse_width=? WHERE id=?', (int(apw*10), id))
+            c.execute('UPDATE AAI_data SET ARP=? WHERE id=?', (arp, id))
             conn.commit()
             c.close()
 
@@ -243,11 +243,11 @@ class LandingWindow(QMainWindow): # landing page
             # update values in database
             conn = connect('users.db')
             c = conn.cursor()
-            c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
-            c.execute('UPDATE upper_rate_limit SET value=? WHERE id=?', (ul, id))
-            c.execute('UPDATE ventricular_amplitude SET value=? WHERE id=?', (int(va*10), id))
-            c.execute('UPDATE ventricular_pulse_width SET vaqlue=? WHERE id=?', (int(vpw*10), id))
-            c.execute('UPDATE VRP SET value=? WHERE id=?', (vrp, id))
+            c.execute('UPDATE VVI_data SET lower_rate_limit=? WHERE id=?', (ll, id))
+            c.execute('UPDATE VVI_data SET upper_rate_limit=? WHERE id=?', (ul, id))
+            c.execute('UPDATE VVI_data SET ventricular_amplitude=? WHERE id=?', (int(va*10), id))
+            c.execute('UPDATE VVI_data SET ventricular_pulse_width=? WHERE id=?', (int(vpw*10), id))
+            c.execute('UPDATE VVI_data SET VRP=? WHERE id=?', (vrp, id))
             conn.commit()
             c.close()
 
@@ -258,7 +258,7 @@ class LandingWindow(QMainWindow): # landing page
             self.VPW_Value.setText(str(vpw))
             self.VRP_Value.setText(str(vrp))
 
-    def validateInputs (self):
+    def validateInputs (self, params):
         # check if inputs are valid
         # if not, show error message
         # if yes, update values in database
@@ -281,7 +281,7 @@ class LandingWindow(QMainWindow): # landing page
         # update labels with values from database
         id = self.id
         AOO_params = ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width']
-        
+
         for i in range(len(AOO_params)):
             c.execute(f'SELECT {AOO_params[i]} FROM {self.current_mode}_data WHERE id=?', (id,))
             value = c.fetchone()[0]
@@ -296,61 +296,62 @@ class LandingWindow(QMainWindow): # landing page
                 self.APW_Value.setText(str(value/10))
 
     def updateLabelsVOO(self, c):
-        id = self.id
         # update labels with values from database
-        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
-        ll = c.fetchone()[0]
-        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
-        ul = c.fetchone()[0]
-        c.execute('SELECT value FROM ventricular_amplitude WHERE id=?', (id,))
-        va = c.fetchone()[0]/10
-        c.execute('SELECT value FROM ventricular_pulse_width WHERE id=?', (id,))
-        vpw = c.fetchone()[0]/10
+        id = self.id
+        VOO_params = ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width']
 
-        self.lowerLimit_Value.setText(str(ll))
-        self.upperLimit_Value.setText(str(ul))
-        self.VAmp_Value.setText(str(va))
-        self.VPW_Value.setText(str(vpw))
+        for i in range(len(VOO_params)):
+            c.execute(f'SELECT {VOO_params[i]} FROM {self.current_mode}_data WHERE id=?', (id,))
+            value = c.fetchone()[0]
+
+            if i == 0:
+                self.lowerLimit_Value.setText(str(value))
+            elif i == 1:
+                self.upperLimit_Value.setText(str(value))
+            elif i == 2:
+                self.VAmp_Value.setText(str(value/10))
+            elif i == 3:
+                self.VPW_Value.setText(str(value/10))
 
     def updateLabelsAAI(self, c):
-        id = self.id
         # update labels with values from database
-        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
-        ll = c.fetchone()[0]
-        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
-        ul = c.fetchone()[0]
-        c.execute('SELECT value FROM atrial_amplitude WHERE id=?', (id,))
-        aa = c.fetchone()[0]/10
-        c.execute('SELECT value FROM atrial_pulse_width WHERE id=?', (id,))
-        apw = c.fetchone()[0]/10
-        c.execute('SELECT value FROM ARP WHERE id=?', (id,))
-        arp = c.fetchone()[0]
+        id = self.id
+        AAI_params = ['lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP']
 
-        self.lowerLimit_Value.setText(str(ll))
-        self.upperLimit_Value.setText(str(ul))
-        self.AAmp_Value.setText(str(aa))
-        self.APW_Value.setText(str(apw))
-        self.ARP_Value.setText(str(arp))
+        for i in range(len(AAI_params)):
+            c.execute(f'SELECT {AAI_params[i]} FROM {self.current_mode}_data WHERE id=?', (id,))
+            value = c.fetchone()[0]
+
+            if i == 0:
+                self.lowerLimit_Value.setText(str(value))
+            elif i == 1:
+                self.upperLimit_Value.setText(str(value))
+            elif i == 2:
+                self.AAmp_Value.setText(str(value/10))
+            elif i == 3:
+                self.APW_Value.setText(str(value/10))
+            elif i == 4:
+                self.ARP_Value.setText(str(value))
 
     def updateLabelsVVI(self, c):
-        id = self.id
         # update labels with values from database
-        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
-        ll = c.fetchone()[0]
-        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
-        ul = c.fetchone()[0]
-        c.execute('SELECT value FROM ventricular_amplitude WHERE id=?', (id,))
-        va = c.fetchone()[0]/10
-        c.execute('SELECT value FROM ventricular_pulse_width WHERE id=?', (id,))
-        vpw = c.fetchone()[0]/10
-        c.execute('SELECT value FROM VRP WHERE id=?', (id,))
-        vrp = c.fetchone()[0]
+        id = self.id
+        VVI_params = ['lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP']
 
-        self.lowerLimit_Value.setText(str(ll))
-        self.upperLimit_Value.setText(str(ul))
-        self.VAmp_Value.setText(str(va))
-        self.VPW_Value.setText(str(vpw))
-        self.VRP_Value.setText(str(vrp))
+        for i in range(len(VVI_params)):
+            c.execute(f'SELECT {VVI_params[i]} FROM {self.current_mode}_data WHERE id=?', (id,))
+            value = c.fetchone()[0]
+
+            if i == 0:
+                self.lowerLimit_Value.setText(str(value))
+            elif i == 1:
+                self.upperLimit_Value.setText(str(value))
+            elif i == 2:
+                self.VAmp_Value.setText(str(value/10))
+            elif i == 3:
+                self.VPW_Value.setText(str(value/10))
+            elif i == 4:
+                self.VRP_Value.setText(str(value))
 
     def updateLabelsAOOR(self, c):
         print('updating AOOR labels')
