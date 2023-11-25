@@ -5,16 +5,17 @@ from PyQt5.QtGui import QPixmap
 from sqlite3 import connect
 
 
-pConnect = False # if connected to device, will be True. implement later
-
-
 class LandingWindow(QMainWindow): # landing page
-    current_mode = '' # current mode of device
-    def __init__(self, stacked_window):
+    def __init__(self, stacked_window, id):
         super(LandingWindow, self).__init__()
         loadUi('./windows/landingpage/landingpage.ui', self)
         self.stacked_window = stacked_window
         self.stacked_window.setWindowTitle("Landing Page")
+
+        self.id = id # id of current user
+
+        self.current_mode = '' # current mode of device
+        self.pConnect = False # connected status of device
 
         self.setColours() # reset colours of labels
 
@@ -37,29 +38,22 @@ class LandingWindow(QMainWindow): # landing page
 
         self.updatecPConnect() # update connected status
 
-        if not pConnect: # if not connected to device, display disconnected message
-            self.connectedStatusText.setText('DISCONNECTED')
-            self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
-            # change pixmap of label to disconnected
-            self.connectedStatusIcon.setPixmap(QPixmap('./assets/disconnected.png'))
-
-        else: # if connected to device, display connected message
-            self.connectedStatusText.setText('CONNECTED')
-            self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
-            # change pixmap of label to connected
-            self.connectedStatusIcon.setPixmap(QPixmap('./assets/connected.png'))
-
     def board_interface(self):
         # make UART connection with board
         # send command to board to get current mode
         # send command to board to get current values of parameters
         # for now, pretend board is connected and we start in AOO mode
 
-        pConnect = True # pretend board is connected
+        # check if board is connected
+        connected = True # for now pretend board is connected
+
+        if connected:
+            self.pConnect = True # change connected status to true
+
         self.current_mode = 'AOO' # pretend we start in AOO mode
 
     def updatecPConnect(self): # update connected status
-        if not pConnect: # if not connected to device, display disconnected message
+        if not self.pConnect: # if not connected to device, display disconnected message
             self.connectedStatusText.setText('DISCONNECTED')
             self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
             # change pixmap of label to disconnected
@@ -103,23 +97,23 @@ class LandingWindow(QMainWindow): # landing page
         
         # cases for each mode
         if mode == 'AOO':
-            updateLabelsAOO(self, c)
+            self.updateLabelsAOO(c)
         elif mode == 'VOO':
-            updateLabelsVOO(self, c)
+            self.updateLabelsVOO(c)
         elif mode == 'AAI':
-            updateLabelsAAI(self, c)
+            self.updateLabelsAAI(c)
         elif mode == 'VVI':
-            updateLabelsVVI(self, c)
+            self.updateLabelsVVI(c)
         elif mode == 'AOOR':
-            updateLabelsAOOR(self, c)
+            self.updateLabelsAOOR(c)
         elif mode == 'VOOR':
-            updateLabelsVOOR(self, c)
+            self.updateLabelsVOOR(c)
         elif mode == 'AAIR':
-            updateLabelsAAIR(self, c)
+            self.updateLabelsAAIR(c)
         elif mode == 'VVIR':
-            updateLabelsVVIR(self, c)
+            self.updateLabelsVVIR(c)
         else:
-            updateLabelsBlank(self)
+            self.updateLabelsBlank()
 
     def setColours(self): # reset colours of labels
         # set all labels to black, no bold, 8pt
@@ -134,6 +128,7 @@ class LandingWindow(QMainWindow): # landing page
 
 
     def editAOO_clicked(self):
+        id = self.id
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
@@ -144,7 +139,7 @@ class LandingWindow(QMainWindow): # landing page
             # update values in database
             
 
-            if validateInputs(ll, ul, aa, apw):
+            if self.validateInputs(ll, ul, aa, apw):
                 conn = connect('users.db')
                 c = conn.cursor()
                 c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
@@ -172,6 +167,7 @@ class LandingWindow(QMainWindow): # landing page
    
 
     def editVOO_clicked(self):
+        id = self.id
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
@@ -180,7 +176,7 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and done2 and done3 and done4:
             # update values in database
-            if validateInputs(ll, ul, va, vpw):
+            if self.validateInputs(ll, ul, va, vpw):
                 conn = connect('users.db')
                 c = conn.cursor()
                 c.execute('UPDATE lower_rate_limit SET value=? WHERE id=?', (ll, id))
@@ -207,6 +203,7 @@ class LandingWindow(QMainWindow): # landing page
                 x = msg.exec_()
 
     def editAAI_clicked(self):
+        id = self.id
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
@@ -234,6 +231,7 @@ class LandingWindow(QMainWindow): # landing page
             self.ARP_Value.setText(str(arp))
 
     def editVVI_clicked(self):
+        id = self.id
         # use input dialog to get new values
         ll, done1 = QInputDialog.getInt(self, 'Lower Rate Limit', 'Enter a new value for lower rate limit')
         ul, done2 = QInputDialog.getInt(self, 'Upper Rate Limit', 'Enter a new value for upper rate limit')
@@ -261,5 +259,118 @@ class LandingWindow(QMainWindow): # landing page
             self.VRP_Value.setText(str(vrp))
 
     def validateInputs (self):
+        # check if inputs are valid
+        # if not, show error message
+        # if yes, update values in database
+        # return true if inputs are valid, false if not
+        return True # for now, pretend inputs are valid
+    
+    def editAOOR_clicked(self):
+        print('edit AOOR clicked')
 
+    def editVOOR_clicked(self):
+        print('edit VOOR clicked')
 
+    def editAAIR_clicked(self):
+        print('edit AAIR clicked')
+
+    def editVVIR_clicked(self):
+        print('edit VVIR clicked')
+
+    def updateLabelsAOO(self, c):
+        id = self.id
+        # update labels with values from database
+        c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (id,))
+        ll = c.fetchone()[0]
+        c.execute(f'SELECT upper_rate_limit FROM {self.current_mode}_data WHERE id=?', (id,))
+        ul = c.fetchone()[0]
+        c.execute(f'SELECT atrial_amplitude FROM {self.current_mode}_data WHERE id=?', (id,))
+        aa = c.fetchone()[0]/10
+        c.execute(f'SELECT atrial_pulse_width FROM {self.current_mode}_data WHERE id=?', (id,))
+        apw = c.fetchone()[0]/10
+
+        self.lowerLimit_Value.setText(str(ll))
+        self.upperLimit_Value.setText(str(ul))
+        self.AAmp_Value.setText(str(aa))
+        self.APW_Value.setText(str(apw))
+
+    def updateLabelsVOO(self, c):
+        id = self.id
+        # update labels with values from database
+        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
+        ll = c.fetchone()[0]
+        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
+        ul = c.fetchone()[0]
+        c.execute('SELECT value FROM ventricular_amplitude WHERE id=?', (id,))
+        va = c.fetchone()[0]/10
+        c.execute('SELECT value FROM ventricular_pulse_width WHERE id=?', (id,))
+        vpw = c.fetchone()[0]/10
+
+        self.lowerLimit_Value.setText(str(ll))
+        self.upperLimit_Value.setText(str(ul))
+        self.VAmp_Value.setText(str(va))
+        self.VPW_Value.setText(str(vpw))
+
+    def updateLabelsAAI(self, c):
+        id = self.id
+        # update labels with values from database
+        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
+        ll = c.fetchone()[0]
+        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
+        ul = c.fetchone()[0]
+        c.execute('SELECT value FROM atrial_amplitude WHERE id=?', (id,))
+        aa = c.fetchone()[0]/10
+        c.execute('SELECT value FROM atrial_pulse_width WHERE id=?', (id,))
+        apw = c.fetchone()[0]/10
+        c.execute('SELECT value FROM ARP WHERE id=?', (id,))
+        arp = c.fetchone()[0]
+
+        self.lowerLimit_Value.setText(str(ll))
+        self.upperLimit_Value.setText(str(ul))
+        self.AAmp_Value.setText(str(aa))
+        self.APW_Value.setText(str(apw))
+        self.ARP_Value.setText(str(arp))
+
+    def updateLabelsVVI(self, c):
+        id = self.id
+        # update labels with values from database
+        c.execute('SELECT value FROM lower_rate_limit WHERE id=?', (id,))
+        ll = c.fetchone()[0]
+        c.execute('SELECT value FROM upper_rate_limit WHERE id=?', (id,))
+        ul = c.fetchone()[0]
+        c.execute('SELECT value FROM ventricular_amplitude WHERE id=?', (id,))
+        va = c.fetchone()[0]/10
+        c.execute('SELECT value FROM ventricular_pulse_width WHERE id=?', (id,))
+        vpw = c.fetchone()[0]/10
+        c.execute('SELECT value FROM VRP WHERE id=?', (id,))
+        vrp = c.fetchone()[0]
+
+        self.lowerLimit_Value.setText(str(ll))
+        self.upperLimit_Value.setText(str(ul))
+        self.VAmp_Value.setText(str(va))
+        self.VPW_Value.setText(str(vpw))
+        self.VRP_Value.setText(str(vrp))
+
+    def updateLabelsAOOR(self, c):
+        print('updating AOOR labels')
+
+    def updateLabelsVOOR(self, c):
+        print('updating VOOR labels')
+
+    def updateLabelsAAIR(self, c):
+        print('updating AAIR labels')
+
+    def updateLabelsVVIR(self, c):
+        print('updating VVIR labels')
+
+    def updateLabelsBlank(self):
+        # if no mode is selected, set all labels to blank
+        self.lowerLimit_Value.setText('')
+        self.upperLimit_Value.setText('')
+        self.AAmp_Value.setText('')
+        self.APW_Value.setText('')
+        self.VAmp_Value.setText('')
+        self.VPW_Value.setText('')
+        self.ARP_Value.setText('')
+        self.VRP_Value.setText('')
+ 
