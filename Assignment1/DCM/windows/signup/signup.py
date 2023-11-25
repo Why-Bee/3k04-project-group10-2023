@@ -55,7 +55,7 @@ class SignupWindow(QMainWindow):
                     data = c.fetchall()
                     # find first available
                     global id
-                    for i in range(10):
+                    for i in range(1, 11):
                         if i >= len(data) or data[i][0] != i:
                             id = i
                             break
