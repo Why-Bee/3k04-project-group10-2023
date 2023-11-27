@@ -3,7 +3,9 @@ Assignment1:
 
 Assignment2:
 - Expand the DCM to include all required modes and parameters:
-The following bradycardia operating modes shall be programmable: Off, DDDR, VDDR, DDIR, DOOR, VOOR, AOOR, VVIR, AAIR, DDD, VDD, DDI, DOO, VOO, AOO, VVI, AAI, VVT and AAT. OVO, OAO, ODO, and OOO shall be available in temporary operation
+The following bradycardia operating modes shall be programmable: 
+- Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> 
+- OVO, OAO, and OOO shall be available in temporary operation -> IDK
 
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
 
@@ -44,87 +46,87 @@ Database:
 
 
 Modes:
-AOO
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
+AOO -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
 
-VOO
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+VOO -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
 
-AAI 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
+AAI -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
     - Atrial sensitivity: 0.75 mV
-    - ARP: 250 ms
+    - ARP: 250 ms -> Done
     - PVARP: 250 ms
     - Hysteresis: OFF
-    - Rate smoothing: OFF
+    - Rate smoothing: -> NOT required
 
-VVI 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+VVI -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV
-    - VRP: 320 ms
+    - VRP: 320 ms -> Done
     - Hysteresis: OFF
-    - Rate smoothing: 
+    - Rate smoothing: -> NOT required
 
-AOOR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
+AOOR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
     - Activity threshold: MED
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
 
-VOOR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
+VOOR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
     - Activity threshold: MED
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
 
-AAIR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
+AAIR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
     - Atrial sensitivity: 0.75 mV
-    - ARP: 250 ms
+    - ARP: 250 ms -> Done
     - PVARP: 250 ms
     - Hysteresis: OFF
-    - Rate smoothing: OFF
+    - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
     - Reaction time: 30 s
     - Response factor: 8
     - Recovery time: 5 min
 
-VVIR
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
+VVIR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV
-    - VRP: 320 ms
+    - VRP: 320 ms -> Done
     - Hysteresis: OFF
-    - Rate smoothing: OFF
+    - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
     - Reaction time: 30 s
     - Response factor: 8
