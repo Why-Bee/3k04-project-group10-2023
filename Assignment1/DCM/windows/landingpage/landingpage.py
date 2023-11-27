@@ -25,20 +25,20 @@ class LandingWindow(QMainWindow): # landing page
         # possibly cross reference with database to get the current values of the parameters and make sure they match
         self.board_interface()
 
-        self.updateMode() # update mode label
-        self.updateLabels() # update param labels with values from database
+        self.updateModeLabel() # update mode label
+        self.updateParamLabels() # update param labels with values from database
 
         # connect buttons to functions
         self.backButton.clicked.connect(self.back_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
-        self.editAOO_Button.clicked.connect(self.editAOO_clicked)
-        self.editVOO_Button.clicked.connect(self.editVOO_clicked)
-        self.editAAI_Button.clicked.connect(self.editAAI_clicked)
-        self.editVVI_Button.clicked.connect(self.editVVI_clicked)
-        self.editAOOR_Button.clicked.connect(self.editAOOR_clicked)
-        self.editVOOR_Button.clicked.connect(self.editVOOR_clicked)
-        self.editAAIR_Button.clicked.connect(self.editAAIR_clicked)
-        self.editVVIR_Button.clicked.connect(self.editVVIR_clicked)
+        # self.editAOO_Button.clicked.connect(self.editAOO_clicked)
+        # self.editVOO_Button.clicked.connect(self.editVOO_clicked)
+        # self.editAAI_Button.clicked.connect(self.editAAI_clicked)
+        # self.editVVI_Button.clicked.connect(self.editVVI_clicked)
+        # self.editAOOR_Button.clicked.connect(self.editAOOR_clicked)
+        # self.editVOOR_Button.clicked.connect(self.editVOOR_clicked)
+        # self.editAAIR_Button.clicked.connect(self.editAAIR_clicked)
+        # self.editVVIR_Button.clicked.connect(self.editVVIR_clicked)
 
 
     def board_interface(self):
@@ -56,7 +56,7 @@ class LandingWindow(QMainWindow): # landing page
 
         self.current_mode = 'AOO' # pretend we start in AOO mode
 
-    def updateMode(self): # update mode label, called when mode is changed
+    def updateModeLabel(self): # update mode label, called when mode is changed
         self.device_mode_Value.setText(self.current_mode)
 
     def setUsername(self): # set username label, called when landing window is created
@@ -112,8 +112,8 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and mode in modes: # Once a mode is selected, if valid, update the mode
             self.current_mode = mode
-            self.updateMode() # update mode label
-            self.updateLabels() # update param labels with values from database
+            self.updateModeLabel() # update mode label
+            self.updateParamLabels() # update param labels with values from database
         else:
             # if input is invalid, show error message
             msg = QMessageBox()
@@ -125,7 +125,7 @@ class LandingWindow(QMainWindow): # landing page
             msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
             x = msg.exec_()
 
-    def updateLabels(self): # update labels with values from database
+    def updateParamLabels(self): # update param labels with values from database
         mode = self.current_mode
         conn = connect('users.db')
         c = conn.cursor()
