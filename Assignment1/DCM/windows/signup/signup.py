@@ -17,6 +17,7 @@ class SignupWindow(QMainWindow):
         self.backButton.clicked.connect(self.back_clicked) 
         self.signUpConfirm.clicked.connect(self.check_signup) 
 
+        # Initialize id variable
         self.id = None
 
 
@@ -55,18 +56,16 @@ class SignupWindow(QMainWindow):
                     # fetch number of rows in table
                     c.execute('SELECT id FROM all_users')
                     data = c.fetchall()
-                    # find first available
-                    global id
+                    # find first available id
                     for i in range(1, 11):
                         if i >= len(data)+1 or data[i-1][0] != i:
-                            id = i
+                            self.id = i
                             break
-                    c.execute('INSERT INTO all_users (username, password, id, notes) VALUES (?, ?, ?, ?)', (username, password, id, ""))
+                    c.execute('INSERT INTO all_users (username, password, id, notes) VALUES (?, ?, ?, ?)', (username, password, self.id, ""))
                     conn.commit()
                     c.close()
                     # add new programmable parameters to all tables
-                    self.create_programmable_parameters(id)
-                    self.id = id
+                    self.create_programmable_parameters()
 
                     # change the text to green
                     self.errorLabel.setStyleSheet('color: green')
@@ -78,7 +77,8 @@ class SignupWindow(QMainWindow):
             else:
                 self.errorLabel.setText('Username already exists.')
 
-    def create_programmable_parameters(self, id): # create programmable parameters for new user
+    def create_programmable_parameters(self): # create programmable parameters for new user
+        id = self.id
         conn = connect('users.db')
         c = conn.cursor()
         # go through tables
@@ -99,8 +99,6 @@ class SignupWindow(QMainWindow):
 
     def create_programmable_parameters_VOO(self, id, c): # create programmable parameters for new user
         c.execute('INSERT INTO VOO_data (id, lower_rate_limit, upper_rate_limit, ventricular_amplitude, ventricular_pulse_width) VALUES (?, ?, ?, ?, ?)', (id, 60, 120, 35, 4))
-
-
 
     def create_programmable_parameters_AAI(self, id, c): # create programmable parameters for new user
         c.execute('INSERT INTO AAI_data (id, lower_rate_limit, upper_rate_limit, atrial_amplitude, atrial_pulse_width, sensitivity, ARP, PVARP, hysteresis, rate_smoothing) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 35, 4, 75, 250, 250, 0, 0))

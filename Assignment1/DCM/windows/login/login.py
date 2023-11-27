@@ -18,6 +18,7 @@ class LoginWindow(QMainWindow):
         self.backButton.clicked.connect(self.back_clicked)
         self.loginConfirm.clicked.connect(self.check_login)
 
+        # Initialize id variable
         self.id = None
 
 
