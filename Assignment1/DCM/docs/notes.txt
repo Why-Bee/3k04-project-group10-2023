@@ -23,7 +23,8 @@ Landing Page Redesign:
 - Loop through each param checking if in mode and either setting to val & showing edit button OR set to -- and hide their edit buttons -> Done
 - instead of having all these big edit(mode) functions we just need one for each param -> Done
         - we alr have functions set up to update the labels and the mode -> Done
-- implement edit param button functionality, should validate input then update label
+- implement edit param button functionality, should validate input then update label -> Done
+        - Need input validation still
 
 
 Admin Page: -> Done
