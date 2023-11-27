@@ -12,12 +12,11 @@ class LandingWindow(QMainWindow): # landing page
         self.stacked_window = stacked_window
         self.stacked_window.setWindowTitle("Landing Page")
 
-        # set default values to initialize variables
+        # set default values & initialize variables
         self.current_mode = '' # current mode of device
         self.connectionStatus = False # connected status of device
         self.id = id # id of current user
         self.setUsername() # set username label
-
         self.setColours() # reset colours of labels
 
         # here we would interface with the device to get the current state and which mode is enabled
@@ -80,8 +79,7 @@ class LandingWindow(QMainWindow): # landing page
         else:
             self.device_mode_Value.setText(self.current_mode)
 
-    def updateLabelsBlank(self):
-        # if no mode is selected, set all labels to blank
+    def updateLabelsBlank(self): # if no mode is selected, set all labels to blank and hide buttons
         self.lowerLimit_Value.setText('--')
         self.lowerLimit_Button.hide()
         self.upperLimit_Value.setText('--')
@@ -109,13 +107,14 @@ class LandingWindow(QMainWindow): # landing page
         conn = connect('users.db')
         c = conn.cursor()
         
+        # check to make sure mode != '', i.e. a mode is selected
         if mode in modes:
             params = modes[mode] # get params for mode
 
             # go through all params and update labels
             for param in all_params:
 
-                if param in params: # if param is in mode, get value from database and update label
+                if param in params: # if param is in mode, get value from database, update label & show button
                     c.execute(f'SELECT {param} FROM {mode}_data WHERE id=?', (self.id,))
                     value = c.fetchone()[0]
                     if param == 'ARP' or param == 'VRP':
@@ -147,7 +146,7 @@ class LandingWindow(QMainWindow): # landing page
                         self.VRP_Value.setText(value)
                         self.VRP_Button.show()
 
-                else: # if param is not in mode, set label to blank and hide button
+                else: # if param is not in mode, set label to blank & hide button
                     if param == 'lower_rate_limit':
                         self.lowerLimit_Value.setText('--')
                         self.lowerLimit_Button.hide()
@@ -173,7 +172,7 @@ class LandingWindow(QMainWindow): # landing page
                         self.VRP_Value.setText('--')
                         self.VRP_Button.hide()
 
-        else: # if no mode is selected, set all labels to blank
+        else: # if no mode is selected, set all labels to blank & hide all buttons
             self.updateLabelsBlank()
 
         c.close()
@@ -238,8 +237,7 @@ class LandingWindow(QMainWindow): # landing page
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
 
-        else:
-            # if input is invalid, show error message
+        else: # if input is invalid, show error message
             msg = QMessageBox()
             msg.setWindowTitle('Invalid Input')
             msg.setText('Invalid input. Please ensure you select a valid mode.')
