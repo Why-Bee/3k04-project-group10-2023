@@ -20,10 +20,10 @@ Landing Page Redesign:
 - the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
         - toggleConnectionStatus() would toggle icon top right and the button text -> Done
         - rename connection variable -> Done
-- Loop through each param either setting to val and showing edit button OR
-        - all params that arent for the current mode set to -- and hide their edit buttons
-- instead of having all these big edit(mode) functions we just need one for each param
-        - we alr have functions set up to update the labels and the mode
+- Loop through each param checking if in mode and either setting to val & showing edit button OR set to -- and hide their edit buttons -> Done
+- instead of having all these big edit(mode) functions we just need one for each param -> Done
+        - we alr have functions set up to update the labels and the mode -> Done
+- implement edit param button functionality, should validate input then update label
 
 
 Admin Page: -> Done

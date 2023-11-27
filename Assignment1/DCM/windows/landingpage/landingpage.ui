@@ -640,7 +640,7 @@ QPushButton:hover {
       <string>Edit VRP</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="AAMP_Button">
+    <widget class="QPushButton" name="AAmp_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -672,7 +672,7 @@ QPushButton:hover {
       <string>Edit AAMP</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="VAMP_Button">
+    <widget class="QPushButton" name="VAmp_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
