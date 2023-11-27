@@ -23,11 +23,17 @@ if __name__ == '__main__':
     empty_database() # empty database except for admin user
     fill_database() # fill database
 
-    # Insert a PVARP column into AAI_data table and AAIR_data table with default value 250ms
+    # Insert a hysteresis column into AAI_data, VVI_data, VVIR_data table and AAIR_data table with default value 0 (OFF)
     conn = sqlite3.connect('users.db')
     c = conn.cursor()
     c.execute("SELECT * FROM all_users")
     users = c.fetchall()
+    for user in users:
+        c.execute("UPDATE AAI_data SET hysteresis = ? WHERE id = ?", (0, user[2],))
+        c.execute("UPDATE AAIR_data SET hysteresis = ? WHERE id = ?", (0, user[2],))
+        c.execute("UPDATE VVI_data SET hysteresis = ? WHERE id = ?", (0, user[2],))
+        c.execute("UPDATE VVIR_data SET hysteresis = ? WHERE id = ?", (0, user[2],))
+    conn.commit()
     for user in users:
         c.execute("UPDATE AAI_data SET PVARP = ? WHERE id = ?", (250, user[2],))
         c.execute("UPDATE AAIR_data SET PVARP = ? WHERE id = ?", (250, user[2],))
