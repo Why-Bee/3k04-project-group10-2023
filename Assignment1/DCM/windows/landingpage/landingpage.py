@@ -3,6 +3,9 @@ from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
 
 from sqlite3 import connect
+import serial
+import struct
+import time
 
 
 class LandingWindow(QMainWindow): # landing page
@@ -68,15 +71,65 @@ class LandingWindow(QMainWindow): # landing page
         # send command to board to get current values of parameters
         # for now, pretend board is connected and we start in AOO mode
 
-        # check if board is connected
-        connected = False # for now pretend board is not connected
+        # create serial connection
+        try:
+            ser = serial.Serial('COM7')
+            connected = ser.is_open
+            ser.baudrate = 115200
+            ser.bytesize = 8
+            ser.parity = 'N'
+            ser.stopbits = 1
+
+            for i in range(1000):
+                data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", 
+                            0x16,
+                            0x16, # echo
+                            0x01, 
+                            0x03, 
+                            0x40, 0x01, 
+                            0xAC, 0x0D,
+                            0x90, 0x01,
+                            0x00,
+                            0x1E,
+                            0x78,
+                            0x5A,
+                            0x3C,
+                            0x05,
+                            0x08,
+                            0x78,
+                            0xAC, 0x0D, 
+                            0x90, 0x01,
+                            0xFA, 0x00
+                            )
+                ser.write(data)
+                output = ser.read(size=24)
+                print(output.hex())
+                time.sleep(0.1)
+
+            unpacked = struct.unpack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", output)
+            temp = unpacked[2]
+            if temp == 0:
+                self.current_mode = 'Off'
+            elif temp == 1:
+                self.current_mode = 'AOO'
+            elif temp == 2:
+                self.current_mode = 'VOO'
+            elif temp == 3:
+                self.current_mode = 'AAI'
+            elif temp == 4:
+                self.current_mode = 'VVI'
+
+            # update mode label
+            self.updateModeLabel()
+            
+        except serial.SerialException:
+            self.current_mode = 'Off'
 
         if connected: # if connected, toggle connection status to true -> default is false
             self.toggleConnectionStatus() # update connected status
 
-        self.current_mode = 'Off' # pretend we start in Off mode
-
     def updateModeLabel(self): # update mode label, called when mode is changed
+
         if self.current_mode == '':
             self.device_mode_Value.setText('N/A (Not Connected)') # if no mode is selected, set label to blank
         else:
