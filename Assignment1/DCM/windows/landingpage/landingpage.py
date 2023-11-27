@@ -26,10 +26,11 @@ class LandingWindow(QMainWindow): # landing page
         self.board_interface()
 
         self.updateMode() # update mode label
-        self.updateLabels(self.current_mode) # update param labels with values from database
+        self.updateLabels() # update param labels with values from database
 
         # connect buttons to functions
         self.backButton.clicked.connect(self.back_clicked)
+        self.changemode_Button.clicked.connect(self.changemode_clicked)
         self.editAOO_Button.clicked.connect(self.editAOO_clicked)
         self.editVOO_Button.clicked.connect(self.editVOO_clicked)
         self.editAAI_Button.clicked.connect(self.editAAI_clicked)
@@ -105,7 +106,27 @@ class LandingWindow(QMainWindow): # landing page
         else:
             pass
 
-    def updateLabels(self, mode): # update labels with values from database
+    def changemode_clicked(self): # if change mode button is clicked, show popup window
+        modes = ['AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
+        mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', modes)
+
+        if done1 and mode in modes: # Once a mode is selected, if valid, update the mode
+            self.current_mode = mode
+            self.updateMode() # update mode label
+            self.updateLabels() # update param labels with values from database
+        else:
+            # if input is invalid, show error message
+            msg = QMessageBox()
+            msg.setWindowTitle('Invalid Input')
+            msg.setText('Invalid input. Please ensure you select a valid mode.')
+            msg.setIcon(QMessageBox.Critical)
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.setDefaultButton(QMessageBox.Ok)
+            msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+            x = msg.exec_()
+
+    def updateLabels(self): # update labels with values from database
+        mode = self.current_mode
         conn = connect('users.db')
         c = conn.cursor()
         
