@@ -16,6 +16,17 @@ The following bradycardia operating modes shall be programmable: Off, DDDR, VDDR
 - Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
 
 
+Landing Page Redesign:
+- the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
+        - toggleConnectionStatus() would toggle icon top right and the button text -> Done
+        - rename connection variable -> Done
+- Loop through each param checking if in mode and either setting to val & showing edit button OR set to -- and hide their edit buttons -> Done
+- instead of having all these big edit(mode) functions we just need one for each param -> Done
+        - we alr have functions set up to update the labels and the mode -> Done
+- implement edit param button functionality, should validate input then update label -> Done
+        - Need input validation still
+
+
 Admin Page: -> Done
 - Be a "list" of patients -> Done
 - Grab data from data base loop through it creating an instance of a "row" for each patient -> Done
