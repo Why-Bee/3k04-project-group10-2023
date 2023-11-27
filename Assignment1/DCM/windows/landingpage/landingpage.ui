@@ -832,6 +832,11 @@ QPushButton:hover {
        <height>30</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
@@ -884,6 +889,11 @@ QPushButton:hover {
        <width>100</width>
        <height>30</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
      </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
@@ -938,6 +948,11 @@ QPushButton:hover {
        <height>30</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
      <property name="cursor">
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
@@ -954,6 +969,64 @@ QPushButton:hover {
      </property>
      <property name="text">
       <string>Toggle</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>845</x>
+       <y>650</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ventricular Sensitivity:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="VSens_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>650</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="VSens_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>650</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit VSens</string>
      </property>
     </widget>
    </widget>
