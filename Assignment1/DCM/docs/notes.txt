@@ -63,9 +63,9 @@ AAI -> NOT done
     - Upper rate limit: 120 ppm -> Done
     - Atrial amplitude: 3.5 V -> Done
     - Atrial pulse width: 0.4 ms -> Done
-    - Atrial sensitivity: 0.75 mV
+    - Atrial sensitivity: 0.75 mV -> Done
     - ARP: 250 ms -> Done
-    - PVARP: 250 ms
+    - PVARP: 250 ms -> Done
     - Hysteresis: OFF
     - Rate smoothing: -> NOT required
 
@@ -107,9 +107,9 @@ AAIR -> NOT done
     - Maximum sensor rate: 120 ppm
     - Atrial amplitude: 3.5 V -> Done
     - Atrial pulse width: 0.4 ms -> Done
-    - Atrial sensitivity: 0.75 mV
+    - Atrial sensitivity: 0.75 mV -> Done
     - ARP: 250 ms -> Done
-    - PVARP: 250 ms
+    - PVARP: 250 ms -> Done
     - Hysteresis: OFF
     - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
