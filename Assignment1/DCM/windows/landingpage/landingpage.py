@@ -16,6 +16,7 @@ class LandingWindow(QMainWindow): # landing page
         self.current_mode = '' # current mode of device
         self.connectionStatus = False # connected status of device
         self.id = id # id of current user
+        self.changemode_Button.hide() # hide change mode button
         self.setUsername() # set username label
         self.setColours() # reset colours of labels
 
@@ -28,7 +29,7 @@ class LandingWindow(QMainWindow): # landing page
 
         # connect buttons to functions
         self.backButton.clicked.connect(self.back_clicked)
-        self.connection_Button.clicked.connect(self.toggleConnectionStatus)
+        self.connection_Button.clicked.connect(self.connectionButton_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
         self.lowerLimit_Button.clicked.connect(lambda: self.updateParam('lower_rate_limit'))
         self.upperLimit_Button.clicked.connect(lambda: self.updateParam('upper_rate_limit'))
@@ -66,7 +67,7 @@ class LandingWindow(QMainWindow): # landing page
         # for now, pretend board is connected and we start in AOO mode
 
         # check if board is connected
-        connected = True # for now pretend board is connected
+        connected = False # for now pretend board is not connected
 
         if connected: # if connected, toggle connection status to true -> default is false
             self.toggleConnectionStatus() # update connected status
@@ -227,6 +228,16 @@ class LandingWindow(QMainWindow): # landing page
             self.stacked_window.setWindowTitle("Welcome")
         else:
             pass
+
+    def connectionButton_clicked(self):
+        if self.connectionStatus:
+            # ATTEMPT TO DISCONNECT FROM DEVICE
+            # if successful, toggle connection status
+            self.toggleConnectionStatus() # for now pretend we disconnect successfully
+        else:
+            # ATTEMPT TO CONNECT TO DEVICE
+            # if successful, toggle connection status
+            self.toggleConnectionStatus() # for now pretend we connect successfully
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
         modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
