@@ -58,7 +58,7 @@ VOO -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
 
-AAI -> NOT done
+AAI -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Atrial amplitude: 3.5 V -> Done
@@ -66,7 +66,7 @@ AAI -> NOT done
     - Atrial sensitivity: 0.75 mV -> Done
     - ARP: 250 ms -> Done
     - PVARP: 250 ms -> Done
-    - Hysteresis: OFF
+    - Hysteresis: OFF -> Done
     - Rate smoothing: -> NOT required
 
 VVI -> NOT done
@@ -76,7 +76,7 @@ VVI -> NOT done
     - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV
     - VRP: 320 ms -> Done
-    - Hysteresis: OFF
+    - Hysteresis: OFF -> Done
     - Rate smoothing: -> NOT required
 
 AOOR -> NOT done
@@ -110,7 +110,7 @@ AAIR -> NOT done
     - Atrial sensitivity: 0.75 mV -> Done
     - ARP: 250 ms -> Done
     - PVARP: 250 ms -> Done
-    - Hysteresis: OFF
+    - Hysteresis: OFF -> Done
     - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
     - Reaction time: 30 s
@@ -125,7 +125,7 @@ VVIR -> NOT done
     - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV
     - VRP: 320 ms -> Done
-    - Hysteresis: OFF
+    - Hysteresis: OFF -> Done
     - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
     - Reaction time: 30 s
