@@ -69,12 +69,12 @@ AAI -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: -> NOT required
 
-VVI -> NOT done
+VVI -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
-    - Ventricular sensitivity: 2.5 mV
+    - Ventricular sensitivity: 2.5 mV -> Done
     - VRP: 320 ms -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: -> NOT required

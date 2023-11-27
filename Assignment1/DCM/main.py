@@ -23,14 +23,5 @@ if __name__ == '__main__':
     empty_database() # empty database except for admin user
     fill_database() # fill database
 
-    # Insert a ventricular_sensitivity column into VVI_data, and VVIR_data tables with default value 2.5mV
-    # conn = sqlite3.connect('users.db')
-    # c = conn.cursor()
-    # c.execute("SELECT * FROM all_users")
-    # users = c.fetchall()
-    
-    # conn.commit()
-    # conn.close()
-
 
     sys.exit(app.exec_()) 

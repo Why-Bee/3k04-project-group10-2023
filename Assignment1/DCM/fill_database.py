@@ -41,13 +41,13 @@ def create_programmable_parameters_VVI(id, c): # create programmable parameters 
     c.execute('INSERT INTO VVI_data (id, lower_rate_limit, upper_rate_limit, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 35, 4, 250, 320, 0, 0))
 
 def create_programmable_parameters_AOOR(id, c): # create programmable parameters for new user
-    c.execute('INSERT INTO AOOR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, atrial_amplitude, atrial_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
+    c.execute('INSERT INTO AOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
 
 def create_programmable_parameters_VOOR(id, c): # create programmable parameters for new user
-    c.execute('INSERT INTO VOOR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
+    c.execute('INSERT INTO VOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
 
 def create_programmable_parameters_AAIR(id, c): # create programmable parameters for new user
-    c.execute('INSERT INTO AAIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, atrial_amplitude, atrial_pulse_width, sensitivity, ARP, PVARP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 75, 250, 250, 0, 0, 3, 30, 8, 5))
+    c.execute('INSERT INTO AAIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width, sensitivity, ARP, PVARP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 75, 250, 250, 0, 0, 3, 30, 8, 5))
     
 def create_programmable_parameters_VVIR(id, c): # create programmable parameters for new user
-    c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))
+    c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))

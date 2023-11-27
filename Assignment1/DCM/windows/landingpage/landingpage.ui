@@ -1029,6 +1029,56 @@ QPushButton:hover {
       <string>Edit VSens</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>910</x>
+       <y>690</y>
+       <width>71</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Max Rate:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="max_rate_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>690</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="max_rate_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>690</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit Max Rate</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
