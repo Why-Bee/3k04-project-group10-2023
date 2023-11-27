@@ -7,6 +7,8 @@ from windows.welcome.welcome import MyWindow
 from fill_database import fill_database
 from empty_database import empty_database
 
+import sqlite3
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv) # create application
@@ -20,6 +22,18 @@ if __name__ == '__main__':
     # TEST FUNCTIONS
     empty_database() # empty database except for admin user
     fill_database() # fill database
+
+    # # Insert an atrial_sensitivity column into AAI_data table and AAIR_data table with default value 0.75mV
+    # conn = sqlite3.connect('users.db')
+    # c = conn.cursor()
+    # c.execute("SELECT * FROM all_users")
+    # users = c.fetchall()
+    # for user in users:
+    #     c.execute("UPDATE AAI_data SET atrial_sensitivity = ? WHERE id = ?", (75, user[2],))
+    #     c.execute("UPDATE AAIR_data SET atrial_sensitivity = ? WHERE id = ?", (75, user[2],))
+    #     print("Updated user " + str(user[2]) + " with atrial_sensitivity = 0.75mV")
+    # conn.commit()
+    # conn.close()
 
 
     sys.exit(app.exec_()) 

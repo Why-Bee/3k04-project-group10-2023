@@ -39,6 +39,7 @@ class LandingWindow(QMainWindow): # landing page
         self.VPW_Button.clicked.connect(lambda: self.updateParam('ventricular_pulse_width'))
         self.ARP_Button.clicked.connect(lambda: self.updateParam('ARP'))
         self.VRP_Button.clicked.connect(lambda: self.updateParam('VRP'))
+        self.ASens_Button.clicked.connect(lambda: self.updateParam('atrial_sensitivity'))
 
 
     def setUsername(self): # set username label, called when landing window is created
@@ -97,13 +98,15 @@ class LandingWindow(QMainWindow): # landing page
         self.ARP_Button.hide()
         self.VRP_Value.setText('--')
         self.VRP_Button.hide()
+        self.ASens_Value.setText('--')
+        self.ASens_Button.hide()
 
     def updateParamLabels(self): # update param labels with values from database
         mode = self.current_mode
         # dictionary of modes and their parameters
-        modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time')}
+        modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time')}
         # tuple of all params
-        all_params = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP')
+        all_params = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP', 'atrial_sensitivity')
 
         conn = connect('users.db')
         c = conn.cursor()
@@ -146,6 +149,9 @@ class LandingWindow(QMainWindow): # landing page
                     elif param == 'VRP':
                         self.VRP_Value.setText(value)
                         self.VRP_Button.show()
+                    elif param == 'atrial_sensitivity':
+                        self.ASens_Value.setText(value)
+                        self.ASens_Button.show()
 
                 else: # if param is not in mode, set label to blank & hide button
                     if param == 'lower_rate_limit':
@@ -172,6 +178,9 @@ class LandingWindow(QMainWindow): # landing page
                     elif param == 'VRP':
                         self.VRP_Value.setText('--')
                         self.VRP_Button.hide()
+                    elif param == 'atrial_sensitivity':
+                        self.ASens_Value.setText('--')
+                        self.ASens_Button.hide()
 
         else: # if no mode is selected, set all labels to blank & hide all buttons
             self.updateLabelsBlank()
@@ -290,6 +299,8 @@ class LandingWindow(QMainWindow): # landing page
                 self.ARP_Value.setText(str(value))
             elif param == 'VRP':
                 self.VRP_Value.setText(str(value))
+            elif param == 'atrial_sensitivity':
+                self.ASens_Value.setText(str(value))
 
             # update database
             conn = connect('users.db')

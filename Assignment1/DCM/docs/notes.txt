@@ -9,8 +9,8 @@ The following bradycardia operating modes shall be programmable:
 
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
 
-- The system will be able to set, store, transmit, programmable parameter data, and verify it is stored correctly on the Pacemaker device.
-        - Complete set of the parameter data specified is in PACEMAKER, Table 7.
+- The system will be able to set, store, transmit, programmable parameter data -> Done
+        - Verify it is stored correctly on the Pacemaker device
 
 - The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
         - The DCM must receive the egram data from the Pacemaker over serial communication link in order to display it.
@@ -41,8 +41,8 @@ Admin Page: -> Done
 Database:
 - Need to have database with unique values per user <- Done
 - Each user needs to have all programmable parameters <- Done
-- Each mode needs unique programmable parameters. 
-- Need to be able to save and load database to/from file 
+- Each mode needs unique programmable parameters. -> Done
+- Need to be able to save and load database to/from file -> Done
 
 
 Modes:
