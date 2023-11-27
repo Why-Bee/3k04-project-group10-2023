@@ -1,9 +1,6 @@
 import sys
-from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QApplication, QStackedWidget
 
-from sqlite3 import connect
-from hashlib import sha256
+from PyQt5.QtWidgets import QApplication, QStackedWidget
 
 from windows.welcome.welcome import MyWindow
 

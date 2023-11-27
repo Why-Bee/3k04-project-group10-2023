@@ -13,7 +13,9 @@ class LandingWindow(QMainWindow): # landing page
         self.stacked_window.setWindowTitle("Landing Page")
 
         self.id = id # id of current user
+        self.setUsername() # set username label
 
+        # set default values to initialize variables
         self.current_mode = '' # current mode of device
         self.pConnect = False # connected status of device
 
@@ -23,8 +25,10 @@ class LandingWindow(QMainWindow): # landing page
         # possibly cross reference with database to get the current values of the parameters and make sure they match
         self.board_interface()
 
-        self.updateLabels(self.current_mode) # update labels with values from database
+        self.updateMode() # update mode label
+        self.updateLabels(self.current_mode) # update param labels with values from database
 
+        # connect buttons to functions
         self.backButton.clicked.connect(self.back_clicked)
         self.editAOO_Button.clicked.connect(self.editAOO_clicked)
         self.editVOO_Button.clicked.connect(self.editVOO_clicked)
@@ -35,7 +39,6 @@ class LandingWindow(QMainWindow): # landing page
         self.editAAIR_Button.clicked.connect(self.editAAIR_clicked)
         self.editVVIR_Button.clicked.connect(self.editVVIR_clicked)
 
-        self.updatecPConnect() # update connected status
 
     def board_interface(self):
         # make UART connection with board
@@ -48,10 +51,22 @@ class LandingWindow(QMainWindow): # landing page
 
         if connected:
             self.pConnect = True # change connected status to true
+            self.updatecPConnect() # update connected status
 
         self.current_mode = 'AOO' # pretend we start in AOO mode
 
-    def updatecPConnect(self): # update connected status
+    def updateMode(self): # update mode label, called when mode is changed
+        self.device_mode_Value.setText(self.current_mode)
+
+    def setUsername(self): # set username label, called when landing window is created
+        conn = connect('users.db')
+        c = conn.cursor()
+        c.execute('SELECT username FROM all_users WHERE id=?', (self.id,))
+        username = c.fetchone()[0]
+        self.user_Value.setText(username)
+        c.close()
+
+    def updatecPConnect(self): # update connected status, called when connected status is changed
         if not self.pConnect: # if not connected to device, display disconnected message
             self.connectedStatusText.setText('DISCONNECTED')
             self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
