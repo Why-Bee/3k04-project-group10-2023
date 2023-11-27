@@ -17,9 +17,9 @@ The following bradycardia operating modes shall be programmable: Off, DDDR, VDDR
 
 
 Landing Page Redesign:
-- the connect button would toggle between connect / disconnect opposite of what the device currently is
-        - toggleConnectionStatus() would toggle icon top right and the button text
-        - rename connection variable
+- the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
+        - toggleConnectionStatus() would toggle icon top right and the button text -> Done
+        - rename connection variable -> Done
 - Loop through each param either setting to val and showing edit button OR
         - all params that arent for the current mode set to -- and hide their edit buttons
 - instead of having all these big edit(mode) functions we just need one for each param

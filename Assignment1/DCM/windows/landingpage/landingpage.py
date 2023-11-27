@@ -17,7 +17,7 @@ class LandingWindow(QMainWindow): # landing page
 
         # set default values to initialize variables
         self.current_mode = '' # current mode of device
-        self.pConnect = False # connected status of device
+        self.connectionStatus = False # connected status of device
 
         self.setColours() # reset colours of labels
 
@@ -30,6 +30,7 @@ class LandingWindow(QMainWindow): # landing page
 
         # connect buttons to functions
         self.backButton.clicked.connect(self.back_clicked)
+        self.connection_Button.clicked.connect(self.toggleConnectionStatus)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
         # self.editAOO_Button.clicked.connect(self.editAOO_clicked)
         # self.editVOO_Button.clicked.connect(self.editVOO_clicked)
@@ -50,14 +51,16 @@ class LandingWindow(QMainWindow): # landing page
         # check if board is connected
         connected = True # for now pretend board is connected
 
-        if connected:
-            self.pConnect = True # change connected status to true
-            self.updatecPConnect() # update connected status
+        if connected: # if connected, toggle connection status to true -> default is false
+            self.toggleConnectionStatus() # update connected status
 
         self.current_mode = 'AOO' # pretend we start in AOO mode
 
     def updateModeLabel(self): # update mode label, called when mode is changed
-        self.device_mode_Value.setText(self.current_mode)
+        if self.current_mode == '':
+            self.device_mode_Value.setText('N/A (Not Connected)') # if no mode is selected, set label to blank
+        else:
+            self.device_mode_Value.setText(self.current_mode)
 
     def setUsername(self): # set username label, called when landing window is created
         conn = connect('users.db')
@@ -67,18 +70,28 @@ class LandingWindow(QMainWindow): # landing page
         self.user_Value.setText(username)
         c.close()
 
-    def updatecPConnect(self): # update connected status, called when connected status is changed
-        if not self.pConnect: # if not connected to device, display disconnected message
-            self.connectedStatusText.setText('DISCONNECTED')
-            self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
-            # change pixmap of label to disconnected
-            self.connectedStatusIcon.setPixmap(QPixmap('./assets/disconnected.png'))
+    def toggleConnectionStatus(self): # toggle connection status & related labels, called when connection status is changed
+        self.connectionStatus = not self.connectionStatus # toggle connection status
 
-        else: # if connected to device, display connected message
-            self.connectedStatusText.setText('CONNECTED')
+        # update all related labels
+        if self.connectionStatus: # if connected to device
+            self.connectedStatusText.setText('CONNECTED') # display connected message
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
-            # change pixmap of label to connected
-            self.connectedStatusIcon.setPixmap(QPixmap('./assets/connected.png'))
+            self.connectedStatusIcon.setPixmap(QPixmap('./assets/connected.png')) # change pixmap of label to connected
+            self.connection_Button.setText('Disconnect') # toggle connect / disconnect button
+            self.current_mode = 'AOO' # for now, pretend we start in AOO mode
+            self.changemode_Button.show() # hide change mode button
+            self.updateModeLabel() # update mode label
+
+        else: # if not connected to device
+            self.connectedStatusText.setText('DISCONNECTED') # display disconnected message
+            self.connectedStatusText.setStyleSheet('color: red; font: 75 12pt "MS Shell Dlg 2";')
+            self.connectedStatusIcon.setPixmap(QPixmap('./assets/disconnected.png')) # change pixmap of label to disconnected
+            self.connection_Button.setText('Connect') # toggle connect / disconnect button
+            self.current_mode = '' # set mode to blank
+            self.changemode_Button.hide() # show change mode button
+            self.updateModeLabel() # update mode label
+            
         
     def back_clicked(self): # if back button is clicked, show popup window
         self.show_popup()
