@@ -71,7 +71,7 @@ class LandingWindow(QMainWindow): # landing page
         if connected: # if connected, toggle connection status to true -> default is false
             self.toggleConnectionStatus() # update connected status
 
-        self.current_mode = 'AOO' # pretend we start in AOO mode
+        self.current_mode = 'Off' # pretend we start in Off mode
 
     def updateModeLabel(self): # update mode label, called when mode is changed
         if self.current_mode == '':
@@ -107,7 +107,7 @@ class LandingWindow(QMainWindow): # landing page
         conn = connect('users.db')
         c = conn.cursor()
         
-        # check to make sure mode != '', i.e. a mode is selected
+        # check to make sure mode != '' or 'Off', i.e. a mode is selected
         if mode in modes:
             params = modes[mode] # get params for mode
 
@@ -186,10 +186,10 @@ class LandingWindow(QMainWindow): # landing page
             self.connectedStatusText.setStyleSheet('color:rgb(0, 170, 0); font: 75 12pt "MS Shell Dlg 2";')
             self.connectedStatusIcon.setPixmap(QPixmap('./assets/connected.png')) # change pixmap of label to connected
             self.connection_Button.setText('Disconnect') # toggle connect / disconnect button
-            self.current_mode = 'AOO' # for now, pretend we start in AOO mode
+            self.current_mode = 'Off' # for now, pretend we start in Off mode
             self.changemode_Button.show() # hide change mode button
             self.updateModeLabel() # update mode label
-            self.updateParamLabels() # set all labels to blank
+            self.updateParamLabels() # update param labels with values from database
 
         else: # if not connected to device
             self.connectedStatusText.setText('DISCONNECTED') # display disconnected message
@@ -229,7 +229,7 @@ class LandingWindow(QMainWindow): # landing page
             pass
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
-        modes = ['AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
+        modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
         mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', modes)
 
         if done1 and mode in modes: # Once a mode is selected, if valid, update the mode
