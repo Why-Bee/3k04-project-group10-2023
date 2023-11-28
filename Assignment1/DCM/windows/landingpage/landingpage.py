@@ -57,7 +57,7 @@ class LandingWindow(QMainWindow): # landing page
         self.user_Value.setText(username)
         c.close()
 
-    def setColours(self): # reset colours of labels
+    def setColours(self): # reset colours of labels, called when landing window is created
         # set all labels to black, no bold, 8pt
         self.lowerLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
         self.upperLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
@@ -159,7 +159,7 @@ class LandingWindow(QMainWindow): # landing page
         else:
             self.device_mode_Value.setText(self.current_mode)
 
-    def updateLabelsBlank(self): # if no mode is selected, set all labels to blank and hide buttons
+    def updateLabelsBlank(self): # set all labels to blank and hide buttons, called when no mode is selected or when device is disconnected
         self.lowerLimit_Value.setText('--')
         self.lowerLimit_Button.hide()
         self.upperLimit_Value.setText('--')
@@ -187,7 +187,7 @@ class LandingWindow(QMainWindow): # landing page
         self.max_rate_Value.setText('--')
         self.max_rate_Button.hide()
 
-    def updateParamLabels(self): # update param labels with values from database
+    def updateParamLabels(self): # update all param labels & buttons to match current mode, called when mode is changed
         mode = self.current_mode
         # dictionary of modes and their parameters
         modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'PVARP', 'hysteresis', 'max_sensor_rate'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')}
@@ -362,7 +362,7 @@ class LandingWindow(QMainWindow): # landing page
             # ATTEMPT TO CONNECT TO DEVICE
             # board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
-            self.toggleConnectionStatus() # toggle connection status
+            self.toggleConnectionStatus() # for now pretend we connect successfully
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
         modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
@@ -383,7 +383,7 @@ class LandingWindow(QMainWindow): # landing page
             msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
             x = msg.exec_()
 
-    def updateParam(self, param): # update param label and in database
+    def updateParam(self, param): # update singular param label & database value, called when singe param changed
         # get current value of param from database
         conn = connect('users.db')
         c = conn.cursor()
@@ -457,8 +457,6 @@ class LandingWindow(QMainWindow): # landing page
 
     def validateInputs (self, params):
         # check if inputs are valid
-        # if not, show error message
-        # if yes, update values in database
         # return true if inputs are valid, false if not
         return True # for now, pretend inputs are valid
  
