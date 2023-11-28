@@ -68,7 +68,7 @@ class LandingWindow(QMainWindow): # landing page
         self.ARP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
         self.VRP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
 
-    def board_interface(self):
+    def board_interface(self): # interface with board to get current state and which mode is enabled
         pass
         # # make UART connection with board
         # # send command to board to get current mode
@@ -123,6 +123,8 @@ class LandingWindow(QMainWindow): # landing page
         #     elif temp == 4:
         #         self.current_mode = 'VVI'
 
+        #     ser.close()
+
         #     # update mode label
         #     self.updateModeLabel()
             
@@ -132,6 +134,25 @@ class LandingWindow(QMainWindow): # landing page
         # if connected: # if connected, toggle connection status to true -> default is false
         #     self.toggleConnectionStatus() # update connected status
 
+    # def updateBoard(self, param, value): # update the board with new parameter value
+    #     # send command to board to update parameter
+    #     # check which parameter is being updated
+
+    #     # create serial connection
+    #     try:
+    #         ser = serial.Serial('COM7')
+    #         connected = ser.is_open
+    #         ser.baudrate = 115200
+    #         ser.bytesize = 8
+    #         ser.parity = 'N'
+    #         ser.stopbits = 1
+
+    #         # fetch current values of all parameters
+    #         # connect to database
+    #         conn = connect('users.db')
+    #         c = conn.cursor()
+    #         c.execute(f'SELECT * FROM {self.current_mode}_data WHERE id=?', (self.id,))
+            
     def updateModeLabel(self): # update mode label, called when mode is changed
         if self.current_mode == '':
             self.device_mode_Value.setText('N/A (Not Connected)') # if no mode is selected, set label to blank
@@ -339,8 +360,9 @@ class LandingWindow(QMainWindow): # landing page
             self.toggleConnectionStatus() # for now pretend we disconnect successfully
         else:
             # ATTEMPT TO CONNECT TO DEVICE
+            # board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
-            self.toggleConnectionStatus() # for now pretend we connect successfully
+            self.toggleConnectionStatus() # toggle connection status
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
         modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
@@ -376,7 +398,7 @@ class LandingWindow(QMainWindow): # landing page
             value = not value # toggle value
             done = True
         else:
-            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 0, 50, 1)
+            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 0, 100, 1)
 
         if done and self.validateInputs(value): # if input is valid, update label and database
             # update label
@@ -418,6 +440,10 @@ class LandingWindow(QMainWindow): # landing page
             c.execute(f'UPDATE {self.current_mode}_data SET {param}=? WHERE id=?', (value, self.id))
             conn.commit()
             c.close()
+
+            # update board
+            # send command to board to update parameter
+            # updateBoard(self, param, value)
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
