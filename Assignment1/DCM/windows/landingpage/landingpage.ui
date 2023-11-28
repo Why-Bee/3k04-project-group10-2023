@@ -1064,6 +1064,14 @@ QPushButton:hover {
        <height>30</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">QPushButton {
 	color: rgb(255, 255, 255);

@@ -20,8 +20,8 @@ if __name__ == '__main__':
     stacked_window.show()
 
     # TEST FUNCTIONS
-    empty_database() # empty database except for admin user
-    fill_database() # fill database
+    # empty_database() # empty database except for admin user
+    # fill_database() # fill database
 
 
     sys.exit(app.exec_()) 

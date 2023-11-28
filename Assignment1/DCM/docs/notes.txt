@@ -82,7 +82,7 @@ VVI -> Done
 AOOR -> NOT done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
-    - Maximum sensor rate: 120 ppm
+    - Maximum sensor rate: 120 ppm -> Done
     - Atrial amplitude: 3.5 V -> Done
     - Atrial pulse width: 0.4 ms -> Done
     - Activity threshold: MED
@@ -93,7 +93,7 @@ AOOR -> NOT done
 VOOR -> NOT done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
-    - Maximum sensor rate: 120 ppm
+    - Maximum sensor rate: 120 ppm -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
     - Activity threshold: MED
@@ -104,7 +104,7 @@ VOOR -> NOT done
 AAIR -> NOT done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
-    - Maximum sensor rate: 120 ppm
+    - Maximum sensor rate: 120 ppm -> Done
     - Atrial amplitude: 3.5 V -> Done
     - Atrial pulse width: 0.4 ms -> Done
     - Atrial sensitivity: 0.75 mV -> Done
@@ -120,7 +120,7 @@ AAIR -> NOT done
 VVIR -> NOT done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
-    - Maximum sensor rate: 120 ppm
+    - Maximum sensor rate: 120 ppm -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV

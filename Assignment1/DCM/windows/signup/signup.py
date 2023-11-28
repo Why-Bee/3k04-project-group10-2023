@@ -7,6 +7,7 @@ from hashlib import sha256
 
 from windows.landingpage.landingpage import LandingWindow
 
+MAX_USERS = 10
 
 class SignupWindow(QMainWindow): 
     def __init__(self, stacked_window):
@@ -45,7 +46,7 @@ class SignupWindow(QMainWindow):
                 if (self.passwordField.text() == self.confirmPasswordField.text()):
                     # database cannot have more than 10 entries
                     c.execute('SELECT * FROM all_users')
-                    if (len(c.fetchall()) >= 10):
+                    if (len(c.fetchall()) >= MAX_USERS):
                         self.errorLabel.setText('Database is full.')
                         return
                     
@@ -57,7 +58,7 @@ class SignupWindow(QMainWindow):
                     c.execute('SELECT id FROM all_users')
                     data = c.fetchall()
                     # find first available id
-                    for i in range(1, 11):
+                    for i in range(1, MAX_USERS+1):
                         if i >= len(data)+1 or data[i-1][0] != i:
                             self.id = i
                             break
@@ -132,7 +133,7 @@ class SignupWindow(QMainWindow):
         # c.execute('INSERT INTO AOOR_reaction_time (id, value) VALUES (?, ?)', (id, 30))
         # c.execute('INSERT INTO AOOR_response_factor (id, value) VALUES (?, ?)', (id, 8))
         # c.execute('INSERT INTO AOOR_recovery_time (id, value) VALUES (?, ?)', (id, 5))
-        c.execute('INSERT INTO AOOR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, atrial_amplitude, atrial_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
+        c.execute('INSERT INTO AOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
 
     def create_programmable_parameters_VOOR(self, id, c): # create programmable parameters for new user
         # c.execute('INSERT INTO VOOR_lower_rate_limit (id, value) VALUES (?, ?)', (id, 60))
@@ -144,7 +145,7 @@ class SignupWindow(QMainWindow):
         # c.execute('INSERT INTO VOOR_reaction_time (id, value) VALUES (?, ?)', (id, 30))
         # c.execute('INSERT INTO VOOR_response_factor (id, value) VALUES (?, ?)', (id, 8))
         # c.execute('INSERT INTO VOOR_recovery_time (id, value) VALUES (?, ?)', (id, 5))
-        c.execute('INSERT INTO VOOR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
+        c.execute('INSERT INTO VOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 3, 30, 8, 5))
 
     def create_programmable_parameters_AAIR(self, id, c): # create programmable parameters for new user
         # c.execute('INSERT INTO AAIR_lower_rate_limit (id, value) VALUES (?, ?)', (id, 60))
@@ -161,7 +162,7 @@ class SignupWindow(QMainWindow):
         # c.execute('INSERT INTO AAIR_reaction_time (id, value) VALUES (?, ?)', (id, 30))
         # c.execute('INSERT INTO AAIR_response_factor (id, value) VALUES (?, ?)', (id, 8))
         # c.execute('INSERT INTO AAIR_recovery_time (id, value) VALUES (?, ?)', (id, 5))
-        c.execute('INSERT INTO AAIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, atrial_amplitude, atrial_pulse_width, sensitivity, ARP, PVARP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 75, 250, 250, 0, 0, 3, 30, 8, 5))
+        c.execute('INSERT INTO AAIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width, sensitivity, ARP, PVARP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 75, 250, 250, 0, 0, 3, 30, 8, 5))
         
     def create_programmable_parameters_VVIR(self, id, c): # create programmable parameters for new user
         # c.execute('INSERT INTO VVIR_lower_rate_limit (id, value) VALUES (?, ?)', (id, 60))
@@ -177,7 +178,7 @@ class SignupWindow(QMainWindow):
         # c.execute('INSERT INTO VVIR_reaction_time (id, value) VALUES (?, ?)', (id, 30))
         # c.execute('INSERT INTO VVIR_response_factor (id, value) VALUES (?, ?)', (id, 8))
         # c.execute('INSERT INTO VVIR_recovery_time (id, value) VALUES (?, ?)', (id, 5))
-        c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, maximum_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))
+        c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width, sensitivity, VRP, hysteresis, rate_smoothing, activity_threshold, reaction_time, response_factor, recovery_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0, 0, 3, 30, 8, 5))
 
     def show_landing_window(self):
         landing_window = LandingWindow(self.stacked_window, self.id)
