@@ -2,112 +2,131 @@ Assignment1:
 - Issues on GitHub.
 
 Assignment2:
-- Expand the DCM to include all required modes and parameters.
+- Expand the DCM to include all required modes and parameters:
+The following bradycardia operating modes shall be programmable: 
+- Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> 
+- OVO, OAO, and OOO shall be available in temporary operation -> IDK
+
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
-- The system will be able to set, store, transmit, programmable parameter data, and verify it is stored correctly on the Pacemaker device.
-        - Complete set of the parameter data specified is in PACEMAKER, Table 7.
+
+- The system will be able to set, store, transmit, programmable parameter data -> Done
+        - Verify it is stored correctly on the Pacemaker device
+
 - The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
         - The DCM must receive the egram data from the Pacemaker over serial communication link in order to display it.
-- Document how programmable parameters stoer in the Pacemaker are what the doctor input on the DCM.
-        - Also justify your choice of the data types used to represent the parameters data.
+
+- Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
 
 
-Admin Page:
-- Be a "list" of patients
-- Grab data from data base loop through it creating an instance of a "row" for each patient
-- In each patients row display patient id, username, notes about patient, and option to remove from database
-- Have popup on removal to ensure confirmation
+Landing Page Redesign:
+- the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
+        - toggleConnectionStatus() would toggle icon top right and the button text -> Done
+        - rename connection variable -> Done
+- Loop through each param checking if in mode and either setting to val & showing edit button OR set to -- and hide their edit buttons -> Done
+- instead of having all these big edit(mode) functions we just need one for each param -> Done
+        - we alr have functions set up to update the labels and the mode -> Done
+- implement edit param button functionality, should validate input then update label -> Done
+        - Need input validation still
+
+
+Admin Page: -> Done
+- Be a "list" of patients -> Done
+- Grab data from data base loop through it creating an instance of a "row" for each patient -> Done
+- In each patients row display patient id, username, notes about patient, and option to remove from database -> Done
+        - Need to add Notes column to database -> Done
+        - Need to update database when column edited, on enter hit after typing finished -> Done
+- Have popup on removal to ensure confirmation -> Done
 
 
 Database:
-- Need to have database with unique values per user
-- Each user needs to have all programmable parameters
-- Each mode needs unique programmable parameters.
-- Need to be able to save and load database to/from file
+- Need to have database with unique values per user <- Done
+- Each user needs to have all programmable parameters <- Done
+- Each mode needs unique programmable parameters. -> Done
+- Need to be able to save and load database to/from file -> Done
 
 
 Modes:
-AOO
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
+AOO -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
 
-VOO
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+VOO -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
 
-AAI 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
-    - Atrial sensitivity: 0.75 mV
-    - ARP: 250 ms
-    - PVARP: 250 ms
-    - Hysteresis: OFF
-    - Rate smoothing: OFF
+AAI -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
+    - Atrial sensitivity: 0.75 mV -> Done
+    - ARP: 250 ms -> Done
+    - PVARP: 250 ms -> Done
+    - Hysteresis: OFF -> Done
+    - Rate smoothing: -> NOT required
 
-VVI 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
+VVI -> Done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
+    - Ventricular sensitivity: 2.5 mV -> Done
+    - VRP: 320 ms -> Done
+    - Hysteresis: OFF -> Done
+    - Rate smoothing: -> NOT required
+
+AOOR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Maximum sensor rate: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
+
+VOOR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Maximum sensor rate: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
+
+AAIR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Maximum sensor rate: 120 ppm -> Done
+    - Atrial amplitude: 3.5 V -> Done
+    - Atrial pulse width: 0.4 ms -> Done
+    - Atrial sensitivity: 0.75 mV -> Done
+    - ARP: 250 ms -> Done
+    - PVARP: 250 ms -> Done
+    - Hysteresis: OFF -> Done
+    - Rate smoothing: OFF -> NOT required
+    - Activity threshold: MED
+    - Reaction time: 30 s
+    - Response factor: 8
+    - Recovery time: 5 min
+
+VVIR -> NOT done
+    - Lower rate limit: 60 ppm -> Done
+    - Upper rate limit: 120 ppm -> Done
+    - Maximum sensor rate: 120 ppm -> Done
+    - Ventricular amplitude: 3.5 V -> Done
+    - Ventricular pulse width: 0.4 ms -> Done
     - Ventricular sensitivity: 2.5 mV
-    - VRP: 320 ms
-    - Hysteresis: OFF
-    - Rate smoothing: 
-
-AOOR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Maximum sensor rate: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
-
-VOOR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Maximum sensor rate: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
-
-AAIR 
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Maximum sensor rate: 120 ppm
-    - Atrial amplitude: 3.5 V
-    - Atrial pulse width: 0.4 ms
-    - Atrial sensitivity: 0.75 mV
-    - ARP: 250 ms
-    - PVARP: 250 ms
-    - Hysteresis: OFF
-    - Rate smoothing: OFF
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
-
-VVIR
-    - Lower rate limit: 60 ppm
-    - Upper rate limit: 120 ppm
-    - Maximum sensor rate: 120 ppm
-    - Ventricular amplitude: 3.5 V
-    - Ventricular pulse width: 0.4 ms
-    - Ventricular sensitivity: 2.5 mV
-    - VRP: 320 ms
-    - Hysteresis: OFF
-    - Rate smoothing: OFF
+    - VRP: 320 ms -> Done
+    - Hysteresis: OFF -> Done
+    - Rate smoothing: OFF -> NOT required
     - Activity threshold: MED
     - Reaction time: 30 s
     - Response factor: 8

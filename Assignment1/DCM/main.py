@@ -1,14 +1,13 @@
 import sys
-from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QApplication, QStackedWidget
 
-from sqlite3 import connect
-from hashlib import sha256
+from PyQt5.QtWidgets import QApplication, QStackedWidget
 
 from windows.welcome.welcome import MyWindow
 
+from fill_database import fill_database
+from empty_database import empty_database
 
-id = 0 # id of user
+import sqlite3
 
 
 if __name__ == '__main__':
@@ -20,5 +19,9 @@ if __name__ == '__main__':
     stacked_window.setFixedHeight(800)
     stacked_window.show()
 
-    sys.exit(app.exec_()) 
+    # TEST FUNCTIONS
+    # empty_database() # empty database except for admin user
+    # fill_database() # fill database
 
+
+    sys.exit(app.exec_()) 

@@ -10,8 +10,8 @@ class MyWindow(QMainWindow): # Welcome screen
     def __init__(self, stacked_window):
         super(MyWindow, self).__init__()
         loadUi('./windows/welcome/welcome.ui', self) 
-        self.setWindowTitle('Welcome')
         self.stacked_window = stacked_window
+        self.stacked_window.setWindowTitle("Welcome")
         self.adminButton.clicked.connect(self.admin_clicked)
         self.loginButton.clicked.connect(self.login_clicked) 
         self.signUpButton.clicked.connect(self.signup_clicked)

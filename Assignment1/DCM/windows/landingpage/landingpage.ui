@@ -102,7 +102,7 @@ QPushButton:hover {
       <enum>Qt::AutoText</enum>
      </property>
      <property name="pixmap">
-      <pixmap>../../assets/connected.png</pixmap>
+      <pixmap>../../assets/disconnected.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -118,143 +118,22 @@ QPushButton:hover {
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color:rgb(0, 170, 0);
+      <string notr="true">color: red;
 font: 75 12pt &quot;MS Shell Dlg 2&quot;;
 </string>
      </property>
      <property name="text">
-      <string>CONNECTED</string>
+      <string>DISCONNECTED</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="editAOO_Button">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>210</y>
-       <width>150</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton {
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 0, 127);
-	border-radius: 10px;
-	
-	font: 14pt &quot;MS Reference Sans Serif&quot;;
-}
-
-QPushButton:hover {
-	background-color: rgb(85, 170, 255);
-}</string>
-     </property>
-     <property name="text">
-      <string>Edit AOO</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="editVOO_Button">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>320</y>
-       <width>150</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton {
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 0, 127);
-	border-radius: 10px;
-
-	font: 14pt &quot;MS Reference Sans Serif&quot;;
-
-}
-
-QPushButton:hover {
-	background-color: rgb(85, 170, 255);
-}
-</string>
-     </property>
-     <property name="text">
-      <string>Edit VOO</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="editAAI_Button">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>430</y>
-       <width>150</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton {
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 0, 127);
-	border-radius: 10px;
-
-	font: 14pt &quot;MS Reference Sans Serif&quot;;
-
-}
-
-QPushButton:hover {
-	background-color: rgb(85, 170, 255);
-}</string>
-     </property>
-     <property name="text">
-      <string>Edit AAI</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="editVVI_Button">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>540</y>
-       <width>150</width>
-       <height>90</height>
-      </rect>
-     </property>
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">QPushButton {
-	color: rgb(255, 255, 255);
-	background-color: rgb(0, 0, 127);
-	border-radius: 10px;
-
-	font: 14pt &quot;MS Reference Sans Serif&quot;;
-
-}
-
-QPushButton:hover {
-	background-color: rgb(85, 170, 255);
-}
-</string>
-     </property>
-     <property name="text">
-      <string>Edit VVI</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="currentParameters">
      <property name="geometry">
       <rect>
-       <x>950</x>
-       <y>170</y>
+       <x>910</x>
+       <y>150</y>
        <width>221</width>
        <height>61</height>
       </rect>
@@ -269,26 +148,13 @@ QPushButton:hover {
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="lowerLimit">
-     <property name="geometry">
-      <rect>
-       <x>880</x>
-       <y>210</y>
-       <width>111</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Lower Rate Limit:</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="upperLimit">
      <property name="geometry">
       <rect>
        <x>880</x>
-       <y>230</y>
+       <y>250</y>
        <width>111</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -301,7 +167,7 @@ QPushButton:hover {
        <x>990</x>
        <y>210</y>
        <width>61</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -312,9 +178,9 @@ QPushButton:hover {
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>230</y>
+       <y>250</y>
        <width>61</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -324,10 +190,10 @@ QPushButton:hover {
     <widget class="QLabel" name="ARP">
      <property name="geometry">
       <rect>
-       <x>940</x>
-       <y>260</y>
+       <x>950</x>
+       <y>290</y>
        <width>61</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -337,10 +203,10 @@ QPushButton:hover {
     <widget class="QLabel" name="VRP">
      <property name="geometry">
       <rect>
-       <x>940</x>
-       <y>280</y>
+       <x>950</x>
+       <y>330</y>
        <width>61</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -351,9 +217,9 @@ QPushButton:hover {
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>260</y>
+       <y>290</y>
        <width>121</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -364,35 +230,35 @@ QPushButton:hover {
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>280</y>
+       <y>330</y>
        <width>101</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VRP_2">
+    <widget class="QLabel" name="AAmp">
      <property name="geometry">
       <rect>
        <x>880</x>
-       <y>330</y>
+       <y>370</y>
        <width>101</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
       <string>Atrial Amplitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VRP_3">
+    <widget class="QLabel" name="VAmp">
      <property name="geometry">
       <rect>
        <x>850</x>
-       <y>350</y>
+       <y>410</y>
        <width>131</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -403,9 +269,9 @@ QPushButton:hover {
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>350</y>
+       <y>410</y>
        <width>101</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -416,9 +282,9 @@ QPushButton:hover {
      <property name="geometry">
       <rect>
        <x>990</x>
-       <y>330</y>
+       <y>370</y>
        <width>121</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -428,36 +294,36 @@ QPushButton:hover {
     <widget class="QLabel" name="VPW_Value">
      <property name="geometry">
       <rect>
-       <x>980</x>
-       <y>420</y>
+       <x>990</x>
+       <y>490</y>
        <width>101</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VRP_4">
+    <widget class="QLabel" name="APW">
      <property name="geometry">
       <rect>
-       <x>900</x>
-       <y>400</y>
+       <x>920</x>
+       <y>450</y>
        <width>101</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
       <string>Atrial PW:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VRP_5">
+    <widget class="QLabel" name="VPW">
      <property name="geometry">
       <rect>
-       <x>870</x>
-       <y>420</y>
+       <x>890</x>
+       <y>490</y>
        <width>131</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
@@ -467,17 +333,17 @@ QPushButton:hover {
     <widget class="QLabel" name="APW_Value">
      <property name="geometry">
       <rect>
-       <x>980</x>
-       <y>400</y>
+       <x>990</x>
+       <y>450</y>
        <width>121</width>
-       <height>31</height>
+       <height>30</height>
       </rect>
      </property>
      <property name="text">
       <string>--</string>
      </property>
     </widget>
-    <widget class="QWidget" name="ParamWidget" native="true">
+    <widget class="QWidget" name="infoWidget" native="true">
      <property name="geometry">
       <rect>
        <x>420</x>
@@ -486,10 +352,13 @@ QPushButton:hover {
        <height>411</height>
       </rect>
      </property>
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">QWidget#ParamWidget{border: 5px solid black;}</string>
      </property>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="currentUID">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -526,7 +395,7 @@ QPushButton:hover {
        <string>0xF00D</string>
       </property>
      </widget>
-     <widget class="QLabel" name="loggedInText">
+     <widget class="QLabel" name="user">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -563,6 +432,660 @@ QPushButton:hover {
        <string/>
       </property>
      </widget>
+     <widget class="QLabel" name="device_mode">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>240</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>MS Reference Sans Serif</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Current Device Mode:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="device_mode_Value">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>270</y>
+        <width>271</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="lowerLimit">
+     <property name="geometry">
+      <rect>
+       <x>880</x>
+       <y>210</y>
+       <width>111</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lower Rate Limit:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="changemode_Button">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>420</y>
+       <width>161</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 10px;
+	
+	font: 14pt &quot;MS Reference Sans Serif&quot;;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Change Mode</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="lowerLimit_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>210</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit LRL</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="upperLimit_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>250</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit URL</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ARP_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>290</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit ARP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="VRP_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>330</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit VRP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="AAmp_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>370</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit AAMP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="VAmp_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>410</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit VAMP</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="APW_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>450</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit APW</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="VPW_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>490</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit VPW</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="connection_Button">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>240</y>
+       <width>161</width>
+       <height>90</height>
+      </rect>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 10px;
+	
+	font: 14pt &quot;MS Reference Sans Serif&quot;;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ASens">
+     <property name="geometry">
+      <rect>
+       <x>880</x>
+       <y>530</y>
+       <width>131</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Atrial Sensitivity:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ASens_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>530</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ASens_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>530</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit ASens</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="PVARP">
+     <property name="geometry">
+      <rect>
+       <x>930</x>
+       <y>570</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PVARP:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="PVARP_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>570</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="PVARP_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>570</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit PVARP</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="hysteresis">
+     <property name="geometry">
+      <rect>
+       <x>910</x>
+       <y>610</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hysteresis:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="hysteresis_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>610</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="hysteresis_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>610</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Toggle</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>845</x>
+       <y>650</y>
+       <width>141</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ventricular Sensitivity:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="VSens_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>650</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="VSens_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>650</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit VSens</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>910</x>
+       <y>690</y>
+       <width>71</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Max Rate:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="max_rate_Value">
+     <property name="geometry">
+      <rect>
+       <x>990</x>
+       <y>690</y>
+       <width>55</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>--</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="max_rate_Button">
+     <property name="geometry">
+      <rect>
+       <x>1050</x>
+       <y>690</y>
+       <width>100</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+	color: rgb(255, 255, 255);
+	background-color: rgb(0, 0, 127);
+	border-radius: 2px;
+}
+
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+     </property>
+     <property name="text">
+      <string>Edit Max Rate</string>
+     </property>
     </widget>
    </widget>
   </widget>
