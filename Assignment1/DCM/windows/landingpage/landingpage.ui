@@ -48,7 +48,7 @@ border-radius: 28px;
       <string>Welcome to the Device Control Module</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="backButton">
+    <widget class="QPushButton" name="back_Button">
      <property name="geometry">
       <rect>
        <x>50</x>
@@ -148,7 +148,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="upperLimit">
+    <widget class="QLabel" name="upper_rate_limit">
      <property name="geometry">
       <rect>
        <x>880</x>
@@ -161,7 +161,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>Upper Rate Limit:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="lowerLimit_Value">
+    <widget class="QLabel" name="lower_rate_limit_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -174,7 +174,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="upperLimit_Value">
+    <widget class="QLabel" name="upper_rate_limit_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -239,7 +239,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="AAmp">
+    <widget class="QLabel" name="atrial_amplitude">
      <property name="geometry">
       <rect>
        <x>880</x>
@@ -252,7 +252,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>Atrial Amplitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VAmp">
+    <widget class="QLabel" name="ventricular_amplitude">
      <property name="geometry">
       <rect>
        <x>850</x>
@@ -265,7 +265,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>Ventricular Amplitude:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VAmp_Value">
+    <widget class="QLabel" name="ventricular_amplitude_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -278,7 +278,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="AAmp_Value">
+    <widget class="QLabel" name="atrial_amplitude_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -291,7 +291,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VPW_Value">
+    <widget class="QLabel" name="ventricular_pulse_width_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -304,7 +304,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>--</string>
      </property>
     </widget>
-    <widget class="QLabel" name="APW">
+    <widget class="QLabel" name="atrial_pulse_width">
      <property name="geometry">
       <rect>
        <x>920</x>
@@ -317,7 +317,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>Atrial PW:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VPW">
+    <widget class="QLabel" name="ventricular_pulse_width">
      <property name="geometry">
       <rect>
        <x>890</x>
@@ -330,7 +330,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       <string>Ventricular PW:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="APW_Value">
+    <widget class="QLabel" name="atrial_pulse_width_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -470,7 +470,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
       </property>
      </widget>
     </widget>
-    <widget class="QLabel" name="lowerLimit">
+    <widget class="QLabel" name="lower_rate_limit">
      <property name="geometry">
       <rect>
        <x>880</x>
@@ -512,7 +512,7 @@ QPushButton:hover {
       <string>Change Mode</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="lowerLimit_Button">
+    <widget class="QPushButton" name="lower_rate_limit_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -544,7 +544,7 @@ QPushButton:hover {
       <string>Edit LRL</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="upperLimit_Button">
+    <widget class="QPushButton" name="upper_rate_limit_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -640,7 +640,7 @@ QPushButton:hover {
       <string>Edit VRP</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="AAmp_Button">
+    <widget class="QPushButton" name="atrial_amplitude_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -672,7 +672,7 @@ QPushButton:hover {
       <string>Edit AAMP</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="VAmp_Button">
+    <widget class="QPushButton" name="ventricular_amplitude_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -704,7 +704,7 @@ QPushButton:hover {
       <string>Edit VAMP</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="APW_Button">
+    <widget class="QPushButton" name="atrial_pulse_width_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -736,7 +736,7 @@ QPushButton:hover {
       <string>Edit APW</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="VPW_Button">
+    <widget class="QPushButton" name="ventricular_pulse_width_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -797,7 +797,7 @@ QPushButton:hover {
       <string>Connect</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ASens">
+    <widget class="QLabel" name="atrial_sensitivity">
      <property name="geometry">
       <rect>
        <x>880</x>
@@ -810,7 +810,7 @@ QPushButton:hover {
       <string>Atrial Sensitivity:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="ASens_Value">
+    <widget class="QLabel" name="atrial_sensitivity_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -823,7 +823,7 @@ QPushButton:hover {
       <string>--</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="ASens_Button">
+    <widget class="QPushButton" name="atrial_sensitivity_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -971,7 +971,7 @@ QPushButton:hover {
       <string>Toggle</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="ventricular_sensitivity">
      <property name="geometry">
       <rect>
        <x>845</x>
@@ -984,7 +984,7 @@ QPushButton:hover {
       <string>Ventricular Sensitivity:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="VSens_Value">
+    <widget class="QLabel" name="ventricular_sensitivity_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -997,7 +997,7 @@ QPushButton:hover {
       <string>--</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="VSens_Button">
+    <widget class="QPushButton" name="ventricular_sensitivity_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>
@@ -1029,20 +1029,20 @@ QPushButton:hover {
       <string>Edit VSens</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="max_sensor_rate">
      <property name="geometry">
       <rect>
-       <x>910</x>
+       <x>870</x>
        <y>690</y>
-       <width>71</width>
+       <width>111</width>
        <height>30</height>
       </rect>
      </property>
      <property name="text">
-      <string>Max Rate:</string>
+      <string>Max Sensor Rate:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="max_rate_Value">
+    <widget class="QLabel" name="max_sensor_rate_Value">
      <property name="geometry">
       <rect>
        <x>990</x>
@@ -1055,7 +1055,7 @@ QPushButton:hover {
       <string>--</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="max_rate_Button">
+    <widget class="QPushButton" name="max_sensor_rate_Button">
      <property name="geometry">
       <rect>
        <x>1050</x>

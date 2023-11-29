@@ -7,6 +7,9 @@ from sqlite3 import connect
 import struct
 import time
 
+# const tuple of all params
+ALL_PARAMS = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+
 
 class LandingWindow(QMainWindow): # landing page
     def __init__(self, stacked_window, id):
@@ -31,22 +34,12 @@ class LandingWindow(QMainWindow): # landing page
         self.updateParamLabels() # update param labels with values from database
 
         # connect buttons to functions
-        self.backButton.clicked.connect(self.back_clicked)
+        self.back_Button.clicked.connect(self.back_clicked)
         self.connection_Button.clicked.connect(self.connectionButton_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
-        self.lowerLimit_Button.clicked.connect(lambda: self.updateParam('lower_rate_limit'))
-        self.upperLimit_Button.clicked.connect(lambda: self.updateParam('upper_rate_limit'))
-        self.AAmp_Button.clicked.connect(lambda: self.updateParam('atrial_amplitude'))
-        self.APW_Button.clicked.connect(lambda: self.updateParam('atrial_pulse_width'))
-        self.VAmp_Button.clicked.connect(lambda: self.updateParam('ventricular_amplitude'))
-        self.VPW_Button.clicked.connect(lambda: self.updateParam('ventricular_pulse_width'))
-        self.ARP_Button.clicked.connect(lambda: self.updateParam('ARP'))
-        self.VRP_Button.clicked.connect(lambda: self.updateParam('VRP'))
-        self.ASens_Button.clicked.connect(lambda: self.updateParam('atrial_sensitivity'))
-        self.PVARP_Button.clicked.connect(lambda: self.updateParam('PVARP'))
-        self.hysteresis_Button.clicked.connect(lambda: self.updateParam('hysteresis'))
-        self.VSens_Button.clicked.connect(lambda: self.updateParam('ventricular_sensitivity'))
-        self.max_rate_Button.clicked.connect(lambda: self.updateParam('max_sensor_rate'))
+        for param in ALL_PARAMS: # connect all param buttons to updateParam function
+            button_name = f'{param}_Button'
+            getattr(self, button_name).clicked.connect(lambda _, param=param: self.updateParam(param))
 
 
     def setUsername(self): # set username label, called when landing window is created
@@ -59,14 +52,9 @@ class LandingWindow(QMainWindow): # landing page
 
     def setColours(self): # reset colours of labels, called when landing window is created
         # set all labels to black, no bold, 8pt
-        self.lowerLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.upperLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.AAmp_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.APW_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VAmp_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VPW_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.ARP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VRP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
+        for param in ALL_PARAMS:
+            value_name = f'{param}_Value'
+            getattr(self, value_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
 
     def board_interface(self): # interface with board to get current state and which mode is enabled
         pass
@@ -160,39 +148,16 @@ class LandingWindow(QMainWindow): # landing page
             self.device_mode_Value.setText(self.current_mode)
 
     def updateLabelsBlank(self): # set all labels to blank and hide buttons, called when no mode is selected or when device is disconnected
-        self.lowerLimit_Value.setText('--')
-        self.lowerLimit_Button.hide()
-        self.upperLimit_Value.setText('--')
-        self.upperLimit_Button.hide()
-        self.AAmp_Value.setText('--')
-        self.AAmp_Button.hide()
-        self.APW_Value.setText('--')
-        self.APW_Button.hide()
-        self.VAmp_Value.setText('--')
-        self.VAmp_Button.hide()
-        self.VPW_Value.setText('--')
-        self.VPW_Button.hide()
-        self.ARP_Value.setText('--')
-        self.ARP_Button.hide()
-        self.VRP_Value.setText('--')
-        self.VRP_Button.hide()
-        self.ASens_Value.setText('--')
-        self.ASens_Button.hide()
-        self.PVARP_Value.setText('--')
-        self.PVARP_Button.hide()
-        self.hysteresis_Value.setText('--')
-        self.hysteresis_Button.hide()
-        self.VSens_Value.setText('--')
-        self.VSens_Button.hide()
-        self.max_rate_Value.setText('--')
-        self.max_rate_Button.hide()
+        for param in ALL_PARAMS:
+            value_name = f'{param}_Value'
+            button_name = f'{param}_Button'
+            getattr(self, value_name).setText('--')
+            getattr(self, button_name).hide()
 
     def updateParamLabels(self): # update all param labels & buttons to match current mode, called when mode is changed
         mode = self.current_mode
         # dictionary of modes and their parameters
         modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'PVARP', 'hysteresis', 'max_sensor_rate'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')}
-        # tuple of all params
-        all_params = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
 
         conn = connect('users.db')
         c = conn.cursor()
@@ -202,7 +167,9 @@ class LandingWindow(QMainWindow): # landing page
             params = modes[mode] # get params for mode
 
             # go through all params and update labels
-            for param in all_params:
+            for param in ALL_PARAMS:
+                value_name = f'{param}_Value'
+                button_name = f'{param}_Button'
 
                 if param in params: # if param is in mode, get value from database, update label & show button
                     c.execute(f'SELECT {param} FROM {mode}_data WHERE id=?', (self.id,))
@@ -211,91 +178,12 @@ class LandingWindow(QMainWindow): # landing page
                         value = value / 1000
                     value = str(value)
 
-                    if param == 'lower_rate_limit':
-                        self.lowerLimit_Value.setText(value)
-                        self.lowerLimit_Button.show()
-                    elif param == 'upper_rate_limit':
-                        self.upperLimit_Value.setText(value)
-                        self.upperLimit_Button.show()
-                    elif param == 'atrial_amplitude':
-                        self.AAmp_Value.setText(value)
-                        self.AAmp_Button.show()
-                    elif param == 'atrial_pulse_width':
-                        self.APW_Value.setText(value)
-                        self.APW_Button.show()
-                    elif param == 'ventricular_amplitude':
-                        self.VAmp_Value.setText(value)
-                        self.VAmp_Button.show()
-                    elif param == 'ventricular_pulse_width':
-                        self.VPW_Value.setText(value)
-                        self.VPW_Button.show()
-                    elif param == 'ARP':
-                        self.ARP_Value.setText(value)
-                        self.ARP_Button.show()
-                    elif param == 'VRP':
-                        self.VRP_Value.setText(value)
-                        self.VRP_Button.show()
-                    elif param == 'atrial_sensitivity':
-                        self.ASens_Value.setText(value)
-                        self.ASens_Button.show()
-                    elif param == 'PVARP':
-                        self.PVARP_Value.setText(value)
-                        self.PVARP_Button.show()
-                    elif param == 'hysteresis':
-                        if value == '0':
-                            self.hysteresis_Value.setText('OFF')
-                        elif value == '1':
-                            self.hysteresis_Value.setText('ON')
-                        else:
-                            self.hysteresis_Value.setText('ERROR')
-                        self.hysteresis_Button.show()
-                    elif param == 'ventricular_sensitivity':
-                        self.VSens_Value.setText(value)
-                        self.VSens_Button.show()
-                    elif param == 'max_sensor_rate':
-                        self.max_rate_Value.setText(value)
-                        self.max_rate_Button.show()
+                    getattr(self, value_name).setText(value)
+                    getattr(self, button_name).show()
 
                 else: # if param is not in mode, set label to blank & hide button
-                    if param == 'lower_rate_limit':
-                        self.lowerLimit_Value.setText('--')
-                        self.lowerLimit_Button.hide()
-                    elif param == 'upper_rate_limit':
-                        self.upperLimit_Value.setText('--')
-                        self.upperLimit_Button.hide()
-                    elif param == 'atrial_amplitude':
-                        self.AAmp_Value.setText('--')
-                        self.AAmp_Button.hide()
-                    elif param == 'atrial_pulse_width':
-                        self.APW_Value.setText('--')
-                        self.APW_Button.hide()
-                    elif param == 'ventricular_amplitude':
-                        self.VAmp_Value.setText('--')
-                        self.VAmp_Button.hide()
-                    elif param == 'ventricular_pulse_width':
-                        self.VPW_Value.setText('--')
-                        self.VPW_Button.hide()
-                    elif param == 'ARP':
-                        self.ARP_Value.setText('--')
-                        self.ARP_Button.hide()
-                    elif param == 'VRP':
-                        self.VRP_Value.setText('--')
-                        self.VRP_Button.hide()
-                    elif param == 'atrial_sensitivity':
-                        self.ASens_Value.setText('--')
-                        self.ASens_Button.hide()
-                    elif param == 'PVARP':
-                        self.PVARP_Value.setText('--')
-                        self.PVARP_Button.hide()
-                    elif param == 'hysteresis':
-                        self.hysteresis_Value.setText('--')
-                        self.hysteresis_Button.hide()
-                    elif param == 'ventricular_sensitivity':
-                        self.VSens_Value.setText('--')
-                        self.VSens_Button.hide()
-                    elif param == 'max_sensor_rate':
-                        self.max_rate_Value.setText('--')
-                        self.max_rate_Button.hide()
+                    getattr(self, value_name).setText('--')
+                    getattr(self, button_name).hide()
 
         else: # if no mode is selected, set all labels to blank & hide all buttons
             self.updateLabelsBlank()
@@ -399,36 +287,10 @@ class LandingWindow(QMainWindow): # landing page
             value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value)
 
         if done and self.validateInputs([(param, value)]): # if input is valid, update label and database
+
             # update label
-            if param == 'lower_rate_limit':
-                self.lowerLimit_Value.setText(str(value))
-            elif param == 'upper_rate_limit':
-                self.upperLimit_Value.setText(str(value))
-            elif param == 'atrial_amplitude':
-                self.AAmp_Value.setText(str(value))
-            elif param == 'atrial_pulse_width':
-                self.APW_Value.setText(str(value))
-            elif param == 'ventricular_amplitude':
-                self.VAmp_Value.setText(str(value))
-            elif param == 'ventricular_pulse_width':
-                self.VPW_Value.setText(str(value))
-            elif param == 'ARP':
-                self.ARP_Value.setText(str(value))
-            elif param == 'VRP':
-                self.VRP_Value.setText(str(value))
-            elif param == 'atrial_sensitivity':
-                self.ASens_Value.setText(str(value))
-            elif param == 'PVARP':
-                self.PVARP_Value.setText(str(value))
-            elif param == 'hysteresis':
-                if value == 0:
-                    self.hysteresis_Value.setText('OFF')
-                elif value == 1:
-                    self.hysteresis_Value.setText('ON')
-            elif param == 'ventricular_sensitivity':
-                self.VSens_Value.setText(str(value))
-            elif param == 'max_sensor_rate':
-                self.max_rate_Value.setText(str(value))
+            value_name = f'{param}_Value'
+            getattr(self, value_name).setText(str(value))
             
             # update database
             conn = connect('users.db')
@@ -478,11 +340,11 @@ class LandingWindow(QMainWindow): # landing page
                     return False
                 
             elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
-                # not in range               
-                if value != 'Off' or value < 0 or value > 5:
+                # not in range              
+                if value != 'Off' and (value < 0 or value > 5):
                     return False
                 # in range but not a multiple of 0.1
-                elif (0 < value and value < 5) and value % 0.1 != 0:
+                elif (0 < value and value < 5) and round(value % 0.1) != 0:
                     return False
                 
             elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width': # value is in ms
@@ -498,7 +360,7 @@ class LandingWindow(QMainWindow): # landing page
                 if value < 0 or value > 5:
                     return False
                 # in range but not a multiple of 0.1
-                elif value % 0.1 != 0:
+                elif round(value % 0.1) != 0:
                     return False
                 
             elif param == 'ARP' or param == 'VRP' or param == 'PVARP': # value is in ms
