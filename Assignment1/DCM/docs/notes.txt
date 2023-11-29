@@ -16,7 +16,7 @@ Assignment2:
 - Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
 
 
-Landing Page Redesign: -> Redesign done, NEED input validation!
+Landing Page Redesign: -> Done
 - the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
         - toggleConnectionStatus() would toggle icon top right and the button text -> Done
         - rename connection variable -> Done
@@ -24,7 +24,7 @@ Landing Page Redesign: -> Redesign done, NEED input validation!
 - instead of having all these big edit(mode) functions we just need one for each param -> Done
         - we alr have functions set up to update the labels and the mode -> Done
 - implement edit param button functionality, should validate input then update label -> Done
-        - Need input validation still
+        - Need input validation still -> Done
 
 
 Admin Page: -> Done
@@ -36,7 +36,7 @@ Admin Page: -> Done
 - Have popup on removal to ensure confirmation -> Done
 
 
-Database:
+Database: -> Done
 - Need to have database with unique values per user <- Done
 - Each user needs to have all programmable parameters <- Done
 - Each mode needs unique programmable parameters. -> Done
