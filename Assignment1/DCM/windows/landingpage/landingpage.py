@@ -392,15 +392,13 @@ class LandingWindow(QMainWindow): # landing page
         c.close()
 
         # get new value from user
-        if param == 'ARP' or param == 'VRP':
-            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 150, 5000, 1)
-        elif param == 'hysteresis':
+        if param == 'hysteresis':
             value = not value # toggle value
             done = True
         else:
-            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 0, 100, 1)
+            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value)
 
-        if done and self.validateInputs(value): # if input is valid, update label and database
+        if done and self.validateInputs([(param, value)]): # if input is valid, update label and database
             # update label
             if param == 'lower_rate_limit':
                 self.lowerLimit_Value.setText(str(value))
@@ -427,8 +425,6 @@ class LandingWindow(QMainWindow): # landing page
                     self.hysteresis_Value.setText('OFF')
                 elif value == 1:
                     self.hysteresis_Value.setText('ON')
-                else:
-                    self.hysteresis_Value.setText('ERROR')
             elif param == 'ventricular_sensitivity':
                 self.VSens_Value.setText(str(value))
             elif param == 'max_sensor_rate':
@@ -456,7 +452,99 @@ class LandingWindow(QMainWindow): # landing page
             x = msg.exec_()
 
     def validateInputs (self, params):
-        # check if inputs are valid
-        # return true if inputs are valid, false if not
-        return True # for now, pretend inputs are valid
+        # params = [(param, value), (param, value), ...] -> Can validate multiple inputs at once
+        # check if inputs are valid, return true if inputs are valid, false if not
+        for input in params:
+            param = input[0]
+            value = input[1]
+
+            if param == 'lower_rate_limit': # value is in ppm
+                # not in range
+                if value < 30 or value > 175:
+                    return False
+                # in range but not a multiple of 5
+                elif ((30 <= value and value <= 50) or (90 <= value and value <= 175)) and value % 5 != 0:
+                    return False
+                # in range but not a multiple of 10
+                elif (50 < value and value < 90) and value % 1 != 0:
+                    return False
+                    
+            elif param == 'upper_rate_limit' or param == 'max_sensor_rate': # value is in ppm
+                # not in range
+                if value < 50 or value > 175:
+                    return False
+                # in range but not a multiple of 5
+                elif value % 5 != 0:
+                    return False
+                
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
+                # not in range               
+                if value != 'Off' or value < 0 or value > 5:
+                    return False
+                # in range but not a multiple of 0.1
+                elif (0 < value and value < 5) and value % 0.1 != 0:
+                    return False
+                
+            elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width': # value is in ms
+                # not in range
+                if value < 1 or value > 30:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'ASens' or param == 'VSens': # value is in V
+                # not in range
+                if value < 0 or value > 5:
+                    return False
+                # in range but not a multiple of 0.1
+                elif value % 0.1 != 0:
+                    return False
+                
+            elif param == 'ARP' or param == 'VRP' or param == 'PVARP': # value is in ms
+                # not in range
+                if value < 150 or value > 500:
+                    return False
+                # in range but not a multiple of 10
+                elif value % 10 != 0:
+                    return False
+                
+            elif param == 'hysteresis': # value is 0 or 1, OFF or ON
+                # not in range
+                if value != 0 or value != 1:
+                    return False
+                
+            elif param == 'activity_threshold': # represents a value; V-Low = 0, Low = 1, Med-Low = 2, Med = 3, Med-High = 4, High = 5, V-High = 6
+                # not in range
+                if value < 0 or value > 6:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'reaction_time': # value is in seconds
+                # not in range
+                if value < 10 or value > 50:
+                    return False
+                # in range but not a multiple of 10
+                elif value % 10 != 0:
+                    return False
+                
+            elif param == 'response_factor': # no units of measurement
+                # not in range
+                if value < 1 or value > 16:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'recovery_time': # value is in minutes
+                # not in range
+                if value < 2 or value > 16:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+
+        return True
  
