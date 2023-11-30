@@ -147,12 +147,16 @@ class LandingWindow(QMainWindow): # landing page
         else:
             self.device_mode_Value.setText(self.current_mode)
 
-    def updateLabelsBlank(self): # set all labels to blank and hide buttons, called when no mode is selected or when device is disconnected
+    def hideAllParams(self): # hide all param labels & buttons, called when no mode is selected or when device is disconnected
         for param in ALL_PARAMS:
+            label_name = f'{param}'
             value_name = f'{param}_Value'
             button_name = f'{param}_Button'
-            getattr(self, value_name).setText('--')
+            getattr(self, label_name).hide()
+            getattr(self, value_name).hide()
             getattr(self, button_name).hide()
+
+        self.noParams_Label.show()
 
     def updateParamLabels(self): # update all param labels & buttons to match current mode, called when mode is changed
         mode = self.current_mode
@@ -166,8 +170,11 @@ class LandingWindow(QMainWindow): # landing page
         if mode in modes:
             params = modes[mode] # get params for mode
 
+            labelsShown = 0 # keep track of how many labels are shown
+
             # go through all params and update labels
             for param in ALL_PARAMS:
+                label_name = f'{param}'
                 value_name = f'{param}_Value'
                 button_name = f'{param}_Button'
 
@@ -178,15 +185,26 @@ class LandingWindow(QMainWindow): # landing page
                         value = value / 1000
                     value = str(value)
 
+                    getattr(self, label_name).setGeometry(getattr(self, label_name).x(), 210 + (labelsShown * 40), getattr(self, label_name).width(), 30)
+                    getattr(self, label_name).show()
+
+                    getattr(self, value_name).setGeometry(990, 210 + (labelsShown * 40), getattr(self, value_name).width(), 30)
                     getattr(self, value_name).setText(value)
+                    getattr(self, value_name).show()
+
+                    getattr(self, button_name).setGeometry(1050, 210 + (labelsShown * 40), 100, 30)
                     getattr(self, button_name).show()
+                    labelsShown += 1
+
+                    self.noParams_Label.hide()
 
                 else: # if param is not in mode, set label to blank & hide button
-                    getattr(self, value_name).setText('--')
+                    getattr(self, label_name).hide()
+                    getattr(self, value_name).hide()
                     getattr(self, button_name).hide()
 
         else: # if no mode is selected, set all labels to blank & hide all buttons
-            self.updateLabelsBlank()
+            self.hideAllParams()
 
         c.close()
 
@@ -212,7 +230,7 @@ class LandingWindow(QMainWindow): # landing page
             self.current_mode = '' # set mode to blank
             self.changemode_Button.hide() # show change mode button
             self.updateModeLabel() # update mode label
-            self.updateLabelsBlank() # set all labels to blank
+            self.hideAllParams() # set all labels to blank
             
         
     def back_clicked(self): # if back button is clicked, show popup window

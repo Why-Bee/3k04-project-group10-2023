@@ -1087,6 +1087,24 @@ QPushButton:hover {
       <string>Edit Max Rate</string>
      </property>
     </widget>
+    <widget class="QLabel" name="noParams_Label">
+     <property name="geometry">
+      <rect>
+       <x>800</x>
+       <y>190</y>
+       <width>411</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Reference Sans Serif</family>
+      </font>
+     </property>
+     <property name="text">
+      <string>Connect to device and choose a mode to view parameters</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
