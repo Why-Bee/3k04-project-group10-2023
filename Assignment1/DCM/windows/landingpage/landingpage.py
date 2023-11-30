@@ -9,8 +9,11 @@ from sqlite3 import connect
 import struct
 import time
 
-# when adding a new param, everything except validateInputs() is done automatically
 # const dict of all modes
+# when adding a new mode, if all params are already in MODES, everything is automatically set up
+# when adding a new param, everything is automatically set up except nominal value & input validation
+# set nominal value in checkDatabase function
+# set input validation in validateInputs function
 MODES = {
     'OFF': 
         (), 
@@ -116,7 +119,33 @@ class LandingWindow(QMainWindow): # landing page
                     continue
                 else:
                     # add column to table
-                    c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1')
+                    # ensure that the DEFAULT value is the nominal value for that parameter
+                    if param == 'lower_rate_limit':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 60')
+                    elif param == 'upper_rate_limit':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120')
+                    elif param == 'atrial_amplitude' or param == 'ventricular_amplitude':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 35')
+                    elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 4')
+                    elif param == 'ARP' or param == 'VRP' or param == 'PVARP':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 250')
+                    elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 75')
+                    elif param == 'hysteresis':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0')
+                    elif param == 'max_sensor_rate':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120')
+                    elif param == 'activity_threshold':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 3')
+                    elif param == 'reaction_time':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 30')
+                    elif param == 'response_factor':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 8')
+                    elif param == 'recovery_time':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5')
+                    else:
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0')
 
         # check that there is no extra tables in database
         for table in tables:
