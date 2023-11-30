@@ -166,7 +166,9 @@ class LandingWindow(QMainWindow): # landing page
                 # create button
                 setattr(self, button_name, QPushButton(self.bgWidget))
                 updateAsText = label_name.split('_')
-                updateAsText = updateAsText[0][0].capitalize() + updateAsText[1][0].capitalize()
+                # set updateAsTest to only capitalize first letter of each word, i.e. 'lower_rate_limit' -> 'LRL'
+                updateAsText = [word[0].upper() for word in updateAsText]
+                updateAsText = ''.join(updateAsText)
                 getattr(self, button_name).setText(f'Update {updateAsText}')
                 getattr(self, button_name).setStyleSheet('QPushButton {color: rgb(255, 255, 255);background-color: rgb(0, 0, 127);border-radius:2px;font: 8pt "MS Reference Sans Serif";} QPushButton:hover {background-color: rgb(85, 170, 255);}')
                 getattr(self, button_name).setCursor(Qt.PointingHandCursor)
