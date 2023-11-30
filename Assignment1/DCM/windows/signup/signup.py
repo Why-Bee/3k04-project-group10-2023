@@ -6,10 +6,11 @@ from sqlite3 import connect
 from hashlib import sha256
 
 from windows.landingpage.landingpage import LandingWindow
-
 from windows.landingpage.landingpage import MODES
 
+
 MAX_USERS = 10
+
 
 class SignupWindow(QMainWindow): 
     def __init__(self, stacked_window):

@@ -9,6 +9,7 @@ from sqlite3 import connect
 import struct
 import time
 
+
 # const dict of all modes
 # when adding a new mode, if all params are already in MODES, everything is automatically set up
 # when adding a new param, everything is automatically set up except nominal value & input validation
@@ -390,8 +391,7 @@ class LandingWindow(QMainWindow): # landing page
             self.current_mode = '' # set mode to blank
             self.changemode_Button.hide() # show change mode button
             self.updateModeLabel() # update mode label
-            self.hideAllParams() # set all labels to blank
-            
+            self.hideAllParams() # hide all param labels & buttons   
         
     def back_clicked(self): # if back button is clicked, show popup window
         self.show_popup()

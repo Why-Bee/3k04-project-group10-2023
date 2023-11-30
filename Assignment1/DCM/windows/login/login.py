@@ -8,7 +8,6 @@ from hashlib import sha256
 from windows.landingpage.landingpage import LandingWindow
 
 
-
 class LoginWindow(QMainWindow):
     def __init__(self, stacked_window):
         super(LoginWindow, self).__init__()

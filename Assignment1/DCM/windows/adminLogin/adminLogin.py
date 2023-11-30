@@ -40,3 +40,4 @@ class AdminLoginWindow(QMainWindow): # admin login page
         admin_window = AdminWindow(self.stacked_window)
         self.stacked_window.addWidget(admin_window)
         self.stacked_window.setCurrentIndex(2)
+        

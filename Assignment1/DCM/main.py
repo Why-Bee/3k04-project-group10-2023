@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # do NOT use in first run with new modes / parameters
     if TESTING:
         empty_database() # empty database except for admin user
-        fill_database() # fill database with test data
+        fill_database() # fill user database with test data
         print("Tests successful")
 
 
