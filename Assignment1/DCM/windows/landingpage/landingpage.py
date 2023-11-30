@@ -23,13 +23,13 @@ MODES = {
     'VVI': 
         ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 
     'AOOR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'VOOR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'AAIR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'VVIR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time')
         }
 
 # const arr of all params, created dynamically from MODES dict
@@ -99,11 +99,12 @@ class LandingWindow(QMainWindow): # landing page
             mode_table = f'{mode}_data'
             if (mode_table,) not in tables:
                 # create table in database
-                print(f'Adding {mode}_data to database')
                 c.execute(f'CREATE TABLE {mode}_data (id integer PRIMARY KEY AUTOINCREMENT)')
-                # need row for each id
-                for i in range(1, 11):
-                    print(f'Adding row {i} to {mode}_data')
+                # need row for each user
+                # get number of users from database
+                c.execute('SELECT COUNT(*) FROM all_users')
+                num_users = c.fetchone()[0]
+                for i in range(1, num_users + 1):
                     c.execute(f'INSERT INTO {mode}_data (id) VALUES (?)', (i,))
 
         # check that all params are in database
@@ -115,7 +116,6 @@ class LandingWindow(QMainWindow): # landing page
                     continue
                 else:
                     # add column to table
-                    print(f'Adding {param} to {mode}_data')
                     c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1')
 
         # check that there is no extra tables in database
