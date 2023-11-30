@@ -2,8 +2,7 @@ from hashlib import sha256
 from sqlite3 import connect
 
 from windows.landingpage.landingpage import MODES
-
-MAX_USERS = 10
+from windows.signup.signup import MAX_USERS
 
 
 # Fill the rest of the database with dummy data

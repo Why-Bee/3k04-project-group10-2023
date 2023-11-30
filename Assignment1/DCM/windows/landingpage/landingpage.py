@@ -145,7 +145,12 @@ class LandingWindow(QMainWindow): # landing page
             if not hasattr(self, label_name):
                 # create label
                 setattr(self, label_name, QLabel(self.bgWidget))
-                getattr(self, label_name).setText(f'{label_name}:')
+                labelAsText = label_name.replace('_', ' ')
+                # capitalize first letter of each word
+                labelAsText = labelAsText.split(' ')
+                labelAsText = [word.capitalize() for word in labelAsText]
+                labelAsText = ' '.join(labelAsText)
+                getattr(self, label_name).setText(f'{labelAsText}:')
                 getattr(self, label_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
                 # Set width to match label text
                 getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
@@ -160,7 +165,9 @@ class LandingWindow(QMainWindow): # landing page
             if not hasattr(self, button_name):
                 # create button
                 setattr(self, button_name, QPushButton(self.bgWidget))
-                getattr(self, button_name).setText(f'Update {param}')
+                updateAsText = label_name.split('_')
+                updateAsText = updateAsText[0][0].capitalize() + updateAsText[1][0].capitalize()
+                getattr(self, button_name).setText(f'Update {updateAsText}')
                 getattr(self, button_name).setStyleSheet('QPushButton {color: rgb(255, 255, 255);background-color: rgb(0, 0, 127);border-radius:2px;font: 8pt "MS Reference Sans Serif";} QPushButton:hover {background-color: rgb(85, 170, 255);}')
                 getattr(self, button_name).setCursor(Qt.PointingHandCursor)
                 getattr(self, button_name).hide()
