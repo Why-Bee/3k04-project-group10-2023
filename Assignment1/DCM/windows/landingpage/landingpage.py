@@ -1,14 +1,43 @@
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QLabel, QPushButton
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
 
 from sqlite3 import connect
+
 # import serial
 import struct
 import time
 
-# const tuple of all params
-ALL_PARAMS = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+# when adding a new param, everything except validateInputs() is done automatically
+# const dict of all modes
+MODES = {
+    'OFF': 
+        (), 
+    'AOO': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 
+    'VOO': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 
+    'AAI': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 
+    'VVI': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 
+    'AOOR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate'), 
+    'VOOR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate'), 
+    'AAIR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate'), 
+    'VVIR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+        }
+
+# const arr of all params, created dynamically from MODES dict
+ALL_PARAMS = []
+for mode in MODES:
+    for param in MODES[mode]:
+        if param not in ALL_PARAMS:
+            ALL_PARAMS.append(param)
 
 
 class LandingWindow(QMainWindow): # landing page
@@ -24,6 +53,8 @@ class LandingWindow(QMainWindow): # landing page
         self.id = id # id of current user
         self.changemode_Button.hide() # hide change mode button
         self.setUsername() # set username label
+        self.checkDatabase() # check database for correct modes & params
+        self.checkParams() # check that each param has a label, value & button
         self.setColours() # reset colours of labels
 
         # here we would interface with the device to get the current state and which mode is enabled
@@ -55,6 +86,84 @@ class LandingWindow(QMainWindow): # landing page
         for param in ALL_PARAMS:
             value_name = f'{param}_Value'
             getattr(self, value_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+
+    def checkDatabase(self): # check database for correct modes & params, called when landing window is created
+        # grab all tables from database
+        conn = connect('users.db')
+        c = conn.cursor()
+        c.execute('SELECT name FROM sqlite_schema WHERE type="table" ORDER BY name')
+        tables = c.fetchall()
+
+        # check that all modes are in database
+        for mode in MODES:
+            mode_table = f'{mode}_data'
+            if (mode_table,) not in tables:
+                # create table in database
+                print(f'Adding {mode}_data to database')
+                c.execute(f'CREATE TABLE {mode}_data (id integer PRIMARY KEY AUTOINCREMENT)')
+                # need row for each id
+                for i in range(1, 11):
+                    print(f'Adding row {i} to {mode}_data')
+                    c.execute(f'INSERT INTO {mode}_data (id) VALUES (?)', (i,))
+
+        # check that all params are in database
+        for mode in MODES:
+            c.execute(f'PRAGMA table_info({mode}_data)')
+            params = c.fetchall()
+            for param in MODES[mode]:
+                if any(param in t for t in params):
+                    continue
+                else:
+                    # add column to table
+                    print(f'Adding {param} to {mode}_data')
+                    c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1')
+
+        # check that there is no extra tables in database
+        for table in tables:
+            splitTable = table[0].split('_')
+            if splitTable[0] not in MODES and splitTable[0] != 'all' and splitTable[0] != 'sqlite' and splitTable[0] != 'admin':
+                c.execute(f"DROP TABLE '{table[0]}'")
+
+        # check that there is no extra params in database
+        for mode in MODES:
+            c.execute(f'PRAGMA table_info({mode}_data)')
+            params = c.fetchall()
+            for param in params:
+                if param[1] not in MODES[mode] and param[1] != 'id':
+                    c.execute(f'ALTER TABLE {mode}_data DROP COLUMN {param[1]}')
+
+        conn.commit()
+        c.close()
+
+    def checkParams(self): # check that each param has a label, value & button, called when landing window is created
+        # check that all params have a label, value, & button; create if not
+        for param in ALL_PARAMS:
+            label_name = f'{param}'
+            value_name = f'{param}_Value'
+            button_name = f'{param}_Button'
+
+            if not hasattr(self, label_name):
+                # create label
+                setattr(self, label_name, QLabel(self.bgWidget))
+                getattr(self, label_name).setText(f'{label_name}:')
+                getattr(self, label_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+                # Set width to match label text
+                getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
+                getattr(self, label_name).hide()
+
+            if not hasattr(self, value_name):
+                # create value label
+                setattr(self, value_name, QLabel(self.bgWidget))
+                getattr(self, value_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+                getattr(self, value_name).hide()
+
+            if not hasattr(self, button_name):
+                # create button
+                setattr(self, button_name, QPushButton(self.bgWidget))
+                getattr(self, button_name).setText(f'Update {param}')
+                getattr(self, button_name).setStyleSheet('QPushButton {color: rgb(255, 255, 255);background-color: rgb(0, 0, 127);border-radius:2px;font: 8pt "MS Reference Sans Serif";} QPushButton:hover {background-color: rgb(85, 170, 255);}')
+                getattr(self, button_name).setCursor(Qt.PointingHandCursor)
+                getattr(self, button_name).hide()
 
     def board_interface(self): # interface with board to get current state and which mode is enabled
         pass
@@ -161,14 +270,13 @@ class LandingWindow(QMainWindow): # landing page
     def updateParamLabels(self): # update all param labels & buttons to match current mode, called when mode is changed
         mode = self.current_mode
         # dictionary of modes and their parameters
-        modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'PVARP', 'hysteresis', 'max_sensor_rate'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')}
 
         conn = connect('users.db')
         c = conn.cursor()
         
         # check to make sure mode != '' or 'Off', i.e. a mode is selected
-        if mode in modes:
-            params = modes[mode] # get params for mode
+        if mode in MODES:
+            params = MODES[mode] # get params for mode
 
             labelsShown = 0 # keep track of how many labels are shown
 
@@ -181,17 +289,25 @@ class LandingWindow(QMainWindow): # landing page
                 if param in params: # if param is in mode, get value from database, update label & show button
                     c.execute(f'SELECT {param} FROM {mode}_data WHERE id=?', (self.id,))
                     value = c.fetchone()[0]
+
+                    # special cases
                     if param == 'ARP' or param == 'VRP':
-                        value = value / 1000
+                        value = value / 100
+                    elif param == 'hysteresis':
+                        if value == 1:
+                            value = 'ON'
+                        else:
+                            value = 'OFF'
+
                     value = str(value)
 
-                    getattr(self, label_name).setGeometry(getattr(self, label_name).x(), 210 + (labelsShown * 40), getattr(self, label_name).width(), 30)
+                    getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
+                    getattr(self, label_name).setGeometry(970 - getattr(self, label_name).width(), 210 + (labelsShown * 40), getattr(self, label_name).width(), 30)
                     getattr(self, label_name).show()
 
                     getattr(self, value_name).setGeometry(990, 210 + (labelsShown * 40), getattr(self, value_name).width(), 30)
                     getattr(self, value_name).setText(value)
                     getattr(self, value_name).show()
-
                     getattr(self, button_name).setGeometry(1050, 210 + (labelsShown * 40), 100, 30)
                     getattr(self, button_name).show()
                     labelsShown += 1
@@ -271,10 +387,9 @@ class LandingWindow(QMainWindow): # landing page
             self.toggleConnectionStatus() # for now pretend we connect successfully
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
-        modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
-        mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', modes)
+        mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', MODES.keys(), editable=False)
 
-        if done1 and mode in modes: # Once a mode is selected, if valid, update the mode
+        if done1 and mode in MODES: # Once a mode is selected, if valid, update the mode
             self.current_mode = mode
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
@@ -308,7 +423,13 @@ class LandingWindow(QMainWindow): # landing page
 
             # update label
             value_name = f'{param}_Value'
-            getattr(self, value_name).setText(str(value))
+            if param == 'hysteresis':
+                if value:
+                    getattr(self, value_name).setText('ON')
+                else:
+                    getattr(self, value_name).setText('OFF')
+            else:
+                getattr(self, value_name).setText(str(value))
             
             # update database
             conn = connect('users.db')
@@ -373,7 +494,7 @@ class LandingWindow(QMainWindow): # landing page
                 elif value % 1 != 0:
                     return False
                 
-            elif param == 'ASens' or param == 'VSens': # value is in V
+            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in V
                 # not in range
                 if value < 0 or value > 5:
                     return False
@@ -391,7 +512,7 @@ class LandingWindow(QMainWindow): # landing page
                 
             elif param == 'hysteresis': # value is 0 or 1, OFF or ON
                 # not in range
-                if value != 0 or value != 1:
+                if value != 0 and value != 1:
                     return False
                 
             elif param == 'activity_threshold': # represents a value; V-Low = 0, Low = 1, Med-Low = 2, Med = 3, Med-High = 4, High = 5, V-High = 6
