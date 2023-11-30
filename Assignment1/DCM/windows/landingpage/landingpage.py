@@ -121,31 +121,33 @@ class LandingWindow(QMainWindow): # landing page
                     # add column to table
                     # ensure that the DEFAULT value is the nominal value for that parameter
                     if param == 'lower_rate_limit':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 60')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 60') # 60 ppm
                     elif param == 'upper_rate_limit':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120') # 120 ppm
                     elif param == 'atrial_amplitude' or param == 'ventricular_amplitude':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 35')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5000') # 5000 mV
                     elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 4')
-                    elif param == 'ARP' or param == 'VRP' or param == 'PVARP':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 250')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1') # 1 ms
+                    elif param == 'ARP' or param == 'PVARP':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 250') # 250 ms
+                    elif param == 'VRP':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 320') # 320 ms
                     elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 75')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 75') # 75 mV
                     elif param == 'hysteresis':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0') # 0 = OFF
                     elif param == 'max_sensor_rate':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120') # 120 ppm
                     elif param == 'activity_threshold':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 3')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 3') # 3 = Med
                     elif param == 'reaction_time':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 30')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 30') # 30 seconds
                     elif param == 'response_factor':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 8')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 8') # 8
                     elif param == 'recovery_time':
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5') # 5 minutes
                     else:
-                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0')
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0') # default value of 0
 
         # check that there is no extra tables in database
         for table in tables:
@@ -329,8 +331,8 @@ class LandingWindow(QMainWindow): # landing page
                     value = c.fetchone()[0]
 
                     # special cases
-                    if param == 'ARP' or param == 'VRP':
-                        value = value / 100
+                    if param == 'atrial_amplitude' or param == 'ventricular_amplitude' or param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                        value = value / 1000
                     elif param == 'hysteresis':
                         if value == 1:
                             value = 'ON'
@@ -361,7 +363,7 @@ class LandingWindow(QMainWindow): # landing page
                     getattr(self, value_name).hide()
                     getattr(self, button_name).hide()
 
-        else: # if no mode is selected, set all labels to blank & hide all buttons
+        else: # if no mode is selected, hide all labels & buttons
             self.hideAllParams()
 
         c.close()
@@ -470,6 +472,8 @@ class LandingWindow(QMainWindow): # landing page
                     getattr(self, value_name).setText('ON')
                 else:
                     getattr(self, value_name).setText('OFF')
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude' or param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                getattr(self, value_name).setText(str(value / 1000))
             else:
                 getattr(self, value_name).setText(str(value))
             
@@ -533,15 +537,15 @@ class LandingWindow(QMainWindow): # landing page
                 c = conn.cursor()
                 c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
                 lower_value = c.fetchone()[0]
-                if value < lower_value and param == 'upper_rate_limit':
+                if param == 'upper_rate_limit' and value < lower_value:
                     return False
                 
-            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in mV
                 # not in range              
-                if value != 'Off' and (value < 0 or value > 5):
+                if value != 'Off' and (value < 0 or value > 5000):
                     return False
-                # in range but not a multiple of 0.1
-                elif (0 < value and value < 5) and round(value % 0.1) != 0:
+                # in range but not a multiple of 100mV, 0.1V
+                elif (0 < value and value < 5000) and value % 100 != 0:
                     return False
                 
             elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width': # value is in ms
@@ -552,12 +556,12 @@ class LandingWindow(QMainWindow): # landing page
                 elif value % 1 != 0:
                     return False
                 
-            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in V
+            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in mV
                 # not in range
-                if value < 0 or value > 5:
+                if value < 0 or value > 5000:
                     return False
-                # in range but not a multiple of 0.1
-                elif round(value % 0.1) != 0:
+                # in range but not a multiple of 100mV, 0.1V
+                elif value % 100 != 0:
                     return False
                 
             elif param == 'ARP' or param == 'VRP' or param == 'PVARP': # value is in ms
@@ -605,5 +609,6 @@ class LandingWindow(QMainWindow): # landing page
                 elif value % 1 != 0:
                     return False
 
+        # if all inputs are valid, return true
         return True
  

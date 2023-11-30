@@ -25,7 +25,7 @@ if __name__ == '__main__':
     if TESTING:
         empty_database() # empty database except for admin user
         fill_database() # fill database with test data
-        print("Test successful")
+        print("Tests successful")
 
 
     sys.exit(app.exec_()) 
