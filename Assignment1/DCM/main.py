@@ -7,7 +7,8 @@ from windows.welcome.welcome import MyWindow
 from fill_database import fill_database
 from empty_database import empty_database
 
-import sqlite3
+
+TESTING = True # set to True to empty and fill database
 
 
 if __name__ == '__main__':
@@ -20,8 +21,11 @@ if __name__ == '__main__':
     stacked_window.show()
 
     # TEST FUNCTIONS
-    # empty_database() # empty database except for admin user
-    # fill_database() # fill database
+    # do NOT use in first run with new modes / parameters
+    if TESTING:
+        empty_database() # empty database except for admin user
+        fill_database() # fill database with test data
+        print("Test successful")
 
 
     sys.exit(app.exec_()) 

@@ -1,11 +1,43 @@
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QLabel, QPushButton
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
 
 from sqlite3 import connect
+
 # import serial
 import struct
 import time
+
+# when adding a new param, everything except validateInputs() is done automatically
+# const dict of all modes
+MODES = {
+    'OFF': 
+        (), 
+    'AOO': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 
+    'VOO': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 
+    'AAI': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 
+    'VVI': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 
+    'AOOR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate'), 
+    'VOOR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate'), 
+    'AAIR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate'), 
+    'VVIR': 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+        }
+
+# const arr of all params, created dynamically from MODES dict
+ALL_PARAMS = []
+for mode in MODES:
+    for param in MODES[mode]:
+        if param not in ALL_PARAMS:
+            ALL_PARAMS.append(param)
 
 
 class LandingWindow(QMainWindow): # landing page
@@ -21,6 +53,8 @@ class LandingWindow(QMainWindow): # landing page
         self.id = id # id of current user
         self.changemode_Button.hide() # hide change mode button
         self.setUsername() # set username label
+        self.checkDatabase() # check database for correct modes & params
+        self.checkParams() # check that each param has a label, value & button
         self.setColours() # reset colours of labels
 
         # here we would interface with the device to get the current state and which mode is enabled
@@ -31,22 +65,12 @@ class LandingWindow(QMainWindow): # landing page
         self.updateParamLabels() # update param labels with values from database
 
         # connect buttons to functions
-        self.backButton.clicked.connect(self.back_clicked)
+        self.back_Button.clicked.connect(self.back_clicked)
         self.connection_Button.clicked.connect(self.connectionButton_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
-        self.lowerLimit_Button.clicked.connect(lambda: self.updateParam('lower_rate_limit'))
-        self.upperLimit_Button.clicked.connect(lambda: self.updateParam('upper_rate_limit'))
-        self.AAmp_Button.clicked.connect(lambda: self.updateParam('atrial_amplitude'))
-        self.APW_Button.clicked.connect(lambda: self.updateParam('atrial_pulse_width'))
-        self.VAmp_Button.clicked.connect(lambda: self.updateParam('ventricular_amplitude'))
-        self.VPW_Button.clicked.connect(lambda: self.updateParam('ventricular_pulse_width'))
-        self.ARP_Button.clicked.connect(lambda: self.updateParam('ARP'))
-        self.VRP_Button.clicked.connect(lambda: self.updateParam('VRP'))
-        self.ASens_Button.clicked.connect(lambda: self.updateParam('atrial_sensitivity'))
-        self.PVARP_Button.clicked.connect(lambda: self.updateParam('PVARP'))
-        self.hysteresis_Button.clicked.connect(lambda: self.updateParam('hysteresis'))
-        self.VSens_Button.clicked.connect(lambda: self.updateParam('ventricular_sensitivity'))
-        self.max_rate_Button.clicked.connect(lambda: self.updateParam('max_sensor_rate'))
+        for param in ALL_PARAMS: # connect all param buttons to updateParam function
+            button_name = f'{param}_Button'
+            getattr(self, button_name).clicked.connect(lambda _, param=param: self.updateParam(param))
 
 
     def setUsername(self): # set username label, called when landing window is created
@@ -57,16 +81,89 @@ class LandingWindow(QMainWindow): # landing page
         self.user_Value.setText(username)
         c.close()
 
-    def setColours(self): # reset colours of labels
+    def setColours(self): # reset colours of labels, called when landing window is created
         # set all labels to black, no bold, 8pt
-        self.lowerLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.upperLimit_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.AAmp_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.APW_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VAmp_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VPW_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.ARP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
-        self.VRP_Value.setStyleSheet('color:black; font: 8pt "MS Shell Dlg 2";')
+        for param in ALL_PARAMS:
+            value_name = f'{param}_Value'
+            getattr(self, value_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+
+    def checkDatabase(self): # check database for correct modes & params, called when landing window is created
+        # grab all tables from database
+        conn = connect('users.db')
+        c = conn.cursor()
+        c.execute('SELECT name FROM sqlite_schema WHERE type="table" ORDER BY name')
+        tables = c.fetchall()
+
+        # check that all modes are in database
+        for mode in MODES:
+            mode_table = f'{mode}_data'
+            if (mode_table,) not in tables:
+                # create table in database
+                print(f'Adding {mode}_data to database')
+                c.execute(f'CREATE TABLE {mode}_data (id integer PRIMARY KEY AUTOINCREMENT)')
+                # need row for each id
+                for i in range(1, 11):
+                    print(f'Adding row {i} to {mode}_data')
+                    c.execute(f'INSERT INTO {mode}_data (id) VALUES (?)', (i,))
+
+        # check that all params are in database
+        for mode in MODES:
+            c.execute(f'PRAGMA table_info({mode}_data)')
+            params = c.fetchall()
+            for param in MODES[mode]:
+                if any(param in t for t in params):
+                    continue
+                else:
+                    # add column to table
+                    print(f'Adding {param} to {mode}_data')
+                    c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1')
+
+        # check that there is no extra tables in database
+        for table in tables:
+            splitTable = table[0].split('_')
+            if splitTable[0] not in MODES and splitTable[0] != 'all' and splitTable[0] != 'sqlite' and splitTable[0] != 'admin':
+                c.execute(f"DROP TABLE '{table[0]}'")
+
+        # check that there is no extra params in database
+        for mode in MODES:
+            c.execute(f'PRAGMA table_info({mode}_data)')
+            params = c.fetchall()
+            for param in params:
+                if param[1] not in MODES[mode] and param[1] != 'id':
+                    c.execute(f'ALTER TABLE {mode}_data DROP COLUMN {param[1]}')
+
+        conn.commit()
+        c.close()
+
+    def checkParams(self): # check that each param has a label, value & button, called when landing window is created
+        # check that all params have a label, value, & button; create if not
+        for param in ALL_PARAMS:
+            label_name = f'{param}'
+            value_name = f'{param}_Value'
+            button_name = f'{param}_Button'
+
+            if not hasattr(self, label_name):
+                # create label
+                setattr(self, label_name, QLabel(self.bgWidget))
+                getattr(self, label_name).setText(f'{label_name}:')
+                getattr(self, label_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+                # Set width to match label text
+                getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
+                getattr(self, label_name).hide()
+
+            if not hasattr(self, value_name):
+                # create value label
+                setattr(self, value_name, QLabel(self.bgWidget))
+                getattr(self, value_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
+                getattr(self, value_name).hide()
+
+            if not hasattr(self, button_name):
+                # create button
+                setattr(self, button_name, QPushButton(self.bgWidget))
+                getattr(self, button_name).setText(f'Update {param}')
+                getattr(self, button_name).setStyleSheet('QPushButton {color: rgb(255, 255, 255);background-color: rgb(0, 0, 127);border-radius:2px;font: 8pt "MS Reference Sans Serif";} QPushButton:hover {background-color: rgb(85, 170, 255);}')
+                getattr(self, button_name).setCursor(Qt.PointingHandCursor)
+                getattr(self, button_name).hide()
 
     def board_interface(self): # interface with board to get current state and which mode is enabled
         pass
@@ -159,146 +256,75 @@ class LandingWindow(QMainWindow): # landing page
         else:
             self.device_mode_Value.setText(self.current_mode)
 
-    def updateLabelsBlank(self): # if no mode is selected, set all labels to blank and hide buttons
-        self.lowerLimit_Value.setText('--')
-        self.lowerLimit_Button.hide()
-        self.upperLimit_Value.setText('--')
-        self.upperLimit_Button.hide()
-        self.AAmp_Value.setText('--')
-        self.AAmp_Button.hide()
-        self.APW_Value.setText('--')
-        self.APW_Button.hide()
-        self.VAmp_Value.setText('--')
-        self.VAmp_Button.hide()
-        self.VPW_Value.setText('--')
-        self.VPW_Button.hide()
-        self.ARP_Value.setText('--')
-        self.ARP_Button.hide()
-        self.VRP_Value.setText('--')
-        self.VRP_Button.hide()
-        self.ASens_Value.setText('--')
-        self.ASens_Button.hide()
-        self.PVARP_Value.setText('--')
-        self.PVARP_Button.hide()
-        self.hysteresis_Value.setText('--')
-        self.hysteresis_Button.hide()
-        self.VSens_Value.setText('--')
-        self.VSens_Button.hide()
-        self.max_rate_Value.setText('--')
-        self.max_rate_Button.hide()
+    def hideAllParams(self): # hide all param labels & buttons, called when no mode is selected or when device is disconnected
+        for param in ALL_PARAMS:
+            label_name = f'{param}'
+            value_name = f'{param}_Value'
+            button_name = f'{param}_Button'
+            getattr(self, label_name).hide()
+            getattr(self, value_name).hide()
+            getattr(self, button_name).hide()
 
-    def updateParamLabels(self): # update param labels with values from database
+        self.noParams_Label.show()
+
+    def updateParamLabels(self): # update all param labels & buttons to match current mode, called when mode is changed
         mode = self.current_mode
         # dictionary of modes and their parameters
-        modes = {'AOO': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width'), 'VOO': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width'), 'AAI': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis'), 'VVI': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 'AOOR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'VOOR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'max_sensor_rate'), 'AAIR': ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'PVARP', 'hysteresis', 'max_sensor_rate'), 'VVIR': ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')}
-        # tuple of all params
-        all_params = ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ventricular_amplitude', 'ventricular_pulse_width', 'ARP', 'VRP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
 
         conn = connect('users.db')
         c = conn.cursor()
         
         # check to make sure mode != '' or 'Off', i.e. a mode is selected
-        if mode in modes:
-            params = modes[mode] # get params for mode
+        if mode in MODES:
+            params = MODES[mode] # get params for mode
+
+            labelsShown = 0 # keep track of how many labels are shown
 
             # go through all params and update labels
-            for param in all_params:
+            for param in ALL_PARAMS:
+                label_name = f'{param}'
+                value_name = f'{param}_Value'
+                button_name = f'{param}_Button'
 
                 if param in params: # if param is in mode, get value from database, update label & show button
                     c.execute(f'SELECT {param} FROM {mode}_data WHERE id=?', (self.id,))
                     value = c.fetchone()[0]
+
+                    # special cases
                     if param == 'ARP' or param == 'VRP':
-                        value = value / 1000
+                        value = value / 100
+                    elif param == 'hysteresis':
+                        if value == 1:
+                            value = 'ON'
+                        else:
+                            value = 'OFF'
+
                     value = str(value)
 
-                    if param == 'lower_rate_limit':
-                        self.lowerLimit_Value.setText(value)
-                        self.lowerLimit_Button.show()
-                    elif param == 'upper_rate_limit':
-                        self.upperLimit_Value.setText(value)
-                        self.upperLimit_Button.show()
-                    elif param == 'atrial_amplitude':
-                        self.AAmp_Value.setText(value)
-                        self.AAmp_Button.show()
-                    elif param == 'atrial_pulse_width':
-                        self.APW_Value.setText(value)
-                        self.APW_Button.show()
-                    elif param == 'ventricular_amplitude':
-                        self.VAmp_Value.setText(value)
-                        self.VAmp_Button.show()
-                    elif param == 'ventricular_pulse_width':
-                        self.VPW_Value.setText(value)
-                        self.VPW_Button.show()
-                    elif param == 'ARP':
-                        self.ARP_Value.setText(value)
-                        self.ARP_Button.show()
-                    elif param == 'VRP':
-                        self.VRP_Value.setText(value)
-                        self.VRP_Button.show()
-                    elif param == 'atrial_sensitivity':
-                        self.ASens_Value.setText(value)
-                        self.ASens_Button.show()
-                    elif param == 'PVARP':
-                        self.PVARP_Value.setText(value)
-                        self.PVARP_Button.show()
-                    elif param == 'hysteresis':
-                        if value == '0':
-                            self.hysteresis_Value.setText('OFF')
-                        elif value == '1':
-                            self.hysteresis_Value.setText('ON')
-                        else:
-                            self.hysteresis_Value.setText('ERROR')
-                        self.hysteresis_Button.show()
-                    elif param == 'ventricular_sensitivity':
-                        self.VSens_Value.setText(value)
-                        self.VSens_Button.show()
-                    elif param == 'max_sensor_rate':
-                        self.max_rate_Value.setText(value)
-                        self.max_rate_Button.show()
+                    # update label
+                    getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
+                    getattr(self, label_name).setGeometry(970 - getattr(self, label_name).width(), 210 + (labelsShown * 40), getattr(self, label_name).width(), 30)
+                    getattr(self, label_name).show()
+
+                    # update value
+                    getattr(self, value_name).setGeometry(990, 210 + (labelsShown * 40), getattr(self, value_name).width(), 30)
+                    getattr(self, value_name).setText(value)
+                    getattr(self, value_name).show()
+
+                    # update button
+                    getattr(self, button_name).setGeometry(1050, 210 + (labelsShown * 40), 100, 30)
+                    getattr(self, button_name).show()
+                    labelsShown += 1
+
+                    self.noParams_Label.hide()
 
                 else: # if param is not in mode, set label to blank & hide button
-                    if param == 'lower_rate_limit':
-                        self.lowerLimit_Value.setText('--')
-                        self.lowerLimit_Button.hide()
-                    elif param == 'upper_rate_limit':
-                        self.upperLimit_Value.setText('--')
-                        self.upperLimit_Button.hide()
-                    elif param == 'atrial_amplitude':
-                        self.AAmp_Value.setText('--')
-                        self.AAmp_Button.hide()
-                    elif param == 'atrial_pulse_width':
-                        self.APW_Value.setText('--')
-                        self.APW_Button.hide()
-                    elif param == 'ventricular_amplitude':
-                        self.VAmp_Value.setText('--')
-                        self.VAmp_Button.hide()
-                    elif param == 'ventricular_pulse_width':
-                        self.VPW_Value.setText('--')
-                        self.VPW_Button.hide()
-                    elif param == 'ARP':
-                        self.ARP_Value.setText('--')
-                        self.ARP_Button.hide()
-                    elif param == 'VRP':
-                        self.VRP_Value.setText('--')
-                        self.VRP_Button.hide()
-                    elif param == 'atrial_sensitivity':
-                        self.ASens_Value.setText('--')
-                        self.ASens_Button.hide()
-                    elif param == 'PVARP':
-                        self.PVARP_Value.setText('--')
-                        self.PVARP_Button.hide()
-                    elif param == 'hysteresis':
-                        self.hysteresis_Value.setText('--')
-                        self.hysteresis_Button.hide()
-                    elif param == 'ventricular_sensitivity':
-                        self.VSens_Value.setText('--')
-                        self.VSens_Button.hide()
-                    elif param == 'max_sensor_rate':
-                        self.max_rate_Value.setText('--')
-                        self.max_rate_Button.hide()
+                    getattr(self, label_name).hide()
+                    getattr(self, value_name).hide()
+                    getattr(self, button_name).hide()
 
         else: # if no mode is selected, set all labels to blank & hide all buttons
-            self.updateLabelsBlank()
+            self.hideAllParams()
 
         c.close()
 
@@ -324,7 +350,7 @@ class LandingWindow(QMainWindow): # landing page
             self.current_mode = '' # set mode to blank
             self.changemode_Button.hide() # show change mode button
             self.updateModeLabel() # update mode label
-            self.updateLabelsBlank() # set all labels to blank
+            self.hideAllParams() # set all labels to blank
             
         
     def back_clicked(self): # if back button is clicked, show popup window
@@ -362,13 +388,12 @@ class LandingWindow(QMainWindow): # landing page
             # ATTEMPT TO CONNECT TO DEVICE
             # board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
-            self.toggleConnectionStatus() # toggle connection status
+            self.toggleConnectionStatus() # for now pretend we connect successfully
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
-        modes = ['Off', 'AOO', 'VOO', 'AAI', 'VVI', 'AOOR', 'VOOR', 'AAIR', 'VVIR']
-        mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', modes)
+        mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', MODES.keys(), editable=False)
 
-        if done1 and mode in modes: # Once a mode is selected, if valid, update the mode
+        if done1 and mode in MODES: # Once a mode is selected, if valid, update the mode
             self.current_mode = mode
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
@@ -383,7 +408,7 @@ class LandingWindow(QMainWindow): # landing page
             msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
             x = msg.exec_()
 
-    def updateParam(self, param): # update param label and in database
+    def updateParam(self, param): # update singular param label & database value, called when singe param changed
         # get current value of param from database
         conn = connect('users.db')
         c = conn.cursor()
@@ -392,47 +417,23 @@ class LandingWindow(QMainWindow): # landing page
         c.close()
 
         # get new value from user
-        if param == 'ARP' or param == 'VRP':
-            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 150, 5000, 1)
-        elif param == 'hysteresis':
+        if param == 'hysteresis':
             value = not value # toggle value
             done = True
         else:
-            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value, 0, 100, 1)
+            value, done = QInputDialog.getInt(self, 'Update Parameter', f'Enter a new value for {param}', value)
 
-        if done and self.validateInputs(value): # if input is valid, update label and database
+        if done and self.validateInputs([(param, value)]): # if input is valid, update label and database
+
             # update label
-            if param == 'lower_rate_limit':
-                self.lowerLimit_Value.setText(str(value))
-            elif param == 'upper_rate_limit':
-                self.upperLimit_Value.setText(str(value))
-            elif param == 'atrial_amplitude':
-                self.AAmp_Value.setText(str(value))
-            elif param == 'atrial_pulse_width':
-                self.APW_Value.setText(str(value))
-            elif param == 'ventricular_amplitude':
-                self.VAmp_Value.setText(str(value))
-            elif param == 'ventricular_pulse_width':
-                self.VPW_Value.setText(str(value))
-            elif param == 'ARP':
-                self.ARP_Value.setText(str(value))
-            elif param == 'VRP':
-                self.VRP_Value.setText(str(value))
-            elif param == 'atrial_sensitivity':
-                self.ASens_Value.setText(str(value))
-            elif param == 'PVARP':
-                self.PVARP_Value.setText(str(value))
-            elif param == 'hysteresis':
-                if value == 0:
-                    self.hysteresis_Value.setText('OFF')
-                elif value == 1:
-                    self.hysteresis_Value.setText('ON')
+            value_name = f'{param}_Value'
+            if param == 'hysteresis':
+                if value:
+                    getattr(self, value_name).setText('ON')
                 else:
-                    self.hysteresis_Value.setText('ERROR')
-            elif param == 'ventricular_sensitivity':
-                self.VSens_Value.setText(str(value))
-            elif param == 'max_sensor_rate':
-                self.max_rate_Value.setText(str(value))
+                    getattr(self, value_name).setText('OFF')
+            else:
+                getattr(self, value_name).setText(str(value))
             
             # update database
             conn = connect('users.db')
@@ -456,9 +457,115 @@ class LandingWindow(QMainWindow): # landing page
             x = msg.exec_()
 
     def validateInputs (self, params):
-        # check if inputs are valid
-        # if not, show error message
-        # if yes, update values in database
-        # return true if inputs are valid, false if not
-        return True # for now, pretend inputs are valid
+        # params = [(param, value), (param, value), ...] -> Can validate multiple inputs at once
+        # check if inputs are valid, return true if inputs are valid, false if not
+        for input in params:
+            param = input[0]
+            value = input[1]
+
+            if param == 'lower_rate_limit': # value is in ppm
+                # not in range
+                if value < 30 or value > 175:
+                    return False
+                # in range but not a multiple of 5
+                elif ((30 <= value and value <= 50) or (90 <= value and value <= 175)) and value % 5 != 0:
+                    return False
+                # in range but not a multiple of 10
+                elif (50 < value and value < 90) and value % 1 != 0:
+                    return False
+                # if valid but higher than upper rate limit
+                # get upper rate limit from database
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute(f'SELECT upper_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
+                upper_value = c.fetchone()[0]
+                if value > upper_value:
+                    return False
+                    
+            elif param == 'upper_rate_limit' or param == 'max_sensor_rate': # value is in ppm
+                # not in range
+                if value < 50 or value > 175:
+                    return False
+                # in range but not a multiple of 5
+                elif value % 5 != 0:
+                    return False
+                # if valid but lower than lower rate limit
+                # get lower rate limit from database
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
+                lower_value = c.fetchone()[0]
+                if value < lower_value and param == 'upper_rate_limit':
+                    return False
+                
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
+                # not in range              
+                if value != 'Off' and (value < 0 or value > 5):
+                    return False
+                # in range but not a multiple of 0.1
+                elif (0 < value and value < 5) and round(value % 0.1) != 0:
+                    return False
+                
+            elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width': # value is in ms
+                # not in range
+                if value < 1 or value > 30:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in V
+                # not in range
+                if value < 0 or value > 5:
+                    return False
+                # in range but not a multiple of 0.1
+                elif round(value % 0.1) != 0:
+                    return False
+                
+            elif param == 'ARP' or param == 'VRP' or param == 'PVARP': # value is in ms
+                # not in range
+                if value < 150 or value > 500:
+                    return False
+                # in range but not a multiple of 10
+                elif value % 10 != 0:
+                    return False
+                
+            elif param == 'hysteresis': # value is 0 or 1, OFF or ON
+                # not in range
+                if value != 0 and value != 1:
+                    return False
+                
+            elif param == 'activity_threshold': # represents a value; V-Low = 0, Low = 1, Med-Low = 2, Med = 3, Med-High = 4, High = 5, V-High = 6
+                # not in range
+                if value < 0 or value > 6:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'reaction_time': # value is in seconds
+                # not in range
+                if value < 10 or value > 50:
+                    return False
+                # in range but not a multiple of 10
+                elif value % 10 != 0:
+                    return False
+                
+            elif param == 'response_factor': # no units of measurement
+                # not in range
+                if value < 1 or value > 16:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+                
+            elif param == 'recovery_time': # value is in minutes
+                # not in range
+                if value < 2 or value > 16:
+                    return False
+                # in range but not a multiple of 1
+                elif value % 1 != 0:
+                    return False
+
+        return True
  

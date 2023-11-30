@@ -3,13 +3,11 @@ Assignment1:
 
 Assignment2:
 - Expand the DCM to include all required modes and parameters:
-The following bradycardia operating modes shall be programmable: 
-- Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> 
-- OVO, OAO, and OOO shall be available in temporary operation -> IDK
+        - Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> Done EXCEPT rate adaptive params
 
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
 
-- The system will be able to set, store, transmit, programmable parameter data -> Done
+- The system will be able to set, store, and transmit programmable parameter data -> Done EXCEPT for transmit
         - Verify it is stored correctly on the Pacemaker device
 
 - The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
@@ -18,7 +16,7 @@ The following bradycardia operating modes shall be programmable:
 - Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
 
 
-Landing Page Redesign:
+Landing Page Redesign: -> Done
 - the connect button would toggle between connect / disconnect opposite of what the device currently is -> Done
         - toggleConnectionStatus() would toggle icon top right and the button text -> Done
         - rename connection variable -> Done
@@ -26,7 +24,7 @@ Landing Page Redesign:
 - instead of having all these big edit(mode) functions we just need one for each param -> Done
         - we alr have functions set up to update the labels and the mode -> Done
 - implement edit param button functionality, should validate input then update label -> Done
-        - Need input validation still
+        - Need input validation still -> Done
 
 
 Admin Page: -> Done
@@ -38,7 +36,7 @@ Admin Page: -> Done
 - Have popup on removal to ensure confirmation -> Done
 
 
-Database:
+Database: -> Done
 - Need to have database with unique values per user <- Done
 - Each user needs to have all programmable parameters <- Done
 - Each mode needs unique programmable parameters. -> Done
@@ -123,7 +121,7 @@ VVIR -> NOT done
     - Maximum sensor rate: 120 ppm -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
-    - Ventricular sensitivity: 2.5 mV
+    - Ventricular sensitivity: 2.5 mV -> Done
     - VRP: 320 ms -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: OFF -> NOT required
