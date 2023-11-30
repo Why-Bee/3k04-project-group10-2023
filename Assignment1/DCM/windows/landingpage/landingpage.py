@@ -301,13 +301,17 @@ class LandingWindow(QMainWindow): # landing page
 
                     value = str(value)
 
+                    # update label
                     getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
                     getattr(self, label_name).setGeometry(970 - getattr(self, label_name).width(), 210 + (labelsShown * 40), getattr(self, label_name).width(), 30)
                     getattr(self, label_name).show()
 
+                    # update value
                     getattr(self, value_name).setGeometry(990, 210 + (labelsShown * 40), getattr(self, value_name).width(), 30)
                     getattr(self, value_name).setText(value)
                     getattr(self, value_name).show()
+
+                    # update button
                     getattr(self, button_name).setGeometry(1050, 210 + (labelsShown * 40), 100, 30)
                     getattr(self, button_name).show()
                     labelsShown += 1
@@ -469,6 +473,14 @@ class LandingWindow(QMainWindow): # landing page
                 # in range but not a multiple of 10
                 elif (50 < value and value < 90) and value % 1 != 0:
                     return False
+                # if valid but higher than upper rate limit
+                # get upper rate limit from database
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute(f'SELECT upper_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
+                upper_value = c.fetchone()[0]
+                if value > upper_value:
+                    return False
                     
             elif param == 'upper_rate_limit' or param == 'max_sensor_rate': # value is in ppm
                 # not in range
@@ -476,6 +488,14 @@ class LandingWindow(QMainWindow): # landing page
                     return False
                 # in range but not a multiple of 5
                 elif value % 5 != 0:
+                    return False
+                # if valid but lower than lower rate limit
+                # get lower rate limit from database
+                conn = connect('users.db')
+                c = conn.cursor()
+                c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
+                lower_value = c.fetchone()[0]
+                if value < lower_value and param == 'upper_rate_limit':
                     return False
                 
             elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
