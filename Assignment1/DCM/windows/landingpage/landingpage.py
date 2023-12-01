@@ -8,6 +8,8 @@ import serial
 import struct
 import time
 
+from windows.egram.egram import EgramWindow
+
 
 # const dict of all modes
 # when adding a new mode, if all params are already in MODES, everything is automatically set up
@@ -75,6 +77,7 @@ class LandingWindow(QMainWindow): # landing page
         self.back_Button.clicked.connect(self.back_clicked)
         self.connection_Button.clicked.connect(self.connectionButton_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
+        self.egram_Button.clicked.connect(self.showEgram)
         for param in ALL_PARAMS: # connect all param buttons to updateParam function
             button_name = f'{param}_Button'
             getattr(self, button_name).clicked.connect(lambda _, param=param: self.updateParam(param))
@@ -563,6 +566,12 @@ class LandingWindow(QMainWindow): # landing page
             msg.setDefaultButton(QMessageBox.Ok)
             msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
             x = msg.exec_()
+
+    def showEgram(self): # show egram window
+        self.egram_window = EgramWindow(self.stacked_window, self.id)
+        self.stacked_window.addWidget(self.egram_window)
+        self.stacked_window.setCurrentIndex(2)
+        self.stacked_window.setWindowTitle("Egram")
 
     def updateParam(self, param): # update singular param label & database value, called when singe param changed
         # get current value of param from database
