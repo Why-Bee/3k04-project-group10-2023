@@ -61,5 +61,6 @@ class LoginWindow(QMainWindow):
 
     def show_landing_window(self):
         landing_window = LandingWindow(self.stacked_window, self.id)
+        landing_window.connectionStatus = False
         self.stacked_window.addWidget(landing_window)
         self.stacked_window.setCurrentIndex(2)

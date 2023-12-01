@@ -2,10 +2,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QLabel, QPushButton
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
-
 from sqlite3 import connect
 
-# import serial
+import serial
 import struct
 import time
 
@@ -54,6 +53,7 @@ class LandingWindow(QMainWindow): # landing page
         # set default values & initialize variables
         self.current_mode = '' # current mode of device
         self.connectionStatus = False # connected status of device
+        self.device_value = '' # current value of device
         self.id = id # id of current user
         self.changemode_Button.hide() # hide change mode button
         self.setUsername() # set username label
@@ -63,10 +63,10 @@ class LandingWindow(QMainWindow): # landing page
 
         # here we would interface with the device to get the current state and which mode is enabled
         # possibly cross reference with database to get the current values of the parameters and make sure they match
-        self.board_interface()
+        # self.board_interface()
 
-        self.updateModeLabel() # update mode label
-        self.updateParamLabels() # update param labels with values from database
+        # self.updateModeLabel() # update mode label
+        # self.updateParamLabels() # update param labels with values from database
 
         # connect buttons to functions
         self.back_Button.clicked.connect(self.back_clicked)
@@ -207,67 +207,92 @@ class LandingWindow(QMainWindow): # landing page
                 getattr(self, button_name).hide()
 
     def board_interface(self): # interface with board to get current state and which mode is enabled
-        pass
-        # # make UART connection with board
-        # # send command to board to get current mode
-        # # send command to board to get current values of parameters
-        # # for now, pretend board is connected and we start in AOO mode
+        # make UART connection with board
+        # send command to board to get current mode
+        # send command to board to get current values of parameters
+        # for now, pretend board is connected and we start in AOO mode
 
-        # # create serial connection
-        # try:
-        #     ser = serial.Serial('COM7')
-        #     connected = ser.is_open
-        #     ser.baudrate = 115200
-        #     ser.bytesize = 8
-        #     ser.parity = 'N'
-        #     ser.stopbits = 1
+        # create serial connection
+        try:
+            ser = serial.Serial('COM14')
+            connected = ser.is_open
+            if (not connected):
+                self.connectionErrorPopup()
+                return
+            ser.baudrate = 115200
+            ser.bytesize = 8
+            ser.parity = 'N'
+            ser.stopbits = 1
 
-        #     for i in range(1000):
-        #         data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", 
-        #                     0x16,
-        #                     0x16, # echo
-        #                     0x01, 
-        #                     0x03, 
-        #                     0x40, 0x01, 
-        #                     0xAC, 0x0D,
-        #                     0x90, 0x01,
-        #                     0x00,
-        #                     0x1E,
-        #                     0x78,
-        #                     0x5A,
-        #                     0x3C,
-        #                     0x05,
-        #                     0x08,
-        #                     0x78,
-        #                     0xAC, 0x0D, 
-        #                     0x90, 0x01,
-        #                     0xFA, 0x00
-        #                     )
-        #         ser.write(data)
-        #         output = ser.read(size=24)
-        #         print(output.hex())
-        #         time.sleep(0.1)
+            print ('Echo- handshake')
 
-        #     unpacked = struct.unpack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", output)
-        #     temp = unpacked[2]
-        #     if temp == 0:
-        #         self.current_mode = 'Off'
-        #     elif temp == 1:
-        #         self.current_mode = 'AOO'
-        #     elif temp == 2:
-        #         self.current_mode = 'VOO'
-        #     elif temp == 3:
-        #         self.current_mode = 'AAI'
-        #     elif temp == 4:
-        #         self.current_mode = 'VVI'
+            data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B",
+                        0x16,
+                        0x16, # echo
+                        0x02, 
+                        0x03, 
+                        0x40, 0x01, 
+                        0xAC, 0x0D,
+                        0x90, 0x01,
+                        0x00,
+                        0x1E,
+                        0x78,
+                        0x5A,
+                        0x3C,
+                        0x05,
+                        0x08,
+                        0x78,
+                        0xAC, 0x0D, 
+                        0x90, 0x01,
+                        0xFA, 0x00
+                        )
 
-        #     ser.close()
+            ser.write(data)
+            output = ser.read(size=42)
+            # unpack 'output'
+            outputString = str(output.hex())
 
-        #     # update mode label
-        #     self.updateModeLabel()
+            # Extract device id and mode. The first 4 bytes (8 hex characters) are Device ID and the next byte (2 hex characters) is the mode
+            # check device ID against current displayed ID
+            if (outputString[0:8] != self.device_value):
+                self.newDevicePopup()
+                self.device_value = outputString[0:8]
+                self.updateUIDLabel(self.device_value)
             
-        # except serial.SerialException:
-        #     self.current_mode = 'Off'
+            if (outputString[8:10] == '00'):
+                self.current_mode = ''
+            elif (outputString[8:10] == '01'):
+                self.current_mode = 'AOO'
+            elif (outputString[8:10] == '02'):
+                self.current_mode = 'VOO'
+            elif (outputString[8:10] == '03'):
+                self.current_mode = 'AAI'
+            elif (outputString[8:10] == '04'):
+                self.current_mode = 'VVI'
+            elif (outputString[8:10] == '05'):
+                self.current_mode = 'AOOR'
+            elif (outputString[8:10] == '06'):
+                self.current_mode = 'VOOR'
+            elif (outputString[8:10] == '07'):
+                self.current_mode = 'AAIR'
+            elif (outputString[8:10] == '08'):
+                self.current_mode = 'VVIR'
+            else:
+                self.current_mode = 'Off'
+
+            time.sleep(0.5)
+
+            # update mode label
+            self.updateModeLabel()
+            self.updateParamLabels()
+
+            # change the connection status
+            self.toggleConnectionStatus()
+            
+        except serial.SerialException:
+            print ('No device connected')
+            self.connectionErrorPopup()
+            self.current_mode = 'Off'
 
         # if connected: # if connected, toggle connection status to true -> default is false
         #     self.toggleConnectionStatus() # update connected status
@@ -296,6 +321,12 @@ class LandingWindow(QMainWindow): # landing page
             self.device_mode_Value.setText('N/A (Not Connected)') # if no mode is selected, set label to blank
         else:
             self.device_mode_Value.setText(self.current_mode)
+
+    def updateUIDLabel(self, deviceValue): #update device UID, called when interface detects a new device
+        if self.device_value == '':
+            self.device_UID_Value.setText('N/A (Not Connected)')
+        else:
+            self.device_value = deviceValue
 
     def hideAllParams(self): # hide all param labels & buttons, called when no mode is selected or when device is disconnected
         for param in ALL_PARAMS:
@@ -409,6 +440,27 @@ class LandingWindow(QMainWindow): # landing page
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
 
+    def connectionErrorPopup(self): # declare the below popup window
+        msg = QMessageBox()
+        msg.setWindowTitle('Connection Error')
+        msg.setText('No device connected. Please connect a device and try again.')
+        msg.setIcon(QMessageBox.Critical)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.setDefaultButton(QMessageBox.Ok)
+
+        msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+
+        x = msg.exec_()
+    
+    def newDevicePopup(self): # declare the below popup window
+        msg = QMessageBox()
+        msg.setWindowTitle('New Device Detected')
+        msg.setText('A new device has been detected')
+        msg.setIcon(QMessageBox.Information)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.setDefaultButton(QMessageBox.Ok)
+
+
     def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
         if buttonSelected.text() == '&Yes':
             self.stacked_window.setCurrentIndex(0)
@@ -423,20 +475,25 @@ class LandingWindow(QMainWindow): # landing page
         if self.connectionStatus:
             # ATTEMPT TO DISCONNECT FROM DEVICE
             # if successful, toggle connection status
+            
             self.toggleConnectionStatus() # for now pretend we disconnect successfully
         else:
             # ATTEMPT TO CONNECT TO DEVICE
-            # board_interface(self) # attempt to connect to device
+            board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
-            self.toggleConnectionStatus() # for now pretend we connect successfully
+            # self.board_interface() # attempt to disconnect from device
+
+            # self.toggleConnectionStatus()
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
         mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', MODES.keys(), editable=False)
 
         if done1 and mode in MODES: # Once a mode is selected, if valid, update the mode
             self.current_mode = mode
+            self.updateBoardMode(self, mode)
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
+
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
@@ -486,7 +543,7 @@ class LandingWindow(QMainWindow): # landing page
 
             # update board
             # send command to board to update parameter
-            # updateBoard(self, param, value)
+            self.updateBoard(self, param, value)
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
