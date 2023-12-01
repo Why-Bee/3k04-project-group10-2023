@@ -260,7 +260,7 @@ class LandingWindow(QMainWindow): # landing page
             if (outputString[0:8] != self.device_value):
                 self.newDevicePopup()
                 self.device_value = outputString[0:8]
-                self.updateUIDLabel(self.device_value)
+                self.updateUIDLabel()
             
             if (outputString[8:10] == '00'):
                 self.current_mode = ''
@@ -318,21 +318,21 @@ class LandingWindow(QMainWindow): # landing page
             # create byte array to send to board
             a = ['0x16', '0x20'] # write command
             # append the mode
-            if (current_mode == 'AOO'):
+            if (self.current_mode == 'AOO'):
                 a.append('0x01')
-            elif (current_mode == 'VOO'):
+            elif (self.current_mode == 'VOO'):
                 a.append('0x02')
-            elif (current_mode == 'AAI'):
+            elif (self.current_mode == 'AAI'):
                 a.append('0x03')
-            elif (current_mode == 'VVI'):
+            elif (self.current_mode == 'VVI'):
                 a.append('0x04')
-            elif (current_mode == 'AOOR'):
+            elif (self.current_mode == 'AOOR'):
                 a.append('0x05')
-            elif (current_mode == 'VOOR'):
+            elif (self.current_mode == 'VOOR'):
                 a.append('0x06')
-            elif (current_mode == 'AAIR'):
+            elif (self.current_mode == 'AAIR'):
                 a.append('0x07')
-            elif (current_mode == 'VVIR'):
+            elif (self.current_mode == 'VVIR'):
                 a.append('0x08')
             else:
                 a.append('0x00')
@@ -343,8 +343,8 @@ class LandingWindow(QMainWindow): # landing page
             for testParam in BOARD_PARAMS:
                 textLength = BOARD_PARAMS[testParam]
                 # check if the current parameter is part of the current mode
-                if (testParam in MODES[current_mode]):
-                    c.execute(f'SELECT {testParam} FROM {current_mode}_data WHERE id=?', (self.id,))
+                if (testParam in MODES[self.current_mode]):
+                    c.execute(f'SELECT {testParam} FROM {self.current_mode}_data WHERE id=?', (self.id,))
                     value = c.fetchone()[0]
                     # convert value to hex
                     value = f'0x{value:0{textLength*2}x}'
@@ -381,11 +381,11 @@ class LandingWindow(QMainWindow): # landing page
         else:
             self.device_mode_Value.setText(self.current_mode)
 
-    def updateUIDLabel(self, deviceValue): #update device UID, called when interface detects a new device
+    def updateUIDLabel(self): #update device UID, called when interface detects a new device
         if self.device_value == '':
             self.device_UID_Value.setText('N/A (Not Connected)')
         else:
-            self.device_value = deviceValue
+            self.device_UID_Value.setText(self.device_value)
 
     def hideAllParams(self): # hide all param labels & buttons, called when no mode is selected or when device is disconnected
         for param in ALL_PARAMS:
@@ -538,7 +538,7 @@ class LandingWindow(QMainWindow): # landing page
             self.toggleConnectionStatus() # for now pretend we disconnect successfully
         else:
             # ATTEMPT TO CONNECT TO DEVICE
-            board_interface(self) # attempt to connect to device
+            self.board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
             # self.board_interface() # attempt to disconnect from device
 
