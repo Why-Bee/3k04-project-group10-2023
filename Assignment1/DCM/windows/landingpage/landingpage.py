@@ -42,6 +42,9 @@ for mode in MODES:
         if param not in ALL_PARAMS:
             ALL_PARAMS.append(param)
 
+# const arr of all params that are on the board
+BOARD_PARAMS = {'activity_threshold':1, 'ARP':2, 'atrial_amplitude':2, 'atrial_pulse_width':2, 'hysteresis':1, 'hysteresisLimit':1, 'max_sensor_rate':1, 'lower_rate_limit':1, 'reaction_time':1, 'recovery_time':1, 'response_factor':1, 'upper_rate_limit':1, 'ventricular_amplitude':2, 'ventricular_pulse_width':2}
+
 
 class LandingWindow(QMainWindow): # landing page
     def __init__(self, stacked_window, id):
@@ -288,6 +291,8 @@ class LandingWindow(QMainWindow): # landing page
 
             # change the connection status
             self.toggleConnectionStatus()
+
+            ser.close()
             
         except serial.SerialException:
             print ('No device connected')
@@ -297,24 +302,78 @@ class LandingWindow(QMainWindow): # landing page
         # if connected: # if connected, toggle connection status to true -> default is false
         #     self.toggleConnectionStatus() # update connected status
 
-    # def updateBoard(self, param, value): # update the board with new parameter value
-    #     # send command to board to update parameter
-    #     # check which parameter is being updated
+    def updateBoard(self): # update the board with new parameter value
+        # send command to board to update parameter
+        # check which parameter is being updated
 
-    #     # create serial connection
-    #     try:
-    #         ser = serial.Serial('COM7')
-    #         connected = ser.is_open
-    #         ser.baudrate = 115200
-    #         ser.bytesize = 8
-    #         ser.parity = 'N'
-    #         ser.stopbits = 1
+        # create serial connection
+        try:
+            ser = serial.Serial('COM14')
+            connected = ser.is_open
+            ser.baudrate = 115200
+            ser.bytesize = 8
+            ser.parity = 'N'
+            ser.stopbits = 1
 
-    #         # fetch current values of all parameters
-    #         # connect to database
-    #         conn = connect('users.db')
-    #         c = conn.cursor()
-    #         c.execute(f'SELECT * FROM {self.current_mode}_data WHERE id=?', (self.id,))
+            # create byte array to send to board
+            a = ['0x16', '0x20'] # write command
+            # append the mode
+            if (current_mode == 'AOO'):
+                a.append('0x01')
+            elif (current_mode == 'VOO'):
+                a.append('0x02')
+            elif (current_mode == 'AAI'):
+                a.append('0x03')
+            elif (current_mode == 'VVI'):
+                a.append('0x04')
+            elif (current_mode == 'AOOR'):
+                a.append('0x05')
+            elif (current_mode == 'VOOR'):
+                a.append('0x06')
+            elif (current_mode == 'AAIR'):
+                a.append('0x07')
+            elif (current_mode == 'VVIR'):
+                a.append('0x08')
+            else:
+                a.append('0x00')
+
+            conn = connect('users.db')
+            c = conn.cursor()
+
+            for testParam in BOARD_PARAMS:
+                textLength = BOARD_PARAMS[testParam]
+                # check if the current parameter is part of the current mode
+                if (testParam in MODES[current_mode]):
+                    c.execute(f'SELECT {testParam} FROM {current_mode}_data WHERE id=?', (self.id,))
+                    value = c.fetchone()[0]
+                    # convert value to hex
+                    value = f'0x{value:0{textLength*2}x}'
+                    # append value to byte array
+                    if (textLength == 1):
+                        a.append(value)
+                    elif (textLength == 2):
+                        a.append(f'0x{value[0:2]}')
+                        a.append(f'0x{value[2:4]}')
+                    
+                    if (len(value) != textLength*2+2):
+                        raise ValueError('Value is not the correct length')
+                
+                else:
+                    if (textLength == 1):
+                        a.append('0x00')
+                    else:
+                        a.append('0x00')
+                        a.append('0x00')
+
+            # assemble byte array
+            data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", a)
+            ser.write(data)
+            time.sleep(0.2)
+            ser.close()  
+        except serial.SerialException:
+            print ('No device connected')
+            self.connectionErrorPopup()
+            self.current_mode = 'Off'      
             
     def updateModeLabel(self): # update mode label, called when mode is changed
         if self.current_mode == '':
@@ -490,9 +549,9 @@ class LandingWindow(QMainWindow): # landing page
 
         if done1 and mode in MODES: # Once a mode is selected, if valid, update the mode
             self.current_mode = mode
-            self.updateBoardMode(self, mode)
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
+            self.updateBoard(self, 'MODE', mode)
 
 
         else: # if input is invalid, show error message
@@ -543,7 +602,7 @@ class LandingWindow(QMainWindow): # landing page
 
             # update board
             # send command to board to update parameter
-            self.updateBoard(self, param, value)
+            self.updateBoard(self)
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
