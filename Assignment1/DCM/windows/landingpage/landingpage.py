@@ -502,6 +502,16 @@ class LandingWindow(QMainWindow): # landing page
         msg.buttonClicked.connect(self.popup_button)
         x = msg.exec_()
 
+    def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
+        if buttonSelected.text() == '&Yes':
+            self.stacked_window.setCurrentIndex(0)
+            # clear stack
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
+            self.stacked_window.removeWidget(self.stacked_window.widget(1))
+            self.stacked_window.setWindowTitle("Welcome")
+        else:
+            pass
+
     def connectionErrorPopup(self): # declare the below popup window
         msg = QMessageBox()
         msg.setWindowTitle('Connection Error')
@@ -521,17 +531,6 @@ class LandingWindow(QMainWindow): # landing page
         msg.setIcon(QMessageBox.Information)
         msg.setStandardButtons(QMessageBox.Ok)
         msg.setDefaultButton(QMessageBox.Ok)
-
-
-    def popup_button(self, buttonSelected): # if yes is clicked, go back to welcome screen
-        if buttonSelected.text() == '&Yes':
-            self.stacked_window.setCurrentIndex(0)
-            # clear stack
-            self.stacked_window.removeWidget(self.stacked_window.widget(1))
-            self.stacked_window.removeWidget(self.stacked_window.widget(1))
-            self.stacked_window.setWindowTitle("Welcome")
-        else:
-            pass
 
     def connectionButton_clicked(self):
         if self.connectionStatus:
@@ -568,9 +567,9 @@ class LandingWindow(QMainWindow): # landing page
             x = msg.exec_()
 
     def showEgram(self): # show egram window
-        self.egram_window = EgramWindow(self.stacked_window, self.id)
+        self.egram_window = EgramWindow(self.stacked_window)
         self.stacked_window.addWidget(self.egram_window)
-        self.stacked_window.setCurrentIndex(2)
+        self.stacked_window.setCurrentIndex(3)
         self.stacked_window.setWindowTitle("Egram")
 
     def updateParam(self, param): # update singular param label & database value, called when singe param changed

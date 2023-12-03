@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QComboBox, QWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QComboBox, QWidget, QMessageBox, QPushButton
 from PyQt5.QtGui import QPainter
 from PyQt5.QtChart import QChart, QChartView, QLineSeries
 
 class EgramWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, stacked_window):
+        super(EgramWindow, self).__init__()
+        self.stacked_window = stacked_window
+        self.stacked_window.setWindowTitle('Egram')
 
         self.atrial_series = QLineSeries()
         self.ventricular_series = QLineSeries()
@@ -23,6 +25,11 @@ class EgramWindow(QMainWindow):
         self.combo_box.addItem('Ventricular')
         self.combo_box.addItem('Both')
         self.combo_box.currentIndexChanged.connect(self.switch_display)
+
+        self.back_Button = QPushButton('Back')
+        self.back_Button.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+        self.back_Button.setgeometry(25, 25, 100, 50)
+        self.back_Button.clicked.connect(self.back_clicked)
 
         layout = QVBoxLayout()
         layout.addWidget(self.combo_box)
@@ -51,3 +58,9 @@ class EgramWindow(QMainWindow):
         elif display_mode == 'Both':
             self.atrial_series.setVisible(True)
             self.ventricular_series.setVisible(True)
+
+    def back_clicked(self): # if back button is clicked, show popup window
+        self.stacked_window.setCurrentIndex(1)
+        # clear stack
+        self.stacked_window.removeWidget(self.stacked_window.widget(2))
+        self.stacked_window.setWindowTitle("Landing Page")
