@@ -2,18 +2,23 @@ Assignment1:
 - Issues on GitHub.
 
 Assignment2:
-- Expand the DCM to include all required modes and parameters:
-        - Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> Done EXCEPT rate adaptive params
+- Expand the DCM to include all required modes and parameters: -> Done
+        - Off, VOOR, AOOR, VVIR, AAIR, VOO, AOO, VVI, AAI -> Done
 
 - Implement stable serial communication to transmit and receive information between the DCM and pacemaker.
 
 - The system will be able to set, store, and transmit programmable parameter data -> Done EXCEPT for transmit
-        - Verify it is stored correctly on the Pacemaker device
+        - Verify it is stored correctly on the Pacemaker device -> Use parity bit ?
 
 - The system will be able to display egram data when the user chooses to do so (for either ventricle, atrium, or both).
         - The DCM must receive the egram data from the Pacemaker over serial communication link in order to display it.
 
-- Document how programmable parameters originate at the DCM and are implemented in the device. Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. Justify your choice of the data types used to represent the parameters data.
+- Document how programmable parameters originate at the DCM and are implemented in the device.
+        - Leave for docs ?
+- Show how you can ensure the parameters stored in the Pacemaker are what the doctor input on the DCM. 
+        - Again use parity bit ?
+- Justify your choice of the data types used to represent the parameters data.
+        - Integers for everything, just makes it easier, and adjust units to match
 
 
 Landing Page Redesign: -> Done
@@ -43,7 +48,7 @@ Database: -> Done
 - Need to be able to save and load database to/from file -> Done
 
 
-Modes:
+Modes: -> Done
 AOO -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
@@ -77,29 +82,29 @@ VVI -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: -> NOT required
 
-AOOR -> NOT done
+AOOR -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm -> Done
     - Atrial amplitude: 3.5 V -> Done
     - Atrial pulse width: 0.4 ms -> Done
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
+    - Activity threshold: MED = 3, -> Done
+    - Reaction time: 30 s -> Done
+    - Response factor: 8 -> Done
+    - Recovery time: 5 min -> Done
 
-VOOR -> NOT done
+VOOR -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm -> Done
     - Ventricular amplitude: 3.5 V -> Done
     - Ventricular pulse width: 0.4 ms -> Done
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
+    - Activity threshold: MED = 3, -> Done
+    - Reaction time: 30 s -> Done
+    - Response factor: 8 -> Done
+    - Recovery time: 5 min -> Done
 
-AAIR -> NOT done
+AAIR -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm -> Done
@@ -110,12 +115,12 @@ AAIR -> NOT done
     - PVARP: 250 ms -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: OFF -> NOT required
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
+    - Activity threshold: MED = 3, -> Done
+    - Reaction time: 30 s -> Done
+    - Response factor: 8 -> Done
+    - Recovery time: 5 min -> Done
 
-VVIR -> NOT done
+VVIR -> Done
     - Lower rate limit: 60 ppm -> Done
     - Upper rate limit: 120 ppm -> Done
     - Maximum sensor rate: 120 ppm -> Done
@@ -125,7 +130,7 @@ VVIR -> NOT done
     - VRP: 320 ms -> Done
     - Hysteresis: OFF -> Done
     - Rate smoothing: OFF -> NOT required
-    - Activity threshold: MED
-    - Reaction time: 30 s
-    - Response factor: 8
-    - Recovery time: 5 min
+    - Activity threshold: MED = 3, -> Done
+    - Reaction time: 30 s -> Done
+    - Response factor: 8 -> Done
+    - Recovery time: 5 min -> Done

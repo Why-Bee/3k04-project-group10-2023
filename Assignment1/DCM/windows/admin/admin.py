@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt
 
 from sqlite3 import connect
 
+from windows.landingpage.landingpage import MODES
+
 
 class AdminWindow(QMainWindow): # admin page
     def __init__(self, stacked_window):
@@ -146,14 +148,8 @@ class AdminWindow(QMainWindow): # admin page
         conn = connect('./users.db')
         c = conn.cursor()
         c.execute('DELETE FROM all_users WHERE id = ?', (id,))
-        c.execute('DELETE FROM AOO_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM VOO_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM AAI_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM VVI_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM AOOR_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM VOOR_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM AAIR_data WHERE id = ?', (id,))
-        c.execute('DELETE FROM VVIR_data WHERE id = ?', (id,))
+        for mode in MODES:
+            c.execute(f'DELETE FROM {mode}_data WHERE id = ?', (id,))
         conn.commit()
         conn.close()
 

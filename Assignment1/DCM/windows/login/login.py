@@ -8,7 +8,6 @@ from hashlib import sha256
 from windows.landingpage.landingpage import LandingWindow
 
 
-
 class LoginWindow(QMainWindow):
     def __init__(self, stacked_window):
         super(LoginWindow, self).__init__()
@@ -62,5 +61,6 @@ class LoginWindow(QMainWindow):
 
     def show_landing_window(self):
         landing_window = LandingWindow(self.stacked_window, self.id)
+        landing_window.connectionStatus = False
         self.stacked_window.addWidget(landing_window)
         self.stacked_window.setCurrentIndex(2)

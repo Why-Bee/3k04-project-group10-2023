@@ -2,15 +2,20 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QInputDialog, QLabel, QPushButton
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QPixmap
-
 from sqlite3 import connect
 
-# import serial
+import serial
 import struct
 import time
 
-# when adding a new param, everything except validateInputs() is done automatically
+from windows.egram.egram import EgramWindow
+
+
 # const dict of all modes
+# when adding a new mode, if all params are already in MODES, everything is automatically set up
+# when adding a new param, everything is automatically set up except nominal value & input validation
+# set nominal value in checkDatabase function
+# set input validation in validateInputs function
 MODES = {
     'OFF': 
         (), 
@@ -23,13 +28,13 @@ MODES = {
     'VVI': 
         ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity'), 
     'AOOR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'VOOR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'AAIR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate'), 
+        ('lower_rate_limit', 'upper_rate_limit', 'atrial_amplitude', 'atrial_pulse_width', 'ARP', 'atrial_sensitivity', 'PVARP', 'hysteresis', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time'), 
     'VVIR': 
-        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate')
+        ('lower_rate_limit', 'upper_rate_limit', 'ventricular_amplitude', 'ventricular_pulse_width', 'VRP', 'hysteresis', 'ventricular_sensitivity', 'max_sensor_rate', 'activity_threshold', 'reaction_time', 'response_factor', 'recovery_time')
         }
 
 # const arr of all params, created dynamically from MODES dict
@@ -38,6 +43,9 @@ for mode in MODES:
     for param in MODES[mode]:
         if param not in ALL_PARAMS:
             ALL_PARAMS.append(param)
+
+# const arr of all params that are on the board
+BOARD_PARAMS = {'activity_threshold':1, 'ARP':2, 'atrial_amplitude':2, 'atrial_pulse_width':2, 'hysteresis':1, 'hysteresisLimit':1, 'max_sensor_rate':1, 'lower_rate_limit':1, 'reaction_time':1, 'recovery_time':1, 'response_factor':1, 'upper_rate_limit':1, 'ventricular_amplitude':2, 'ventricular_pulse_width':2}
 
 
 class LandingWindow(QMainWindow): # landing page
@@ -50,6 +58,7 @@ class LandingWindow(QMainWindow): # landing page
         # set default values & initialize variables
         self.current_mode = '' # current mode of device
         self.connectionStatus = False # connected status of device
+        self.device_value = '' # current value of device
         self.id = id # id of current user
         self.changemode_Button.hide() # hide change mode button
         self.setUsername() # set username label
@@ -59,15 +68,16 @@ class LandingWindow(QMainWindow): # landing page
 
         # here we would interface with the device to get the current state and which mode is enabled
         # possibly cross reference with database to get the current values of the parameters and make sure they match
-        self.board_interface()
+        # self.board_interface()
 
-        self.updateModeLabel() # update mode label
-        self.updateParamLabels() # update param labels with values from database
+        # self.updateModeLabel() # update mode label
+        # self.updateParamLabels() # update param labels with values from database
 
         # connect buttons to functions
         self.back_Button.clicked.connect(self.back_clicked)
         self.connection_Button.clicked.connect(self.connectionButton_clicked)
         self.changemode_Button.clicked.connect(self.changemode_clicked)
+        self.egram_Button.clicked.connect(self.showEgram)
         for param in ALL_PARAMS: # connect all param buttons to updateParam function
             button_name = f'{param}_Button'
             getattr(self, button_name).clicked.connect(lambda _, param=param: self.updateParam(param))
@@ -99,11 +109,12 @@ class LandingWindow(QMainWindow): # landing page
             mode_table = f'{mode}_data'
             if (mode_table,) not in tables:
                 # create table in database
-                print(f'Adding {mode}_data to database')
                 c.execute(f'CREATE TABLE {mode}_data (id integer PRIMARY KEY AUTOINCREMENT)')
-                # need row for each id
-                for i in range(1, 11):
-                    print(f'Adding row {i} to {mode}_data')
+                # need row for each user
+                # get number of users from database
+                c.execute('SELECT COUNT(*) FROM all_users')
+                num_users = c.fetchone()[0]
+                for i in range(1, num_users + 1):
                     c.execute(f'INSERT INTO {mode}_data (id) VALUES (?)', (i,))
 
         # check that all params are in database
@@ -115,8 +126,35 @@ class LandingWindow(QMainWindow): # landing page
                     continue
                 else:
                     # add column to table
-                    print(f'Adding {param} to {mode}_data')
-                    c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1')
+                    # ensure that the DEFAULT value is the nominal value for that parameter
+                    if param == 'lower_rate_limit':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 60') # 60 ppm
+                    elif param == 'upper_rate_limit':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120') # 120 ppm
+                    elif param == 'atrial_amplitude' or param == 'ventricular_amplitude':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5000') # 5000 mV
+                    elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 1') # 1 ms
+                    elif param == 'ARP' or param == 'PVARP':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 250') # 250 ms
+                    elif param == 'VRP':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 320') # 320 ms
+                    elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 75') # 75 mV
+                    elif param == 'hysteresis':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0') # 0 = OFF
+                    elif param == 'max_sensor_rate':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 120') # 120 ppm
+                    elif param == 'activity_threshold':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 3') # 3 = Med
+                    elif param == 'reaction_time':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 30') # 30 seconds
+                    elif param == 'response_factor':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 8') # 8
+                    elif param == 'recovery_time':
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 5') # 5 minutes
+                    else:
+                        c.execute(f'ALTER TABLE {mode}_data ADD COLUMN {param} integer DEFAULT 0') # default value of 0
 
         # check that there is no extra tables in database
         for table in tables:
@@ -145,7 +183,12 @@ class LandingWindow(QMainWindow): # landing page
             if not hasattr(self, label_name):
                 # create label
                 setattr(self, label_name, QLabel(self.bgWidget))
-                getattr(self, label_name).setText(f'{label_name}:')
+                labelAsText = label_name.replace('_', ' ')
+                # capitalize first letter of each word
+                labelAsText = labelAsText.split(' ')
+                labelAsText = [word.capitalize() for word in labelAsText]
+                labelAsText = ' '.join(labelAsText)
+                getattr(self, label_name).setText(f'{labelAsText}:')
                 getattr(self, label_name).setStyleSheet('color: black; font: 8pt "MS Shell Dlg 2";')
                 # Set width to match label text
                 getattr(self, label_name).setFixedWidth(getattr(self, label_name).fontMetrics().boundingRect(getattr(self, label_name).text()).width())
@@ -160,101 +203,192 @@ class LandingWindow(QMainWindow): # landing page
             if not hasattr(self, button_name):
                 # create button
                 setattr(self, button_name, QPushButton(self.bgWidget))
-                getattr(self, button_name).setText(f'Update {param}')
+                updateAsText = label_name.split('_')
+                # set updateAsTest to only capitalize first letter of each word, i.e. 'lower_rate_limit' -> 'LRL'
+                updateAsText = [word[0].upper() for word in updateAsText]
+                updateAsText = ''.join(updateAsText)
+                getattr(self, button_name).setText(f'Update {updateAsText}')
                 getattr(self, button_name).setStyleSheet('QPushButton {color: rgb(255, 255, 255);background-color: rgb(0, 0, 127);border-radius:2px;font: 8pt "MS Reference Sans Serif";} QPushButton:hover {background-color: rgb(85, 170, 255);}')
                 getattr(self, button_name).setCursor(Qt.PointingHandCursor)
                 getattr(self, button_name).hide()
 
     def board_interface(self): # interface with board to get current state and which mode is enabled
-        pass
-        # # make UART connection with board
-        # # send command to board to get current mode
-        # # send command to board to get current values of parameters
-        # # for now, pretend board is connected and we start in AOO mode
+        # make UART connection with board
+        # send command to board to get current mode
+        # send command to board to get current values of parameters
+        # for now, pretend board is connected and we start in AOO mode
 
-        # # create serial connection
-        # try:
-        #     ser = serial.Serial('COM7')
-        #     connected = ser.is_open
-        #     ser.baudrate = 115200
-        #     ser.bytesize = 8
-        #     ser.parity = 'N'
-        #     ser.stopbits = 1
+        # create serial connection
+        try:
+            ser = serial.Serial('COM14')
+            connected = ser.is_open
+            if (not connected):
+                self.connectionErrorPopup()
+                return
+            ser.baudrate = 115200
+            ser.bytesize = 8
+            ser.parity = 'N'
+            ser.stopbits = 1
 
-        #     for i in range(1000):
-        #         data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", 
-        #                     0x16,
-        #                     0x16, # echo
-        #                     0x01, 
-        #                     0x03, 
-        #                     0x40, 0x01, 
-        #                     0xAC, 0x0D,
-        #                     0x90, 0x01,
-        #                     0x00,
-        #                     0x1E,
-        #                     0x78,
-        #                     0x5A,
-        #                     0x3C,
-        #                     0x05,
-        #                     0x08,
-        #                     0x78,
-        #                     0xAC, 0x0D, 
-        #                     0x90, 0x01,
-        #                     0xFA, 0x00
-        #                     )
-        #         ser.write(data)
-        #         output = ser.read(size=24)
-        #         print(output.hex())
-        #         time.sleep(0.1)
+            print ('Echo- handshake')
 
-        #     unpacked = struct.unpack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", output)
-        #     temp = unpacked[2]
-        #     if temp == 0:
-        #         self.current_mode = 'Off'
-        #     elif temp == 1:
-        #         self.current_mode = 'AOO'
-        #     elif temp == 2:
-        #         self.current_mode = 'VOO'
-        #     elif temp == 3:
-        #         self.current_mode = 'AAI'
-        #     elif temp == 4:
-        #         self.current_mode = 'VVI'
+            data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B",
+                        0x16,
+                        0x16, # echo
+                        0x02, 
+                        0x03, 
+                        0x40, 0x01, 
+                        0xAC, 0x0D,
+                        0x90, 0x01,
+                        0x00,
+                        0x1E,
+                        0x78,
+                        0x5A,
+                        0x3C,
+                        0x05,
+                        0x08,
+                        0x78,
+                        0xAC, 0x0D, 
+                        0x90, 0x01,
+                        0xFA, 0x00
+                        )
 
-        #     ser.close()
+            ser.write(data)
+            output = ser.read(size=42)
+            # unpack 'output'
+            outputString = str(output.hex())
 
-        #     # update mode label
-        #     self.updateModeLabel()
+            # Extract device id and mode. The first 4 bytes (8 hex characters) are Device ID and the next byte (2 hex characters) is the mode
+            # check device ID against current displayed ID
+            if (outputString[0:8] != self.device_value):
+                self.newDevicePopup()
+                self.device_value = outputString[0:8]
+                self.updateUIDLabel()
             
-        # except serial.SerialException:
-        #     self.current_mode = 'Off'
+            if (outputString[8:10] == '00'):
+                self.current_mode = ''
+            elif (outputString[8:10] == '01'):
+                self.current_mode = 'AOO'
+            elif (outputString[8:10] == '02'):
+                self.current_mode = 'VOO'
+            elif (outputString[8:10] == '03'):
+                self.current_mode = 'AAI'
+            elif (outputString[8:10] == '04'):
+                self.current_mode = 'VVI'
+            elif (outputString[8:10] == '05'):
+                self.current_mode = 'AOOR'
+            elif (outputString[8:10] == '06'):
+                self.current_mode = 'VOOR'
+            elif (outputString[8:10] == '07'):
+                self.current_mode = 'AAIR'
+            elif (outputString[8:10] == '08'):
+                self.current_mode = 'VVIR'
+            else:
+                self.current_mode = 'Off'
+
+            time.sleep(0.5)
+
+            # update mode label
+            self.updateModeLabel()
+            self.updateParamLabels()
+
+            # change the connection status
+            self.toggleConnectionStatus()
+
+            ser.close()
+            
+        except serial.SerialException:
+            print ('No device connected')
+            self.connectionErrorPopup()
+            self.current_mode = 'Off'
 
         # if connected: # if connected, toggle connection status to true -> default is false
         #     self.toggleConnectionStatus() # update connected status
 
-    # def updateBoard(self, param, value): # update the board with new parameter value
-    #     # send command to board to update parameter
-    #     # check which parameter is being updated
+    def updateBoard(self): # update the board with new parameter value
+        # send command to board to update parameter
+        # check which parameter is being updated
 
-    #     # create serial connection
-    #     try:
-    #         ser = serial.Serial('COM7')
-    #         connected = ser.is_open
-    #         ser.baudrate = 115200
-    #         ser.bytesize = 8
-    #         ser.parity = 'N'
-    #         ser.stopbits = 1
+        # create serial connection
+        try:
+            ser = serial.Serial('COM14')
+            connected = ser.is_open
+            ser.baudrate = 115200
+            ser.bytesize = 8
+            ser.parity = 'N'
+            ser.stopbits = 1
 
-    #         # fetch current values of all parameters
-    #         # connect to database
-    #         conn = connect('users.db')
-    #         c = conn.cursor()
-    #         c.execute(f'SELECT * FROM {self.current_mode}_data WHERE id=?', (self.id,))
+            # create byte array to send to board
+            a = ['0x16', '0x20'] # write command
+            # append the mode
+            if (self.current_mode == 'AOO'):
+                a.append('0x01')
+            elif (self.current_mode == 'VOO'):
+                a.append('0x02')
+            elif (self.current_mode == 'AAI'):
+                a.append('0x03')
+            elif (self.current_mode == 'VVI'):
+                a.append('0x04')
+            elif (self.current_mode == 'AOOR'):
+                a.append('0x05')
+            elif (self.current_mode == 'VOOR'):
+                a.append('0x06')
+            elif (self.current_mode == 'AAIR'):
+                a.append('0x07')
+            elif (self.current_mode == 'VVIR'):
+                a.append('0x08')
+            else:
+                a.append('0x00')
+
+            conn = connect('users.db')
+            c = conn.cursor()
+
+            for testParam in BOARD_PARAMS:
+                textLength = BOARD_PARAMS[testParam]
+                # check if the current parameter is part of the current mode
+                if (testParam in MODES[self.current_mode]):
+                    c.execute(f'SELECT {testParam} FROM {self.current_mode}_data WHERE id=?', (self.id,))
+                    value = c.fetchone()[0]
+                    # convert value to hex
+                    value = f'0x{value:0{textLength*2}x}'
+                    # append value to byte array
+                    if (textLength == 1):
+                        a.append(value)
+                    elif (textLength == 2):
+                        a.append(f'0x{value[0:2]}')
+                        a.append(f'0x{value[2:4]}')
+                    
+                    if (len(value) != textLength*2+2):
+                        raise ValueError('Value is not the correct length')
+                
+                else:
+                    if (textLength == 1):
+                        a.append('0x00')
+                    else:
+                        a.append('0x00')
+                        a.append('0x00')
+
+            # assemble byte array
+            data = struct.pack("B B B B 2B 2B 2B B B B B B B B B 2B 2B 2B", a)
+            ser.write(data)
+            time.sleep(0.2)
+            ser.close()  
+        except serial.SerialException:
+            print ('No device connected')
+            self.connectionErrorPopup()
+            self.current_mode = 'Off'      
             
     def updateModeLabel(self): # update mode label, called when mode is changed
         if self.current_mode == '':
             self.device_mode_Value.setText('N/A (Not Connected)') # if no mode is selected, set label to blank
         else:
             self.device_mode_Value.setText(self.current_mode)
+
+    def updateUIDLabel(self): #update device UID, called when interface detects a new device
+        if self.device_value == '':
+            self.device_UID_Value.setText('N/A (Not Connected)')
+        else:
+            self.device_UID_Value.setText(self.device_value)
 
     def hideAllParams(self): # hide all param labels & buttons, called when no mode is selected or when device is disconnected
         for param in ALL_PARAMS:
@@ -291,8 +425,8 @@ class LandingWindow(QMainWindow): # landing page
                     value = c.fetchone()[0]
 
                     # special cases
-                    if param == 'ARP' or param == 'VRP':
-                        value = value / 100
+                    if param == 'atrial_amplitude' or param == 'ventricular_amplitude' or param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                        value = value / 1000
                     elif param == 'hysteresis':
                         if value == 1:
                             value = 'ON'
@@ -323,7 +457,7 @@ class LandingWindow(QMainWindow): # landing page
                     getattr(self, value_name).hide()
                     getattr(self, button_name).hide()
 
-        else: # if no mode is selected, set all labels to blank & hide all buttons
+        else: # if no mode is selected, hide all labels & buttons
             self.hideAllParams()
 
         c.close()
@@ -350,8 +484,7 @@ class LandingWindow(QMainWindow): # landing page
             self.current_mode = '' # set mode to blank
             self.changemode_Button.hide() # show change mode button
             self.updateModeLabel() # update mode label
-            self.hideAllParams() # set all labels to blank
-            
+            self.hideAllParams() # hide all param labels & buttons   
         
     def back_clicked(self): # if back button is clicked, show popup window
         self.show_popup()
@@ -379,16 +512,39 @@ class LandingWindow(QMainWindow): # landing page
         else:
             pass
 
+    def connectionErrorPopup(self): # declare the below popup window
+        msg = QMessageBox()
+        msg.setWindowTitle('Connection Error')
+        msg.setText('No device connected. Please connect a device and try again.')
+        msg.setIcon(QMessageBox.Critical)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.setDefaultButton(QMessageBox.Ok)
+
+        msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
+
+        x = msg.exec_()
+    
+    def newDevicePopup(self): # declare the below popup window
+        msg = QMessageBox()
+        msg.setWindowTitle('New Device Detected')
+        msg.setText('A new device has been detected')
+        msg.setIcon(QMessageBox.Information)
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.setDefaultButton(QMessageBox.Ok)
+
     def connectionButton_clicked(self):
         if self.connectionStatus:
             # ATTEMPT TO DISCONNECT FROM DEVICE
             # if successful, toggle connection status
+            
             self.toggleConnectionStatus() # for now pretend we disconnect successfully
         else:
             # ATTEMPT TO CONNECT TO DEVICE
-            # board_interface(self) # attempt to connect to device
+            self.board_interface(self) # attempt to connect to device
             # if successful, toggle connection status
-            self.toggleConnectionStatus() # for now pretend we connect successfully
+            # self.board_interface() # attempt to disconnect from device
+
+            # self.toggleConnectionStatus()
 
     def changemode_clicked(self): # if change mode button is clicked, show popup window
         mode, done1 = QInputDialog.getItem(self, 'Change Mode', 'Select a new mode', MODES.keys(), editable=False)
@@ -397,6 +553,8 @@ class LandingWindow(QMainWindow): # landing page
             self.current_mode = mode
             self.updateModeLabel() # update mode label
             self.updateParamLabels() # update param labels with values from database
+            self.updateBoard(self, 'MODE', mode)
+
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
@@ -407,6 +565,12 @@ class LandingWindow(QMainWindow): # landing page
             msg.setDefaultButton(QMessageBox.Ok)
             msg.setStyleSheet('font: 70 11pt "MS Shell Dlg 2";')
             x = msg.exec_()
+
+    def showEgram(self): # show egram window
+        self.egram_window = EgramWindow(self.stacked_window)
+        self.stacked_window.addWidget(self.egram_window)
+        self.stacked_window.setCurrentIndex(3)
+        self.stacked_window.setWindowTitle("Egram")
 
     def updateParam(self, param): # update singular param label & database value, called when singe param changed
         # get current value of param from database
@@ -432,6 +596,8 @@ class LandingWindow(QMainWindow): # landing page
                     getattr(self, value_name).setText('ON')
                 else:
                     getattr(self, value_name).setText('OFF')
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude' or param == 'atrial_sensitivity' or param == 'ventricular_sensitivity':
+                getattr(self, value_name).setText(str(value / 1000))
             else:
                 getattr(self, value_name).setText(str(value))
             
@@ -444,7 +610,7 @@ class LandingWindow(QMainWindow): # landing page
 
             # update board
             # send command to board to update parameter
-            # updateBoard(self, param, value)
+            self.updateBoard(self)
 
         else: # if input is invalid, show error message
             msg = QMessageBox()
@@ -495,15 +661,15 @@ class LandingWindow(QMainWindow): # landing page
                 c = conn.cursor()
                 c.execute(f'SELECT lower_rate_limit FROM {self.current_mode}_data WHERE id=?', (self.id,))
                 lower_value = c.fetchone()[0]
-                if value < lower_value and param == 'upper_rate_limit':
+                if param == 'upper_rate_limit' and value < lower_value:
                     return False
                 
-            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in V
+            elif param == 'atrial_amplitude' or param == 'ventricular_amplitude': # value is in mV
                 # not in range              
-                if value != 'Off' and (value < 0 or value > 5):
+                if value != 'Off' and (value < 0 or value > 5000):
                     return False
-                # in range but not a multiple of 0.1
-                elif (0 < value and value < 5) and round(value % 0.1) != 0:
+                # in range but not a multiple of 100mV, 0.1V
+                elif (0 < value and value < 5000) and value % 100 != 0:
                     return False
                 
             elif param == 'atrial_pulse_width' or param == 'ventricular_pulse_width': # value is in ms
@@ -514,12 +680,12 @@ class LandingWindow(QMainWindow): # landing page
                 elif value % 1 != 0:
                     return False
                 
-            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in V
+            elif param == 'atrial_sensitivity' or param == 'ventricular_sensitivity': # value is in mV
                 # not in range
-                if value < 0 or value > 5:
+                if value < 0 or value > 5000:
                     return False
-                # in range but not a multiple of 0.1
-                elif round(value % 0.1) != 0:
+                # in range but not a multiple of 100mV, 0.1V
+                elif value % 100 != 0:
                     return False
                 
             elif param == 'ARP' or param == 'VRP' or param == 'PVARP': # value is in ms
@@ -567,5 +733,6 @@ class LandingWindow(QMainWindow): # landing page
                 elif value % 1 != 0:
                     return False
 
+        # if all inputs are valid, return true
         return True
  

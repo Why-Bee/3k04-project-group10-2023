@@ -6,8 +6,11 @@ from sqlite3 import connect
 from hashlib import sha256
 
 from windows.landingpage.landingpage import LandingWindow
+from windows.landingpage.landingpage import MODES
+
 
 MAX_USERS = 10
+
 
 class SignupWindow(QMainWindow): 
     def __init__(self, stacked_window):
@@ -83,41 +86,13 @@ class SignupWindow(QMainWindow):
         conn = connect('users.db')
         c = conn.cursor()
         # go through tables
-        self.create_programmable_parameters_AOO(id, c)
-        self.create_programmable_parameters_VOO(id, c)
-        self.create_programmable_parameters_AAI(id, c)
-        self.create_programmable_parameters_VVI(id, c)
-        self.create_programmable_parameters_AOOR(id, c)
-        self.create_programmable_parameters_VOOR(id, c)
-        self.create_programmable_parameters_AAIR(id, c)
-        self.create_programmable_parameters_VVIR(id, c)
+        for mode in MODES:
+            c.execute(f'INSERT INTO {mode}_data (id) VALUES (?)', (id,))
+            for param in MODES[mode]:
+                c.execute(f'UPDATE {mode}_data SET {param} = ? WHERE id = ?', (0, id,))
         # commit changes
         conn.commit()
         c.close()
-
-    def create_programmable_parameters_AOO(self, id, c):
-        c.execute('INSERT INTO AOO_data (id, lower_rate_limit, upper_rate_limit, atrial_amplitude, atrial_pulse_width) VALUES (?, ?, ?, ?, ?)', (id, 60, 120, 35, 4))
-
-    def create_programmable_parameters_VOO(self, id, c):
-        c.execute('INSERT INTO VOO_data (id, lower_rate_limit, upper_rate_limit, ventricular_amplitude, ventricular_pulse_width) VALUES (?, ?, ?, ?, ?)', (id, 60, 120, 35, 4))
-
-    def create_programmable_parameters_AAI(self, id, c):
-        c.execute('INSERT INTO AAI_data (id, lower_rate_limit, upper_rate_limit, atrial_amplitude, atrial_pulse_width, atrial_sensitivity, ARP, PVARP, hysteresis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 35, 4, 75, 250, 250, 0))
-
-    def create_programmable_parameters_VVI(self, id, c):
-        c.execute('INSERT INTO VVI_data (id, lower_rate_limit, upper_rate_limit, ventricular_amplitude, ventricular_pulse_width, ventricular_sensitivity, VRP, hysteresis) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 35, 4, 250, 320, 0))
-
-    def create_programmable_parameters_AOOR(self, id, c):
-        c.execute('INSERT INTO AOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width) VALUES (?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4))
-
-    def create_programmable_parameters_VOOR(self, id, c):
-        c.execute('INSERT INTO VOOR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width) VALUES (?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4))
-
-    def create_programmable_parameters_AAIR(self, id, c):
-        c.execute('INSERT INTO AAIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, atrial_amplitude, atrial_pulse_width, atrial_sensitivity, ARP, PVARP, hysteresis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 75, 250, 250, 0))
-        
-    def create_programmable_parameters_VVIR(self, id, c): # 
-        c.execute('INSERT INTO VVIR_data (id, lower_rate_limit, upper_rate_limit, max_sensor_rate, ventricular_amplitude, ventricular_pulse_width, ventricular_sensitivity, VRP, hysteresis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (id, 60, 120, 120, 35, 4, 250, 320, 0))
 
     def show_landing_window(self):
         landing_window = LandingWindow(self.stacked_window, self.id)
