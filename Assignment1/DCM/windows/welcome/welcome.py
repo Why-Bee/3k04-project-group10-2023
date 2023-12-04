@@ -31,3 +31,4 @@ class MyWindow(QMainWindow): # Welcome screen
         signup_window = SignupWindow(self.stacked_window)
         self.stacked_window.addWidget(signup_window)
         self.stacked_window.setCurrentIndex(1)
+        

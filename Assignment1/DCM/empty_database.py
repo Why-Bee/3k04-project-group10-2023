@@ -2,6 +2,7 @@ from sqlite3 import connect
 
 from windows.landingpage.landingpage import MODES
 
+
 # Empty the database except admin user
 # Used for testing purposes
 def empty_database():
